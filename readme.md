@@ -4,7 +4,7 @@ Universal Codecov Uploader
 
 ### Coming Soon
 
-```
+```yaml
 after_success:
     - bash <(curl -s https://codecov.io/bash)
 ```
