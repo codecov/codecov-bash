@@ -1,73 +1,195 @@
 #!/bin/bash
 
-version="0.0.1"
+VERSION="0.0.1"
+
+url="https://codecov.io"
+verbose=0
+env=""
+dump=0
+
+show_help() {
+cat << EOF
+Codecov v$VERSION - Global Uploader
+Usage: ${0##*/} [-hv] [-f COVERAGE]
+Upload reports to Codecov
+
+    -h           display this help and exit
+    -f COVERAGE  reference a specific file only to upload
+                 otherwise all files will be searched, recursively current directoy.
+    -u URL       Set the target url for Enterprise customers [default https://codecov.io]
+    -e ENV       Specify environment variables to be included with this build
+                 ex. `codecov -e VAR,VAR2`
+                 (or) set environment variable $CODECOV_ENV=VAR,VAR2
+    -v           Verbose Mode
+    -d           Dont upload and dump to stdin
+EOF
+}
+
+say() {
+  if [ $verbose ];
+  then
+    if [ "$1" = "-n" ]
+    then
+      echo -n "  $2"
+    else
+      echo "  $1"
+    fi
+  fi
+}
+
+if [ $# != 0 ] ; then
+  while getopts ":huved" optname
+  do
+    case "$optname" in
+      "h")
+        show_help
+        exit 0;
+        ;;
+      "u")
+        url="$2"
+        ;;
+      "d")
+        dump=1
+        ;;
+      "v")
+        verbose=1
+        ;;
+      "e")
+        for e in $(echo "$2" | tr ',' ' ')
+        do
+          env="$env$e=$(eval echo "\$$e")
+"
+        done
+        ;;
+    esac
+  done
+fi
+
+echo "Codecov v$VERSION - Uploader"
+say "url: $url"
 
 if [ "$JENKINS_URL" != "" ];
 then
+    say "Jenkins CI detected."
     # https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project
-    query="service=jenkins&branch=$GIT_BRANCH&commit=$GIT_COMMIT&build=$BUILD_NUMBER&build_url=$BUILD_URL"
+    query="service=jenkins\
+           &branch=$GIT_BRANCH\
+           &commit=$GIT_COMMIT\
+           &build=$BUILD_NUMBER\
+           &build_url=$BUILD_URL"
     cd "$WORKSPACE"
 
 elif [ "$CI" = "true" ] && [ "$TRAVIS" = "true" ];
 then
+    say "Travis CI detected."
     # http://docs.travis-ci.com/user/ci-environment/#Environment-variables
     owner=$(echo $TRAVIS_REPO_SLUG | cut -d / -f 1)
     repo=$(echo $TRAVIS_REPO_SLUG | cut -d / -f 2)
-    query="service=travis-org&branch=$TRAVIS_BRANCH&commit=$TRAVIS_COMMIT&build=$TRAVIS_JOB_NUMBER&pull_request=$TRAVIS_PULL_REQUEST&travis_job_id=$TRAVIS_JOB_ID&owner=$owner&repo=$repo"
+    query="service=travis-org\
+           &branch=$TRAVIS_BRANCH\
+           &commit=$TRAVIS_COMMIT\
+           &build=$TRAVIS_JOB_NUMBER\
+           &pull_request=$TRAVIS_PULL_REQUEST\
+           &travis_job_id=$TRAVIS_JOB_ID\
+           &owner=$owner\
+           &repo=$repo"
     cd "$TRAVIS_BUILD_DIR"
 
 elif [ "$CI" = "true" ] && [ "$CI_NAME" = "codeship" ];
 then
+    say "Codeship CI detected."
     # https://www.codeship.io/documentation/continuous-integration/set-environment-variables/
-    query="service=codeship&branch=$CI_BRANCH&build=$CI_BUILD_NUMBER&build_url=$CI_BUILD_URL&commit=$CI_COMMIT_ID"
+    query="service=codeship\
+           &branch=$CI_BRANCH\
+           &build=$CI_BUILD_NUMBER\
+           &build_url=$CI_BUILD_URL\
+           &commit=$CI_COMMIT_ID"
 
 elif [ "$CI" = "true" ] && [ "$CIRCLECI" = "true" ];
 then
+    say "Circle CI detected."
     # https://circleci.com/docs/environment-variables
-    query="service=circleci&branch=$CIRCLE_BRANCH&build=$CIRCLE_BUILD_NUM&owner=$CIRCLE_PROJECT_USERNAME&repo=$CIRCLE_PROJECT_REPONAME&commit=$CIRCLE_SHA1"
+    query="service=circleci\
+           &branch=$CIRCLE_BRANCH\
+           &build=$CIRCLE_BUILD_NUM\
+           &owner=$CIRCLE_PROJECT_USERNAME\
+           &repo=$CIRCLE_PROJECT_REPONAME\
+           &commit=$CIRCLE_SHA1"
 
 elif [ "$CI" = "true" ] && [ "$SEMAPHORE" = "true" ];
 then
+    say "Semaphore CI detected."
     # https://semaphoreapp.com/docs/available-environment-variables.html
     owner=$(echo $SEMAPHORE_REPO_SLUG | cut -d / -f 1)
     repo=$(echo $SEMAPHORE_REPO_SLUG | cut -d / -f 2)
-    query="service=semaphore&branch=$BRANCH_NAME&build=$SEMAPHORE_BUILD_NUMBER&owner=$owner&repo=$repo&commit=$REVISION"
+    query="service=semaphore\
+           &branch=$BRANCH_NAME\
+           &build=$SEMAPHORE_BUILD_NUMBER\
+           &owner=$owner\
+           &repo=$repo\
+           &commit=$REVISION"
 
 elif [ "$CI" = "true" ] && [ "$DRONE" = "true" ];
 then
+    say "Drone CI detected."
     # http://docs.drone.io/env.html
-    query="service=drone.io&branch=$DRONE_BRANCH&build=$DRONE_BUILD_NUMBER&build_url=$DRONE_BUILD_URL&commit=$DRONE_COMMIT"
+    query="service=drone.io\
+           &branch=$DRONE_BRANCH\
+           &build=$DRONE_BUILD_NUMBER\
+           &build_url=$DRONE_BUILD_URL\
+           &commit=$DRONE_COMMIT"
 
 elif [ "$CI" = "True" ] && [ "$APPVEYOR" = "True" ];
 then
+    say "Appveyor CI detected."
     # http://www.appveyor.com/docs/environment-variables
     owner=$(echo $APPVEYOR_REPO_NAME | cut -d / -f 1)
     repo=$(echo $APPVEYOR_REPO_NAME | cut -d / -f 2)
-    query="service=appveyor&branch=$APPVEYOR_REPO_BRANCH&build=$APPVEYOR_BUILD_NUMBER&owner=$owner&repo=$repo&commit=$APPVEYOR_REPO_COMMIT"
+    query="service=appveyor\
+           &branch=$APPVEYOR_REPO_BRANCH\
+           &build=$APPVEYOR_BUILD_NUMBER\
+           &owner=$owner\
+           &repo=$repo\
+           &commit=$APPVEYOR_REPO_COMMIT"
 
 elif [ "$CI" = "True" ] && [ "$WERCKER_GIT_BRANCH" != "" ];
 then
+    say "Wercker CI detected."
     # http://devcenter.wercker.com/articles/steps/variables.html
-    query="service=wercker&branch=$WERCKER_GIT_BRANCH&build=$WERCKER_MAIN_PIPELINE_STARTED&owner=$WERCKER_GIT_OWNER&repo=$WERCKER_GIT_REPOSITORY&commit=$WERCKER_GIT_COMMIT"
+    query="service=wercker\
+           &branch=$WERCKER_GIT_BRANCH\
+           &build=$WERCKER_MAIN_PIPELINE_STARTED\
+           &owner=$WERCKER_GIT_OWNER\
+           &repo=$WERCKER_GIT_REPOSITORY\
+           &commit=$WERCKER_GIT_COMMIT"
 
 elif [ "$SHIPPABLE" = "true" ];
 then
+    say "Shippable CI detected."
     # http://docs.shippable.com/en/latest/config.html#common-environment-variables
     owner=$(echo $REPO_NAME | cut -d / -f 1)
     repo=$(echo $REPO_NAME | cut -d / -f 2)
-    query="service=shippable&branch=$BRANCH&build=$BUILD_NUMBER&build_url=$BUILD_URL&pull_request=$PULL_REQUEST&owner=$owner&repo=$repo&commit=$COMMIT"
+    query="service=shippable\
+           &branch=$BRANCH\
+           &build=$BUILD_NUMBER\
+           &build_url=$BUILD_URL\
+           &pull_request=$PULL_REQUEST\
+           &owner=$owner\
+           &repo=$repo\
+           &commit=$COMMIT"
 
-else:
+else
     # find branch, commit, repo from git command
+    say "No CI detected, using git for branch and commit sha."
     branch=$(git rev-parse --abbrev-ref HEAD)
-    if [ "$branch" = "HEAD" ];
-    then
-        branch="master"
-    fi;
+    if [ "$branch" = "HEAD" ]; then branch="master"; fi;
     commit=$(git rev-parse HEAD)
-    query="branch=$branch&commit=$commit"
+    query="branch=$branch\
+           &commit=$commit"
 fi;
 
+
+say -n "Searching for coverage reports..."
 files=$(find . -name 'coverage.xml' \
            -or -name 'coverage.json' \
            -or -name 'jacoco.xml' \
@@ -78,50 +200,85 @@ files=$(find . -name 'coverage.xml' \
            -or -name 'jacoco.xml' \
            -or -name 'lcov.info' \
            -or -name 'gcov.info')
+say "ok"
 
 # no files found
 if [ "$files" = "" ];
 then
+  say "No files found."
   # python coverage command found
   if [ "$(which coverage)" != "" ];
   then
+    say "Trying python coverage."
     # run python coverage
     if [ "$(coverage xml)" != "No data to report." ];
     then
+      say "coverage.xml generated"
       files="coverage.xml"
     else
-      echo "Report could not be generated."
+      echo "Python: coverage report could not be generated. No data to report."
       exit 1;
     fi
   else
-    echo "No coverage report detected."
+    echo "No coverage report found."
     exit 1;
   fi
 fi
 
-# need file tree to find true file paths
-all_report=$(find . | grep -v -e 'venv/bin' \
-                              -e 'venv/lib' \
-                              -e 'build/lib' \
-                              -e '.git/' \
-                              -e '/tests/' \
-                              -e '.egg-info/' \
-                              -e '/vendor/' \
-                              -e 'Sites/www/bower/' \
-                              -e 'virtualenv/' \
-                              -e 'node_modules/' \
-                              -e 'bower_components/' \
-                              -e 'coverage/instrumented' | tr " " "\n")
+say -n "Detecting file structure..."
+upload=$(find . | grep -v -e 'venv/bin' \
+                          -e 'venv/lib' \
+                          -e 'build/lib' \
+                          -e '.git/' \
+                          -e '/tests/' \
+                          -e '.egg-info/' \
+                          -e '/vendor/' \
+                          -e 'Sites/www/bower/' \
+                          -e 'virtualenv/' \
+                          -e 'node_modules/' \
+                          -e 'bower_components/' \
+                          -e 'coverage/instrumented' | tr " " "\n")
+say "ok"
 
+say -n "Reading reports..."
 for file in $files
 do
+    # read the coverage file
     report=$(cat "$file")
-    all_report+="\n<<<<<< EOF\n$report"
+    # append to to upload
+    upload+="
+<<<<<< EOF
+$report"
 done
+say "ok"
 
-curl --silent \
-     -X POST \
-     -d "$all_report" \
-     -H "Accept: text/plain" \
-     -H "Content-Type: text/plain" \
-     "https://codecov.io/upload/v2?package=bash-v$version&$query"
+if [ "$env" ] || [ "$CODECOV_ENV" ];
+then
+  for e in $(echo "$CODECOV_ENV" | tr ',' ' ')
+  do
+    env="$env$e=$(eval echo "\$$e")
+"
+  done
+  say "Appending env variables"
+  upload="$env<<<<<< ENV
+$upload"
+fi
+
+# trim whitespace from query
+query=$(echo "$query" | tr -d ' ')
+say "query: $query"
+
+if [ $dump ];
+then
+  echo "$upload"
+else
+  say -n "Uploading reports..."
+  curl --silent \
+       -X POST \
+       -d "$upload" \
+       -H "Accept: text/plain" \
+       "$url/upload/v2?package=bash-v$VERSION&$query"
+  say "ok"
+fi
+
+# EOF
