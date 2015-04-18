@@ -33,7 +33,7 @@ EOF
 }
 
 say() {
-  if [ $verbose ];
+  if [ $verbose != 0 ];
   then
     if [ "$1" = "-n" ]
     then
@@ -211,7 +211,7 @@ else
            &commit=$commit"
 fi;
 
-if [ $files ];
+if [ $files != 0 ];
 then
   say "Targeting specific file at $files"
 else
@@ -291,25 +291,22 @@ then
 $upload"
 fi
 
-# add package and token
-query="package=bash-v$VERSION\
-       &query\
-       &$token"
 # trim whitespace from query
-query=$(echo "$query" | tr -d ' ')
+query=$(echo "package=bash-v$VERSION&$query&$token" | tr -d ' ')
 say "query: $query"
 
-if [ $dump ];
+if [ $dump != 0 ];
 then
   echo "$upload"
 else
-  say -n "Uploading reports..."
+  say "Uploading reports"
   curl --silent \
+       -D - \
        -X POST \
        -d "$upload" \
        -H "Accept: text/plain" \
+       -H "Content-Type: text/plain" \
        "$url/upload/v2?$query"
-  say "ok"
 fi
 
 # EOF
