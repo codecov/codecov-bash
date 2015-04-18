@@ -292,7 +292,7 @@ $upload"
 fi
 
 # trim whitespace from query
-query=$(echo "package=bash-v$VERSION&$query&$token" | tr -d ' ')
+query=$(echo "package=bash-v$VERSION&$query$token" | tr -d ' ')
 say "query: $query"
 
 if [ $dump != 0 ];
