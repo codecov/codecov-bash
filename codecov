@@ -45,30 +45,30 @@ say() {
 }
 
 if [ $# != 0 ] ; then
-  while getopts ":huved" optname
+  while getopts "vdhu:t:f:e:" o
   do
-    case "$optname" in
+    case "$o" in
+      "v")
+        verbose=1
+        ;;
+      "d")
+        dump=1
+        ;;
       "h")
         show_help
         exit 0;
         ;;
       "u")
-        url="$2"
+        url="$OPTARG"
         ;;
       "t")
-        token="&token=$2"
-        ;;
-      "d")
-        dump=1
+        token="&token=$OPTARG"
         ;;
       "f")
-        files="$2"
-        ;;
-      "v")
-        verbose=1
+        files="$OPTARG"
         ;;
       "e")
-        for e in $(echo "$2" | tr ',' ' ')
+        for e in $(echo "$OPTARG" | tr ',' ' ')
         do
           env="$env$e=$(eval echo "\$$e")
 "
@@ -301,7 +301,6 @@ then
 else
   say "Uploading reports"
   curl --silent \
-       -D - \
        -X POST \
        -d "$upload" \
        -H "Accept: text/plain" \
