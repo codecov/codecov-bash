@@ -5,7 +5,9 @@ VERSION="0.0.1"
 url="https://codecov.io"
 verbose=0
 env=""
+token=""
 dump=0
+files=0
 
 show_help() {
 cat << EOF
@@ -17,11 +19,16 @@ Upload reports to Codecov
     -f COVERAGE  reference a specific file only to upload
                  otherwise all files will be searched, recursively current directoy.
     -u URL       Set the target url for Enterprise customers [default https://codecov.io]
+                 (or) set environment variable $CODECOV_URL=https://my-hosted-codecov.com
+    -t TOKEN     Set the private repo token
+                 (or) set environment variable $CODECOV_TOKEN=:uuid
     -e ENV       Specify environment variables to be included with this build
                  ex. `codecov -e VAR,VAR2`
                  (or) set environment variable $CODECOV_ENV=VAR,VAR2
     -v           Verbose Mode
     -d           Dont upload and dump to stdin
+
+Contribute and source at https://github.com/codecov/codecov-bash
 EOF
 }
 
@@ -48,8 +55,14 @@ if [ $# != 0 ] ; then
       "u")
         url="$2"
         ;;
+      "t")
+        token="&token=$2"
+        ;;
       "d")
         dump=1
+        ;;
+      "f")
+        files="$2"
         ;;
       "v")
         verbose=1
@@ -63,6 +76,16 @@ if [ $# != 0 ] ; then
         ;;
     esac
   done
+fi
+
+if [ "$CODECOV_URL" != "" ];
+then
+  url="$CODECOV_URL"
+fi
+
+if [ "$CODECOV_TOKEN" != "" ];
+then
+  token="&token=$CODECOV_TOKEN"
 fi
 
 echo "Codecov v$VERSION - Uploader"
@@ -188,19 +211,23 @@ else
            &commit=$commit"
 fi;
 
-
-say -n "Searching for coverage reports..."
-files=$(find . -name 'coverage.xml' \
-           -or -name 'coverage.json' \
-           -or -name 'jacoco.xml' \
-           -or -name 'jacocoTestReport.xml' \
-           -or -name 'clover.xml' \
-           -or -name 'coverage.txt' \
-           -or -name 'cobertura.xml' \
-           -or -name 'jacoco.xml' \
-           -or -name 'lcov.info' \
-           -or -name 'gcov.info')
-say "ok"
+if [ $files ];
+then
+  say "Targeting specific file at $files"
+else
+  say -n "Searching for coverage reports..."
+  files=$(find . -name 'coverage.xml' \
+             -or -name 'coverage.json' \
+             -or -name 'jacoco.xml' \
+             -or -name 'jacocoTestReport.xml' \
+             -or -name 'clover.xml' \
+             -or -name 'coverage.txt' \
+             -or -name 'cobertura.xml' \
+             -or -name 'jacoco.xml' \
+             -or -name 'lcov.info' \
+             -or -name 'gcov.info')
+  say "ok"
+fi
 
 # no files found
 if [ "$files" = "" ];
@@ -264,6 +291,10 @@ then
 $upload"
 fi
 
+# add package and token
+query="package=bash-v$VERSION\
+       &query\
+       &$token"
 # trim whitespace from query
 query=$(echo "$query" | tr -d ' ')
 say "query: $query"
@@ -277,7 +308,7 @@ else
        -X POST \
        -d "$upload" \
        -H "Accept: text/plain" \
-       "$url/upload/v2?package=bash-v$VERSION&$query"
+       "$url/upload/v2?$query"
   say "ok"
 fi
 
