@@ -23,7 +23,7 @@ Upload reports to Codecov
     -t TOKEN     Set the private repo token
                  (or) set environment variable $CODECOV_TOKEN=:uuid
     -e ENV       Specify environment variables to be included with this build
-                 ex. `codecov -e VAR,VAR2`
+                 ex. codecov -e VAR,VAR2
                  (or) set environment variable $CODECOV_ENV=VAR,VAR2
     -v           Verbose Mode
     -d           Dont upload and dump to stdin
@@ -44,6 +44,10 @@ say() {
   fi
 }
 
+urlencode() {
+  python -c "import urllib as u; print u.quote_plus('$1')"
+}
+
 if [ $# != 0 ] ; then
   while getopts "vdhu:t:f:e:" o
   do
@@ -59,7 +63,7 @@ if [ $# != 0 ] ; then
         exit 0;
         ;;
       "u")
-        url="$OPTARG"
+        url=$(echo "$OPTARG" | sed -e 's/\/$//')
         ;;
       "t")
         token="&token=$OPTARG"
@@ -80,7 +84,7 @@ fi
 
 if [ "$CODECOV_URL" != "" ];
 then
-  url="$CODECOV_URL"
+  url=$(echo "$CODECOV_URL" | sed -e 's/\/$//')
 fi
 
 if [ "$CODECOV_TOKEN" != "" ];
@@ -95,11 +99,12 @@ if [ "$JENKINS_URL" != "" ];
 then
     say "Jenkins CI detected."
     # https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project
+    build_url=$(urlencode "$BUILD_URL")
     query="service=jenkins\
            &branch=$GIT_BRANCH\
            &commit=$GIT_COMMIT\
            &build=$BUILD_NUMBER\
-           &build_url=$BUILD_URL"
+           &build_url=$build_url"
     cd "$WORKSPACE"
 
 elif [ "$CI" = "true" ] && [ "$TRAVIS" = "true" ];
@@ -122,10 +127,11 @@ elif [ "$CI" = "true" ] && [ "$CI_NAME" = "codeship" ];
 then
     say "Codeship CI detected."
     # https://www.codeship.io/documentation/continuous-integration/set-environment-variables/
+    build_url=$(urlencode "$CI_BUILD_URL")
     query="service=codeship\
            &branch=$CI_BRANCH\
            &build=$CI_BUILD_NUMBER\
-           &build_url=$CI_BUILD_URL\
+           &build_url=$build_url\
            &commit=$CI_COMMIT_ID"
 
 elif [ "$CI" = "true" ] && [ "$CIRCLECI" = "true" ];
@@ -156,10 +162,11 @@ elif [ "$CI" = "true" ] && [ "$DRONE" = "true" ];
 then
     say "Drone CI detected."
     # http://docs.drone.io/env.html
+    build_url=$(urlencode "$DRONE_BUILD_URL")
     query="service=drone.io\
            &branch=$DRONE_BRANCH\
            &build=$DRONE_BUILD_NUMBER\
-           &build_url=$DRONE_BUILD_URL\
+           &build_url=$build_url\
            &commit=$DRONE_COMMIT"
 
 elif [ "$CI" = "True" ] && [ "$APPVEYOR" = "True" ];
@@ -192,10 +199,11 @@ then
     # http://docs.shippable.com/en/latest/config.html#common-environment-variables
     owner=$(echo $REPO_NAME | cut -d / -f 1)
     repo=$(echo $REPO_NAME | cut -d / -f 2)
+    _build_url=$(urlencode "$BUILD_URL")
     query="service=shippable\
            &branch=$BRANCH\
            &build=$BUILD_NUMBER\
-           &build_url=$BUILD_URL\
+           &build_url=$_build_url\
            &pull_request=$PULL_REQUEST\
            &owner=$owner\
            &repo=$repo\
@@ -207,8 +215,7 @@ else
     branch=$(git rev-parse --abbrev-ref HEAD)
     if [ "$branch" = "HEAD" ]; then branch="master"; fi;
     commit=$(git rev-parse HEAD)
-    query="branch=$branch\
-           &commit=$commit"
+    query="branch=$branch&commit=$commit"
 fi;
 
 if [ $files != 0 ];
@@ -257,6 +264,8 @@ upload=$(find . | grep -v -e 'venv/bin' \
                           -e 'venv/lib' \
                           -e 'build/lib' \
                           -e '.git/' \
+                          -e 'shunit2-2.1.6' \
+                          -e '.DS_Store' \
                           -e '/tests/' \
                           -e '.egg-info/' \
                           -e '/vendor/' \
@@ -273,7 +282,7 @@ do
     # read the coverage file
     report=$(cat "$file")
     # append to to upload
-    upload+="
+    upload="$upload
 <<<<<< EOF
 $report"
 done
@@ -297,6 +306,7 @@ say "query: $query"
 
 if [ $dump != 0 ];
 then
+  echo "$url/upload/v2?$query"
   echo "$upload"
 else
   say "Uploading reports"

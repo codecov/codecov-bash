@@ -6,7 +6,7 @@ Codecov Global Uploader
 
 ----
 
-> Coming soon. Pre-beta. Not prodution ready. Thanks!
+> Coming soon. Not prodution ready. Thanks!
 
 ----
 
@@ -17,6 +17,7 @@ Codecov Global Uploader
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 ```
+> Using Travis CI? Settings `sudo: false` may speed up your builds and still works with this uploader.
 
 ### More Options
 
@@ -37,7 +38,7 @@ after_success:
   - bash <(curl -s https://codecov.io/bash)
 ```
 
-*or*
+#### One line
 
 ```yaml
 after_success:

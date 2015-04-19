@@ -1,0 +1,18 @@
+Codecov v0.0.1 - Global Uploader
+Usage: codecov [-hv] [-f COVERAGE]
+Upload reports to Codecov
+
+    -h           display this help and exit
+    -f COVERAGE  reference a specific file only to upload
+                 otherwise all files will be searched, recursively current directoy.
+    -u URL       Set the target url for Enterprise customers [default https://codecov.io]
+                 (or) set environment variable =https://my-hosted-codecov.com
+    -t TOKEN     Set the private repo token
+                 (or) set environment variable =:uuid
+    -e ENV       Specify environment variables to be included with this build
+                 ex. codecov -e VAR,VAR2
+                 (or) set environment variable =VAR,VAR2
+    -v           Verbose Mode
+    -d           Dont upload and dump to stdin
+
+Contribute and source at https://github.com/codecov/codecov-bash
