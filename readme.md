@@ -1,6 +1,8 @@
 Codecov Global Uploader
 =======================
 
+[![Circle CI](https://circleci.com/gh/codecov/codecov-bash.png?style=badge)](https://circleci.com/gh/codecov/codecov-bash)
+
 > Upload reports to Codecov for all supported languages.
 
 
