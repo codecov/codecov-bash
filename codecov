@@ -267,6 +267,7 @@ upload=$(find . | grep -v -e '/venv' -e '/virtualenv' \
                           -e 'shunit2-2.1.6' \
                           -e '.DS_Store' \
                           -e '/tests' \
+                          -e '.ruby-version' \
                           -e '.egg-info' \
                           -e '/vendor' \
                           -e 'Sites/www/bower' \
