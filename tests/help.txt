@@ -12,6 +12,9 @@ Upload reports to Codecov
     -e ENV       Specify environment variables to be included with this build
                  ex. codecov -e VAR,VAR2
                  (or) set environment variable =VAR,VAR2
+    -r           owner/repo slug used instead of the private repo token in Enterprise
+                 (or) set environment variable CODECOV_SLUG=:owner/:repo
+                 ex. codecov -r mycompany/home
     -v           Verbose Mode
     -d           Dont upload and dump to stdin
 

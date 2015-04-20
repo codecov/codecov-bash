@@ -1,7 +1,7 @@
 Codecov Global Uploader
 =======================
 
-[![Circle CI](https://circleci.com/gh/codecov/codecov-bash.png?style=badge)](https://circleci.com/gh/codecov/codecov-bash)
+[![Circle CI](https://img.shields.io/circleci/project/codecov/codecov-bash.svg)](https://circleci.com/gh/codecov/codecov-bash)
 
 > Upload reports to Codecov for all supported languages.
 
@@ -25,16 +25,18 @@ after_success:
 
 ```
 CODECOV_TOKEN   Private repo token for uploading
-CODECOV_URL     Enterprise url
 CODECOV_ENV     List of config vars that are stored for this build
+CODECOV_URL     Enterprise url
+CODECOV_SLUG    Repository slug (ex "owner/repo") used in Enterprise instead of private repo token
 ```
 
 ```yaml
 env:
   global:
     - CODECOV_TOKEN=9dcefbad-1cef-4895-8fb7-a90cf4737904
-    - CODECOV_URL=https://your-enterprise.com
     - CODECOV_ENV=KEEP,THESE,ENV,VALUES
+    - CODECOV_URL=https://your-enterprise.com
+    - CODECOV_SLUG=myteam/myrepo
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
@@ -44,5 +46,5 @@ after_success:
 
 ```yaml
 after_success:
-  - curl -s https://codecov.io/bash | bash /dev/stdin -u https://custom-site.com/ -t 15482e9c-3612-4812-b19b-f5e79139dfe3
+  - curl -s https://codecov.io/bash | bash /dev/stdin -t 15482e9c-3612-4812-b19b-f5e79139dfe3
 ```

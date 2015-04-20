@@ -6,6 +6,7 @@ url="https://codecov.io"
 verbose=0
 env=""
 token=""
+slug=""
 dump=0
 files=0
 
@@ -25,6 +26,9 @@ Upload reports to Codecov
     -e ENV       Specify environment variables to be included with this build
                  ex. codecov -e VAR,VAR2
                  (or) set environment variable $CODECOV_ENV=VAR,VAR2
+    -r           owner/repo slug used instead of the private repo token in Enterprise
+                 (or) set environment variable CODECOV_SLUG=:owner/:repo
+                 ex. codecov -r mycompany/home
     -v           Verbose Mode
     -d           Dont upload and dump to stdin
 
@@ -49,7 +53,7 @@ urlencode() {
 }
 
 if [ $# != 0 ] ; then
-  while getopts "vdhu:t:f:e:" o
+  while getopts "vdhu:t:f:r:e:" o
   do
     case "$o" in
       "v")
@@ -71,6 +75,11 @@ if [ $# != 0 ] ; then
       "f")
         files="$OPTARG"
         ;;
+      "r")
+        owner=$(echo $OPTARG | cut -d / -f 1)
+        repo=$(echo $OPTARG | cut -d / -f 2)
+        slug="&owner=$owner&repo=$repo"
+        ;;
       "e")
         for e in $(echo "$OPTARG" | tr ',' ' ')
         do
@@ -90,6 +99,13 @@ fi
 if [ "$CODECOV_TOKEN" != "" ];
 then
   token="&token=$CODECOV_TOKEN"
+fi
+
+if [ "$CODECOV_SLUG" != "" ];
+then
+  owner=$(echo $CODECOV_SLUG | cut -d / -f 1)
+  repo=$(echo $CODECOV_SLUG | cut -d / -f 2)
+  slug="&owner=$owner&repo=$repo"
 fi
 
 echo "Codecov v$VERSION - Uploader"
@@ -301,7 +317,7 @@ $upload"
 fi
 
 # trim whitespace from query
-query=$(echo "package=bash-v$VERSION&$query$token" | tr -d ' ')
+query=$(echo "package=bash-v$VERSION&$query$slug$token" | tr -d ' ')
 say "query: $query"
 
 if [ $dump != 0 ];
