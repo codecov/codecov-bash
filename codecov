@@ -76,9 +76,7 @@ if [ $# != 0 ] ; then
         files="$OPTARG"
         ;;
       "r")
-        owner=$(echo $OPTARG | cut -d / -f 1)
-        repo=$(echo $OPTARG | cut -d / -f 2)
-        slug="&owner=$owner&repo=$repo"
+        slug="&slug=$OPTARG"
         ;;
       "e")
         for e in $(echo "$OPTARG" | tr ',' ' ')
@@ -103,9 +101,7 @@ fi
 
 if [ "$CODECOV_SLUG" != "" ];
 then
-  owner=$(echo $CODECOV_SLUG | cut -d / -f 1)
-  repo=$(echo $CODECOV_SLUG | cut -d / -f 2)
-  slug="&owner=$owner&repo=$repo"
+  slug="&slug=$CODECOV_SLUG"
 fi
 
 echo "Codecov v$VERSION - Uploader"
@@ -127,16 +123,13 @@ elif [ "$CI" = "true" ] && [ "$TRAVIS" = "true" ];
 then
     say "Travis CI detected."
     # http://docs.travis-ci.com/user/ci-environment/#Environment-variables
-    owner=$(echo $TRAVIS_REPO_SLUG | cut -d / -f 1)
-    repo=$(echo $TRAVIS_REPO_SLUG | cut -d / -f 2)
     query="service=travis-org\
            &branch=$TRAVIS_BRANCH\
            &commit=$TRAVIS_COMMIT\
            &build=$TRAVIS_JOB_NUMBER\
            &pull_request=$TRAVIS_PULL_REQUEST\
            &travis_job_id=$TRAVIS_JOB_ID\
-           &owner=$owner\
-           &repo=$repo"
+           &slug=$TRAVIS_REPO_SLUG"
     cd "$TRAVIS_BUILD_DIR"
 
 elif [ "$CI" = "true" ] && [ "$CI_NAME" = "codeship" ];
@@ -157,21 +150,17 @@ then
     query="service=circleci\
            &branch=$CIRCLE_BRANCH\
            &build=$CIRCLE_BUILD_NUM\
-           &owner=$CIRCLE_PROJECT_USERNAME\
-           &repo=$CIRCLE_PROJECT_REPONAME\
+           &slug=$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME\
            &commit=$CIRCLE_SHA1"
 
 elif [ "$CI" = "true" ] && [ "$SEMAPHORE" = "true" ];
 then
     say "Semaphore CI detected."
     # https://semaphoreapp.com/docs/available-environment-variables.html
-    owner=$(echo $SEMAPHORE_REPO_SLUG | cut -d / -f 1)
-    repo=$(echo $SEMAPHORE_REPO_SLUG | cut -d / -f 2)
     query="service=semaphore\
            &branch=$BRANCH_NAME\
            &build=$SEMAPHORE_BUILD_NUMBER\
-           &owner=$owner\
-           &repo=$repo\
+           &slug=$SEMAPHORE_REPO_SLUG\
            &commit=$REVISION"
 
 elif [ "$CI" = "true" ] && [ "$DRONE" = "true" ];
@@ -189,13 +178,10 @@ elif [ "$CI" = "True" ] && [ "$APPVEYOR" = "True" ];
 then
     say "Appveyor CI detected."
     # http://www.appveyor.com/docs/environment-variables
-    owner=$(echo $APPVEYOR_REPO_NAME | cut -d / -f 1)
-    repo=$(echo $APPVEYOR_REPO_NAME | cut -d / -f 2)
     query="service=appveyor\
            &branch=$APPVEYOR_REPO_BRANCH\
            &build=$APPVEYOR_BUILD_NUMBER\
-           &owner=$owner\
-           &repo=$repo\
+           &slug=$APPVEYOR_REPO_NAME\
            &commit=$APPVEYOR_REPO_COMMIT"
 
 elif [ "$CI" = "True" ] && [ "$WERCKER_GIT_BRANCH" != "" ];
@@ -205,24 +191,20 @@ then
     query="service=wercker\
            &branch=$WERCKER_GIT_BRANCH\
            &build=$WERCKER_MAIN_PIPELINE_STARTED\
-           &owner=$WERCKER_GIT_OWNER\
-           &repo=$WERCKER_GIT_REPOSITORY\
+           &slug=$WERCKER_GIT_OWNER/$WERCKER_GIT_REPOSITORY\
            &commit=$WERCKER_GIT_COMMIT"
 
 elif [ "$SHIPPABLE" = "true" ];
 then
     say "Shippable CI detected."
     # http://docs.shippable.com/en/latest/config.html#common-environment-variables
-    owner=$(echo $REPO_NAME | cut -d / -f 1)
-    repo=$(echo $REPO_NAME | cut -d / -f 2)
     _build_url=$(urlencode "$BUILD_URL")
     query="service=shippable\
            &branch=$BRANCH\
            &build=$BUILD_NUMBER\
            &build_url=$_build_url\
            &pull_request=$PULL_REQUEST\
-           &owner=$owner\
-           &repo=$repo\
+           &slug=$REPO_NAME\
            &commit=$COMMIT"
 
 else
