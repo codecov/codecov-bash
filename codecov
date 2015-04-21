@@ -225,16 +225,13 @@ then
   say "Targeting specific file at $files"
 else
   say -n "Searching for coverage reports..."
-  files=$(find . -name 'coverage.xml' \
-             -or -name 'coverage.json' \
-             -or -name 'jacoco.xml' \
-             -or -name 'jacocoTestReport.xml' \
+  files=$(find . -name 'coverage.xml' -or -name 'coverage.json' -or -name 'coverage.txt' \
+             -or -name 'jacoco.xml' -or -name 'jacocoTestReport.xml' \
              -or -name 'clover.xml' \
-             -or -name 'coverage.txt' \
              -or -name 'cobertura.xml' \
-             -or -name 'jacoco.xml' \
-             -or -name 'lcov.info' \
-             -or -name 'gcov.info')
+             -or -name 'lcov.info' -or -name '*.lcov' \
+             -or -name 'gcov.info' -or -name '*.gcov' \
+             -or -name '*.lst')
   say "ok"
 fi
 
