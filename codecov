@@ -52,6 +52,10 @@ urlencode() {
   python -c "import urllib as u; print u.quote_plus('$1')"
 }
 
+json() {
+  python -c "import json as j; print j.dumps(j.loads('$1'), indent=True)"
+}
+
 if [ $# != 0 ] ; then
   while getopts "vdhu:t:f:r:e:" o
   do
@@ -308,12 +312,12 @@ then
   echo "$upload"
 else
   say "Uploading reports"
-  curl --silent \
-       -X POST \
-       -d "$upload" \
-       -H "Accept: text/plain" \
-       -H "Content-Type: text/plain" \
-       "$url/upload/v2?$query"
+  res=$(curl -X POST \
+             --silent \
+             -d "$upload" \
+             -H "Content-Type: text/plain" \
+             "$url/upload/v2?$query")
+  echo "$(json "$res")"
 fi
 
 # EOF
