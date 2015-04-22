@@ -6,13 +6,6 @@ Codecov Global Uploader
 > Upload reports to Codecov for all supported languages.
 
 
-----
-
-> Coming soon. Not prodution ready. Thanks!
-
-----
-
-
 ### Simply
 
 ```yaml
