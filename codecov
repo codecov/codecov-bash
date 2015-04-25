@@ -198,6 +198,15 @@ then
            &slug=$WERCKER_GIT_OWNER/$WERCKER_GIT_REPOSITORY\
            &commit=$WERCKER_GIT_COMMIT"
 
+elif [ "$CI" = "true" ] && [ "$MAGNUM" = "true" ];
+then
+    say "Magnum CI detected."
+    # https://magnum-ci.com/docs/environment
+    query="service=magnum\
+           &branch=$CI_BRANCH\
+           &build=$CI_BUILD_NUMBER\
+           &commit=$CI_COMMIT"
+
 elif [ "$SHIPPABLE" = "true" ];
 then
     say "Shippable CI detected."
