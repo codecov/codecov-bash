@@ -318,11 +318,12 @@ then
   echo "$upload"
 else
   say "Uploading reports"
-  res=$(curl -X POST \
-             --silent \
-             -d "$upload" \
-             -H "Content-Type: text/plain" \
-             "$url/upload/v2?$query")
+  res=$(echo "$upload" | \
+            curl -X POST \
+                 --silent \
+                 -d @- \
+                 -H "Content-Type: text/plain" \
+                 "$url/upload/v2?$query")
   echo "$(json "$res")"
 fi
 
