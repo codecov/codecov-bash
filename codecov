@@ -10,6 +10,8 @@ slug=""
 dump=0
 files=0
 
+set -e
+
 show_help() {
 cat << EOF
 Codecov v$VERSION - Global Uploader
