@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION="0.0.1"
+VERSION="0.0.2"
 
 url="https://codecov.io"
 verbose=0
@@ -62,7 +62,8 @@ then
   bower_components=$(python -c "import json as j; print j.loads('$bowerrc').get('directory', 'bower_components')")
 fi
 
-if [ $# != 0 ] ; then
+if [ $# != 0 ];
+then
   while getopts "vdhu:t:f:r:e:" o
   do
     case "$o" in
@@ -275,7 +276,7 @@ fi
 
 say -n "Detecting file structure..."
 upload=$(find . | grep -v -e '/venv' -e '/virtualenv' \
-                          -e 'build/lib' \
+                          -e '/build/lib' \
                           -e '/.git' \
                           -e 'readme.md' \
                           -e 'shunit2-2.1.6' \
@@ -284,7 +285,6 @@ upload=$(find . | grep -v -e '/venv' -e '/virtualenv' \
                           -e '.ruby-version' \
                           -e '.egg-info' \
                           -e '/vendor' \
-                          -e 'Sites/www/bower' \
                           -e '/node_modules' \
                           -e "/$bower_components" \
                           -e '/coverage/instrumented' | tr " " "\n")

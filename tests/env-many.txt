@@ -5,6 +5,7 @@ COMMIT=abc
 <<<<<< ENV
 .
 ./circle.yml
+./changelog.md
 ./codecov
 ./coverage
 ./coverage/coverage.json
