@@ -54,9 +54,6 @@ urlencode() {
   python -c "import urllib as u; print u.quote_plus('$1')"
 }
 
-json() {
-  python -c "import json as j; print j.dumps(j.loads('$1'), indent=True)"
-}
 # detect bower comoponents location
 bower_components="bower_components"
 if [ -f .bowerrc ];
@@ -332,8 +329,9 @@ else
                  --silent \
                  --data-binary @- \
                  -H "Content-Type: text/plain" \
+                 -H "Accept: text/plain" \
                  "$url/upload/v2?$query")
-  echo "$(json "$res")"
+  echo "$res"
 fi
 
 # EOF
