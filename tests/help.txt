@@ -1,4 +1,4 @@
-Codecov v0.0.1 - Global Uploader
+Codecov v<%= ENV['_VERSION'] %> - Global Uploader
 Usage: codecov [-hv] [-f COVERAGE]
 Upload reports to Codecov
 

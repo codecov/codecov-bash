@@ -1,8 +1,9 @@
 #!/bin/bash
 
-export _BRANCH=$(git rev-parse --abbrev-ref HEAD)
-export _SHA=$(git rev-parse HEAD)
 VERSION=$(grep VERSION= ./codecov | cut -d \" -f 2)
+export _SHA=$(git rev-parse HEAD)
+export _BRANCH=$(git rev-parse --abbrev-ref HEAD)
+export _VERSION="$VERSION"
 
 function reset () {
     rm -rf coverage
