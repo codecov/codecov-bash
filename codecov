@@ -141,7 +141,7 @@ then
            &commit=$TRAVIS_COMMIT\
            &build=$TRAVIS_JOB_NUMBER\
            &pull_request=$TRAVIS_PULL_REQUEST\
-           &travis_job_id=$TRAVIS_JOB_ID\
+           &job=$TRAVIS_JOB_ID\
            &slug=$TRAVIS_REPO_SLUG"
     cd "$TRAVIS_BUILD_DIR"
 
