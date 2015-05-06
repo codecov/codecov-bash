@@ -287,6 +287,8 @@ say "ok"
 say -n "Reading reports..."
 for file in $files
 do
+    # escape file paths
+    file="$(echo $file | sed -e 's/ /\\ /')"
     # read the coverage file
     report=$(cat "$file")
     # append to to upload
