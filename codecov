@@ -57,6 +57,13 @@ urlencode() {
 json() {
   python -c "import json as j; print j.dumps(j.loads('$1'), indent=True)"
 }
+# detect bower comoponents location
+bower_components="bower_components"
+if [ -f .bowerrc ];
+then
+  bowerrc=$(cat .bowerrc)
+  bower_components=$(python -c "import json as j; print j.loads('$bowerrc').get('directory', 'bower_components')")
+fi
 
 if [ $# != 0 ] ; then
   while getopts "vdhu:t:f:r:e:" o
@@ -282,7 +289,7 @@ upload=$(find . | grep -v -e '/venv' -e '/virtualenv' \
                           -e '/vendor' \
                           -e 'Sites/www/bower' \
                           -e '/node_modules' \
-                          -e '/bower_components' \
+                          -e "/$bower_components" \
                           -e '/coverage/instrumented' | tr " " "\n")
 say "ok"
 

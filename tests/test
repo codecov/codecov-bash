@@ -6,6 +6,8 @@ VERSION=$(grep VERSION= ./codecov | cut -d \" -f 2)
 
 function reset () {
     rm -rf coverage
+    rm -rf bower
+    rm -f .bowerrc
     mkdir -p coverage
     . tests/env
     echo '{"file.txt":[None, 1, 0]}' > coverage/coverage.json
@@ -39,6 +41,26 @@ function test_url_env () {
     res=$(./codecov -d | grep "http://other.com")
     diff <(echo "http://other.com/upload/v2?package=bash-v$VERSION&branch=$_BRANCH&commit=$_SHA") <(echo "$res")
     assertTrue 'Expected output differs.' $?
+}
+
+function test_bowerrc_empty () {
+    reset
+    mkdir bower_components
+    touch bower_components/file.md
+    res=$(./codecov -d | grep "bower_components/file.md")
+    rm -rf bower_components
+    assertEquals '' "$res"
+}
+
+function test_bowerrc () {
+    reset
+    echo '{"directory": "bower/"}' > .bowerrc
+    mkdir bower
+    touch bower/file.md
+    res=$(./codecov -d | grep "bower/file.md")
+    rm -rf bower
+    rm .bowerrc
+    assertEquals '' "$res"
 }
 
 function test_env_opt () {
