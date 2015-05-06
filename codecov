@@ -191,7 +191,8 @@ then
     # http://www.appveyor.com/docs/environment-variables
     query="service=appveyor\
            &branch=$APPVEYOR_REPO_BRANCH\
-           &build=$APPVEYOR_BUILD_NUMBER\
+           &build=$APPVEYOR_JOB_ID\
+           &job=$APPVEYOR_BUILD_VERSION\
            &slug=$APPVEYOR_REPO_NAME\
            &commit=$APPVEYOR_REPO_COMMIT"
 
