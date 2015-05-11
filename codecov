@@ -233,7 +233,7 @@ then
     say "GitLab CI detected."
     # http://doc.gitlab.com/ci/examples/README.html#environmental-variables
     # https://gitlab.com/gitlab-org/gitlab-ci-runner/blob/master/lib/build.rb#L96
-    _slug=$(echo "$CI_BUILD_REPO" | cut -d'/' -f4 -f5 | sed -e 's/.git//')
+    _slug=$(echo "$CI_BUILD_REPO" | cut -d'/' -f4-5 | sed -e 's/.git//')
     query="service=gitlab\
            &branch=$CI_BUILD_REF_NAME\
            &build=$CI_BUILD_ID\
