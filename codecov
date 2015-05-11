@@ -228,6 +228,19 @@ then
            &slug=$REPO_NAME\
            &commit=$COMMIT"
 
+elif [ "$CI_SERVER_NAME" = "GitLab CI" ];
+then
+    say "GitLab CI detected."
+    # http://doc.gitlab.com/ci/examples/README.html#environmental-variables
+    # https://gitlab.com/gitlab-org/gitlab-ci-runner/blob/master/lib/build.rb#L96
+    slug=$(echo "$CI_BUILD_REPO" | cut -d'/' -f4 -f5 | sed -e 's/.git//')
+    query="service=gitlab\
+           &branch=$CI_BUILD_REF_NAME\
+           &build=$CI_BUILD_ID\
+           &slug=$slug\
+           &commit=$CI_BUILD_REF"
+    cd "$CI_PROJECT_DIR"
+
 else
     # find branch, commit, repo from git command
     say "No CI detected, using git for branch and commit sha."

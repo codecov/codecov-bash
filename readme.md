@@ -14,6 +14,10 @@ after_success:
 ```
 > Using Travis CI? Settings `sudo: false` may speed up your builds and still works with this uploader.
 
+### CI Companies Supported
+Jenkins, Travis CI, Codeship, Circle CI, Semaphore, drone.io, AppVeyor, Wercker, Magnum, Shippable, and Gitlab CI. Otherwise fallbacks on `git`.
+
+
 ### More Options
 
 ```
