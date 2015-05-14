@@ -122,11 +122,15 @@ if [ "$JENKINS_URL" != "" ];
 then
     say "Jenkins CI detected."
     # https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project
+    # https://wiki.jenkins-ci.org/display/JENKINS/GitHub+pull+request+builder+plugin#GitHubpullrequestbuilderplugin-EnvironmentVariables
     build_url=$(urlencode "$BUILD_URL")
+    _commit=$([ ! -z "$ghprbActualCommit" ] && echo "$ghprbActualCommit" || echo "$GIT_COMMIT")
+    _branch=$([ ! -z "$ghprbSourceBranch" ] && echo "$ghprbSourceBranch" || echo "$GIT_BRANCH")
     query="service=jenkins\
-           &branch=$GIT_BRANCH\
-           &commit=$GIT_COMMIT\
+           &branch=$_branch\
+           &commit=$_commit\
            &build=$BUILD_NUMBER\
+           &pr=$ghprbPullId\
            &build_url=$build_url"
     cd "$WORKSPACE"
 
