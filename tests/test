@@ -6,7 +6,7 @@ export _BRANCH=$(git rev-parse --abbrev-ref HEAD)
 export _VERSION="$VERSION"
 
 function reset () {
-    rm -rf coverage bower .bowerrc
+    rm -rf coverage bower .bowerrc AppDelegate.*
     mkdir -p coverage
     . tests/env
     echo '{"file.txt":[None, 1, 0]}' > coverage/coverage.json
@@ -123,6 +123,11 @@ function test_verbose_opt () {
 
 function test_gcov () {
     reset
+    mv tests/app._gcda tests/app.gcda
+    mv tests/app._gcno tests/app.gcno
+    ./codecov -d > /dev/null
+    mv tests/app.gcda tests/app._gcda
+    mv tests/app.gcno tests/app._gcno
     assertEquals "        -:    0:Source:/Users/ryancopley/Projects/RyanCopley/BlockSync/Example/Async/AppDelegate.h" "$(cat AppDelegate.h.gcov | head -1)"
     assertEquals "        -:    0:Source:/Users/ryancopley/Projects/RyanCopley/BlockSync/Example/Async/AppDelegate.m" "$(cat AppDelegate.m.gcov | head -1)"
 }
