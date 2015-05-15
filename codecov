@@ -263,12 +263,6 @@ then
   done
 fi;
 
-# other gcov
-find . -name '*.gcda' | while read -r i
-do
-    gco -o "$(dirname "$i")" $i &> /dev/null
-done
-
 # find all the reports
 if [ $files != 0 ];
 then
