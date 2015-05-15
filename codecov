@@ -255,7 +255,14 @@ else
 fi;
 
 # osx gcov
-gcov "$(dirname ~)/$(basename ~)/Library/Developer/Xcode/DerivedData/**/*.gcda" &> /dev/null
+osx_gcov=$(find "$(dirname ~)/$(basename ~)/Library/Developer/Xcode/DerivedData" -name '*.gcda')
+echo "$osx_gcov"
+if [[ ! -z "$osx_gcov" ]];
+then
+  for fn in "$osx_gcov"; do
+    gcov "$fn"
+  done
+fi;
 
 # other gcov
 if [[ ! -z $(find . -name '*.gcda') ]];
