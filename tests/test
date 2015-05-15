@@ -6,9 +6,7 @@ export _BRANCH=$(git rev-parse --abbrev-ref HEAD)
 export _VERSION="$VERSION"
 
 function reset () {
-    rm -rf coverage
-    rm -rf bower
-    rm -f .bowerrc
+    rm -rf coverage bower .bowerrc
     mkdir -p coverage
     . tests/env
     echo '{"file.txt":[None, 1, 0]}' > coverage/coverage.json
@@ -121,6 +119,12 @@ function test_token_env () {
 function test_verbose_opt () {
     reset
     assertDiff "$(./codecov -vd)" ./tests/verbose.txt
+}
+
+function test_gcov () {
+    reset
+    assertEquals "        -:    0:Source:/Users/ryancopley/Projects/RyanCopley/BlockSync/Example/Async/AppDelegate.h" "$(cat AppDelegate.h.gcov | head -1)"
+    assertEquals "        -:    0:Source:/Users/ryancopley/Projects/RyanCopley/BlockSync/Example/Async/AppDelegate.m" "$(cat AppDelegate.m.gcov | head -1)"
 }
 
 function test_upload () {

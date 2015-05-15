@@ -253,6 +253,10 @@ else
   commit=$(git rev-parse HEAD)
   query="branch=$branch&commit=$commit"
 fi;
+
+if [[ ! -z $(find . -name '*.gcda') ]];
+then
+  gcov **/*.gcda &> /dev/null
 fi;
 
 if [ $files != 0 ];
@@ -304,6 +308,7 @@ upload=$(find . | grep -v -e '/venv' -e '/virtualenv' \
                           -e '.ruby-version' \
                           -e '.egg-info' \
                           -e '/vendor' \
+                          -e '**/*.gcov' \
                           -e '/node_modules' \
                           -e "/$bower_components" \
                           -e '/coverage/instrumented' | tr " " "\n")
