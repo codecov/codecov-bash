@@ -255,20 +255,16 @@ else
 fi;
 
 # osx gcov
-osx_gcov=$(find "$(dirname ~)/$(basename ~)/Library/Developer/Xcode/DerivedData" -name '*.gcda')
-echo "$osx_gcov"
-if [[ ! -z "$osx_gcov" ]];
-then
-  for fn in "$osx_gcov"; do
-    gcov "$fn"
-  done
-fi;
+find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' | while read -r i
+do
+    gcov $i &> /dev/null
+done
 
 # other gcov
-if [[ ! -z $(find . -name '*.gcda') ]];
-then
-  gcov **/*.gcda &> /dev/null
-fi;
+find . -name '*.gcda' | while read -r i
+do
+    gcov $i &> /dev/null
+done
 
 # find all the reports
 if [ $files != 0 ];
