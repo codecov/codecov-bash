@@ -120,138 +120,139 @@ say "url: $url"
 
 if [ "$JENKINS_URL" != "" ];
 then
-    say "Jenkins CI detected."
-    # https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project
-    # https://wiki.jenkins-ci.org/display/JENKINS/GitHub+pull+request+builder+plugin#GitHubpullrequestbuilderplugin-EnvironmentVariables
-    build_url=$(urlencode "$BUILD_URL")
-    _commit=$([ ! -z "$ghprbActualCommit" ] && echo "$ghprbActualCommit" || echo "$GIT_COMMIT")
-    _branch=$([ ! -z "$ghprbSourceBranch" ] && echo "$ghprbSourceBranch" || echo "$GIT_BRANCH")
-    query="service=jenkins\
-           &branch=$_branch\
-           &commit=$_commit\
-           &build=$BUILD_NUMBER\
-           &pr=$ghprbPullId\
-           &build_url=$build_url"
-    cd "$WORKSPACE"
+  say "Jenkins CI detected."
+  # https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project
+  # https://wiki.jenkins-ci.org/display/JENKINS/GitHub+pull+request+builder+plugin#GitHubpullrequestbuilderplugin-EnvironmentVariables
+  build_url=$(urlencode "$BUILD_URL")
+  _commit=$([ ! -z "$ghprbActualCommit" ] && echo "$ghprbActualCommit" || echo "$GIT_COMMIT")
+  _branch=$([ ! -z "$ghprbSourceBranch" ] && echo "$ghprbSourceBranch" || echo "$GIT_BRANCH")
+  query="service=jenkins\
+         &branch=$_branch\
+         &commit=$_commit\
+         &build=$BUILD_NUMBER\
+         &pr=$ghprbPullId\
+         &build_url=$build_url"
+  cd "$WORKSPACE"
 
 elif [ "$CI" = "true" ] && [ "$TRAVIS" = "true" ];
 then
-    say "Travis CI detected."
-    # http://docs.travis-ci.com/user/ci-environment/#Environment-variables
-    query="service=travis-org\
-           &branch=$TRAVIS_BRANCH\
-           &commit=$TRAVIS_COMMIT\
-           &build=$TRAVIS_JOB_NUMBER\
-           &pull_request=$TRAVIS_PULL_REQUEST\
-           &job=$TRAVIS_JOB_ID\
-           &slug=$TRAVIS_REPO_SLUG"
-    cd "$TRAVIS_BUILD_DIR"
+  say "Travis CI detected."
+  # http://docs.travis-ci.com/user/ci-environment/#Environment-variables
+  query="service=travis-org\
+         &branch=$TRAVIS_BRANCH\
+         &commit=$TRAVIS_COMMIT\
+         &build=$TRAVIS_JOB_NUMBER\
+         &pull_request=$TRAVIS_PULL_REQUEST\
+         &job=$TRAVIS_JOB_ID\
+         &slug=$TRAVIS_REPO_SLUG"
+  cd "$TRAVIS_BUILD_DIR"
 
 elif [ "$CI" = "true" ] && [ "$CI_NAME" = "codeship" ];
 then
-    say "Codeship CI detected."
-    # https://www.codeship.io/documentation/continuous-integration/set-environment-variables/
-    build_url=$(urlencode "$CI_BUILD_URL")
-    query="service=codeship\
-           &branch=$CI_BRANCH\
-           &build=$CI_BUILD_NUMBER\
-           &build_url=$build_url\
-           &commit=$CI_COMMIT_ID"
+  say "Codeship CI detected."
+  # https://www.codeship.io/documentation/continuous-integration/set-environment-variables/
+  build_url=$(urlencode "$CI_BUILD_URL")
+  query="service=codeship\
+         &branch=$CI_BRANCH\
+         &build=$CI_BUILD_NUMBER\
+         &build_url=$build_url\
+         &commit=$CI_COMMIT_ID"
 
 elif [ "$CI" = "true" ] && [ "$CIRCLECI" = "true" ];
 then
-    say "Circle CI detected."
-    # https://circleci.com/docs/environment-variables
-    query="service=circleci\
-           &branch=$CIRCLE_BRANCH\
-           &build=$CIRCLE_BUILD_NUM\
-           &slug=$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME\
-           &commit=$CIRCLE_SHA1"
+  say "Circle CI detected."
+  # https://circleci.com/docs/environment-variables
+  query="service=circleci\
+         &branch=$CIRCLE_BRANCH\
+         &build=$CIRCLE_BUILD_NUM\
+         &slug=$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME\
+         &commit=$CIRCLE_SHA1"
 
 elif [ "$CI" = "true" ] && [ "$SEMAPHORE" = "true" ];
 then
-    say "Semaphore CI detected."
-    # https://semaphoreapp.com/docs/available-environment-variables.html
-    query="service=semaphore\
-           &branch=$BRANCH_NAME\
-           &build=$SEMAPHORE_BUILD_NUMBER\
-           &slug=$SEMAPHORE_REPO_SLUG\
-           &commit=$REVISION"
+  say "Semaphore CI detected."
+  # https://semaphoreapp.com/docs/available-environment-variables.html
+  query="service=semaphore\
+         &branch=$BRANCH_NAME\
+         &build=$SEMAPHORE_BUILD_NUMBER\
+         &slug=$SEMAPHORE_REPO_SLUG\
+         &commit=$REVISION"
 
 elif [ "$CI" = "true" ] && [ "$DRONE" = "true" ];
 then
-    say "Drone CI detected."
-    # http://docs.drone.io/env.html
-    build_url=$(urlencode "$DRONE_BUILD_URL")
-    query="service=drone.io\
-           &branch=$DRONE_BRANCH\
-           &build=$DRONE_BUILD_NUMBER\
-           &build_url=$build_url\
-           &commit=$DRONE_COMMIT"
+  say "Drone CI detected."
+  # http://docs.drone.io/env.html
+  build_url=$(urlencode "$DRONE_BUILD_URL")
+  query="service=drone.io\
+         &branch=$DRONE_BRANCH\
+         &build=$DRONE_BUILD_NUMBER\
+         &build_url=$build_url\
+         &commit=$DRONE_COMMIT"
 
 elif [ "$CI" = "True" ] && [ "$APPVEYOR" = "True" ];
 then
-    say "Appveyor CI detected."
-    # http://www.appveyor.com/docs/environment-variables
-    query="service=appveyor\
-           &branch=$APPVEYOR_REPO_BRANCH\
-           &build=$APPVEYOR_JOB_ID\
-           &job=$APPVEYOR_BUILD_VERSION\
-           &slug=$APPVEYOR_REPO_NAME\
-           &commit=$APPVEYOR_REPO_COMMIT"
+  say "Appveyor CI detected."
+  # http://www.appveyor.com/docs/environment-variables
+  query="service=appveyor\
+         &branch=$APPVEYOR_REPO_BRANCH\
+         &build=$APPVEYOR_JOB_ID\
+         &job=$APPVEYOR_BUILD_VERSION\
+         &slug=$APPVEYOR_REPO_NAME\
+         &commit=$APPVEYOR_REPO_COMMIT"
 
 elif [ "$CI" = "True" ] && [ "$WERCKER_GIT_BRANCH" != "" ];
 then
-    say "Wercker CI detected."
-    # http://devcenter.wercker.com/articles/steps/variables.html
-    query="service=wercker\
-           &branch=$WERCKER_GIT_BRANCH\
-           &build=$WERCKER_MAIN_PIPELINE_STARTED\
-           &slug=$WERCKER_GIT_OWNER/$WERCKER_GIT_REPOSITORY\
-           &commit=$WERCKER_GIT_COMMIT"
+  say "Wercker CI detected."
+  # http://devcenter.wercker.com/articles/steps/variables.html
+  query="service=wercker\
+         &branch=$WERCKER_GIT_BRANCH\
+         &build=$WERCKER_MAIN_PIPELINE_STARTED\
+         &slug=$WERCKER_GIT_OWNER/$WERCKER_GIT_REPOSITORY\
+         &commit=$WERCKER_GIT_COMMIT"
 
 elif [ "$CI" = "true" ] && [ "$MAGNUM" = "true" ];
 then
-    say "Magnum CI detected."
-    # https://magnum-ci.com/docs/environment
-    query="service=magnum\
-           &branch=$CI_BRANCH\
-           &build=$CI_BUILD_NUMBER\
-           &commit=$CI_COMMIT"
+  say "Magnum CI detected."
+  # https://magnum-ci.com/docs/environment
+  query="service=magnum\
+         &branch=$CI_BRANCH\
+         &build=$CI_BUILD_NUMBER\
+         &commit=$CI_COMMIT"
 
 elif [ "$SHIPPABLE" = "true" ];
 then
-    say "Shippable CI detected."
-    # http://docs.shippable.com/en/latest/config.html#common-environment-variables
-    _build_url=$(urlencode "$BUILD_URL")
-    query="service=shippable\
-           &branch=$BRANCH\
-           &build=$BUILD_NUMBER\
-           &build_url=$_build_url\
-           &pull_request=$PULL_REQUEST\
-           &slug=$REPO_NAME\
-           &commit=$COMMIT"
+  say "Shippable CI detected."
+  # http://docs.shippable.com/en/latest/config.html#common-environment-variables
+  _build_url=$(urlencode "$BUILD_URL")
+  query="service=shippable\
+         &branch=$BRANCH\
+         &build=$BUILD_NUMBER\
+         &build_url=$_build_url\
+         &pull_request=$PULL_REQUEST\
+         &slug=$REPO_NAME\
+         &commit=$COMMIT"
 
 elif [ "$CI_SERVER_NAME" = "GitLab CI" ];
 then
-    say "GitLab CI detected."
-    # http://doc.gitlab.com/ci/examples/README.html#environmental-variables
-    # https://gitlab.com/gitlab-org/gitlab-ci-runner/blob/master/lib/build.rb#L96
-    _slug=$(echo "$CI_BUILD_REPO" | cut -d'/' -f4-5 | sed -e 's/.git//')
-    query="service=gitlab\
-           &branch=$CI_BUILD_REF_NAME\
-           &build=$CI_BUILD_ID\
-           &slug=$_slug\
-           &commit=$CI_BUILD_REF"
-    cd "$CI_PROJECT_DIR"
+  say "GitLab CI detected."
+  # http://doc.gitlab.com/ci/examples/README.html#environmental-variables
+  # https://gitlab.com/gitlab-org/gitlab-ci-runner/blob/master/lib/build.rb#L96
+  _slug=$(echo "$CI_BUILD_REPO" | cut -d'/' -f4-5 | sed -e 's/.git//')
+  query="service=gitlab\
+         &branch=$CI_BUILD_REF_NAME\
+         &build=$CI_BUILD_ID\
+         &slug=$_slug\
+         &commit=$CI_BUILD_REF"
+  cd "$CI_PROJECT_DIR"
 
 else
-    # find branch, commit, repo from git command
-    say "No CI detected, using git for branch and commit sha."
-    branch=$(git rev-parse --abbrev-ref HEAD)
-    if [ "$branch" = "HEAD" ]; then branch="master"; fi;
-    commit=$(git rev-parse HEAD)
-    query="branch=$branch&commit=$commit"
+  # find branch, commit, repo from git command
+  say "No CI detected, using git for branch and commit sha."
+  branch=$(git rev-parse --abbrev-ref HEAD)
+  if [ "$branch" = "HEAD" ]; then branch="master"; fi;
+  commit=$(git rev-parse HEAD)
+  query="branch=$branch&commit=$commit"
+fi;
 fi;
 
 if [ $files != 0 ];
@@ -311,12 +312,12 @@ say "ok"
 say -n "Reading reports..."
 for file in $files
 do
-    # escape file paths
-    file="$(echo $file | sed -e 's/ /\\ /')"
-    # read the coverage file
-    report=$(cat "$file")
-    # append to to upload
-    upload="$upload
+  # escape file paths
+  file="$(echo $file | sed -e 's/ /\\ /')"
+  # read the coverage file
+  report=$(cat "$file")
+  # append to to upload
+  upload="$upload
 <<<<<< EOF
 $report"
 done
