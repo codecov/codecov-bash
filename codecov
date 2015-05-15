@@ -255,10 +255,13 @@ else
 fi;
 
 # osx gcov
-find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' | while read -r i
-do
-    gcov $i &> /dev/null
-done
+if [ -d ~/Library/Developer/Xcode/DerivedData ];
+then
+  find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' | while read -r i
+  do
+      gcov $i &> /dev/null
+  done
+fi;
 
 # other gcov
 find . -name '*.gcda' | while read -r i
