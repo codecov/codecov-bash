@@ -254,7 +254,9 @@ else
   query="branch=$branch&commit=$commit"
 fi;
 
-osx_gcov=$(find "$(dirname ~)/$(basename ~)/Library/Developer/Xcode/DerivedData" -name '**/*.gcda')
+# osx gcov
+osx_gcov=$(find "$(dirname ~)/$(basename ~)/Library/Developer/Xcode/DerivedData" -name '*.gcda')
+echo "$osx_gcov"
 if [[ ! -z "$osx_gcov" ]];
 then
   for fn in "$osx_gcov"; do
@@ -262,11 +264,13 @@ then
   done
 fi;
 
+# other gcov
 if [[ ! -z $(find . -name '*.gcda') ]];
 then
   gcov **/*.gcda &> /dev/null
 fi;
 
+# find all the reports
 if [ $files != 0 ];
 then
   say "Targeting specific file at $files"
