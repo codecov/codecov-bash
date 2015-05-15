@@ -266,7 +266,7 @@ fi;
 # other gcov
 find . -name '*.gcda' | while read -r i
 do
-    gcov $i &> /dev/null
+    gco -o "$(dirname "$i")" $i &> /dev/null
 done
 
 # find all the reports
