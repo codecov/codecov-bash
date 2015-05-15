@@ -254,18 +254,13 @@ else
   query="branch=$branch&commit=$commit"
 fi;
 
-
-(
-  osx_gcov=$(find "$(dirname ~)/$(basename ~)/Library/Developer/Xcode/DerivedData" -name '**/*.gcno')
-  if [[ ! -z "$osx_gcov" ]];
-  then
-    for fn in "$osx_gcov"; do
-      gcov "$fn"
-    done
-  fi;
-) || {
-
-}
+osx_gcov=$(find "$(dirname ~)/$(basename ~)/Library/Developer/Xcode/DerivedData" -name '**/*.gcda')
+if [[ ! -z "$osx_gcov" ]];
+then
+  for fn in "$osx_gcov"; do
+    gcov "$fn"
+  done
+fi;
 
 if [[ ! -z $(find . -name '*.gcda') ]];
 then
