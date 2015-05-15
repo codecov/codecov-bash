@@ -6,7 +6,7 @@ export _BRANCH=$(git rev-parse --abbrev-ref HEAD)
 export _VERSION="$VERSION"
 
 function reset () {
-    rm -rf coverage bower .bowerrc AppDelegate.*
+    rm -rf coverage bower .bowerrc
     mkdir -p coverage
     . tests/env
     echo '{"file.txt":[None, 1, 0]}' > coverage/coverage.json
