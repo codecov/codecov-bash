@@ -228,6 +228,17 @@ then
            &slug=$REPO_NAME\
            &commit=$COMMIT"
 
+elif [ "$TDDIUM" = "true" ];
+then
+    say "Solano CI detected."
+    # http://docs.solanolabs.com/Setup/tddium-set-environment-variables/
+    query="service=solano\
+           &branch=$TDDIUM_CURRENT_BRANCH\
+           &build=$TDDIUM_TID\
+           &pr=$TDDIUM_PR_ID\
+           &commit=$TDDIUM_CURRENT_COMMIT"
+    cd "$TDDIUM_REPO_ROOT"
+
 elif [ "$CI_SERVER_NAME" = "GitLab CI" ];
 then
     say "GitLab CI detected."
