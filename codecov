@@ -271,6 +271,7 @@ else
   files=$(find . -name '*coverage.*' \
              -or -name 'jacoco*.xml' \
              -or -name 'clover.xml' \
+             -or -name 'report.xml' \
              -or -name 'cobertura.xml' \
              -or -name 'lcov.info' -or -name '*.lcov' \
              -or -name 'gcov.info' -or -name '*.gcov' \
