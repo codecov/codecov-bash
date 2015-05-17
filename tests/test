@@ -12,6 +12,7 @@ function reset () {
     . tests/env
     echo '{"file.txt":[None, 1, 0]}' > coverage/coverage.json
     echo '{"another.txt":[None, 1, 0]}' > coverage/coverage.xml
+    touch coverage/file.rb
     echo 'blank' > coverage/not-file.json
 }
 
