@@ -218,6 +218,16 @@ then
          &build=$CI_BUILD_NUMBER\
          &commit=$CI_COMMIT"
 
+elif [ "$CI" = "true" ] && [ "$SNAP_CI" = "true" ];
+then
+  say "Snap CI detected."
+  # https://docs.snap-ci.com/environment-variables/
+  query="service=snap\
+         &branch=$SNAP_BRANCH\
+         &build=$SNAP_PIPELINE_COUNTER\
+         &pr=$SNAP_PULL_REQUEST_NUMBER\
+         &commit=$SNAP_COMMIT"
+
 elif [ "$SHIPPABLE" = "true" ];
 then
   say "Shippable CI detected."
