@@ -58,8 +58,7 @@ urlencode() {
 bower_components="bower_components"
 if [ -f .bowerrc ];
 then
-  bowerrc=$(cat .bowerrc)
-  bower_components=$(python -c "import json as j; print j.loads('$bowerrc').get('directory', 'bower_components')")
+  bower_components=$(python -c "import json as j; print j.load(open('.bowerrc')).get('directory', 'bower_components')")
 fi
 
 if [ $# != 0 ];
