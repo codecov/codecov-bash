@@ -3,6 +3,7 @@
 VERSION=$(grep VERSION= ./codecov | cut -d \" -f 2)
 export _SHA=$(git rev-parse HEAD)
 export _BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [ "$_BRANCH" = "HEAD" ]; then _BRANCH="master"; fi;
 export _VERSION="$VERSION"
 
 function reset () {

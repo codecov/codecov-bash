@@ -249,8 +249,7 @@ else
   say "No CI detected, using git for branch and commit sha."
   branch=$(git rev-parse --abbrev-ref HEAD)
   if [ "$branch" = "HEAD" ]; then branch="master"; fi;
-  commit=$(git rev-parse HEAD)
-  query="branch=$branch&commit=$commit"
+  query="branch=$branch&commit=$(git rev-parse HEAD)"
 fi;
 
 # osx gcov
