@@ -305,10 +305,10 @@ say -n "Detecting file structure..."
 upload=$(find . | grep -v -e '/venv' -e '/virtualenv' \
                           -e '/build/lib' \
                           -e '/.git' \
-                          -e '*.yml' \
-                          -e 'readme.md' \
+                          -e '/*.yml' -e '/*.xml' -e '/*.json' \
+                          -e 'readme.md' -e 'README.md' \
                           -e 'shunit2-2.1.6' \
-                          -e '.DS_Store' \
+                          -e '**/.DS_Store' \
                           -e '/tests' \
                           -e '.ruby-version' \
                           -e '.egg-info' \

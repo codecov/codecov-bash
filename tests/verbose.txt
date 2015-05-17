@@ -9,9 +9,6 @@ https://codecov.io/upload/v2?package=bash-v<%= ENV['_VERSION'] %>&branch=<%= ENV
 .
 ./codecov
 ./coverage
-./coverage/coverage.json
-./coverage/coverage.xml
-./coverage/not-file.json
 <<<<<< EOF
 {"file.txt":[None, 1, 0]}
 <<<<<< EOF

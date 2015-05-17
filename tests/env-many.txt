@@ -6,9 +6,6 @@ COMMIT=abc
 .
 ./codecov
 ./coverage
-./coverage/coverage.json
-./coverage/coverage.xml
-./coverage/not-file.json
 <<<<<< EOF
 {"file.txt":[None, 1, 0]}
 <<<<<< EOF
