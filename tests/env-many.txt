@@ -4,7 +4,6 @@ BUILD_ID=apples
 COMMIT=abc
 <<<<<< ENV
 .
-./changelog.md
 ./circle.yml
 ./codecov
 ./coverage
