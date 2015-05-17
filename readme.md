@@ -1,8 +1,5 @@
 Codecov Global Uploader
 =======================
-
-[![Circle CI](https://img.shields.io/circleci/project/codecov/codecov-bash.svg)](https://circleci.com/gh/codecov/codecov-bash)
-
 > Upload reports to Codecov for all supported languages.
 
 
@@ -15,7 +12,23 @@ after_success:
 > Using Travis CI? Settings `sudo: false` may speed up your builds and still works with this uploader.
 
 ### CI Companies Supported
-Jenkins, Travis CI, Codeship, Circle CI, Semaphore, drone.io, AppVeyor, Wercker, Magnum, Shippable, and Gitlab CI. Otherwise fallbacks on `git`.
+|                     Company                      |   Supported   |                                                               Tests                                                               |
+| ------------------------------------------------ | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| [Travis CI](https://travis-ci.org/)              | Yes           | [![Build Status](https://secure.travis-ci.org/codecov/codecov-bash.svg?branch=master)](http://travis-ci.org/codecov/codecov-bash) |
+| [CircleCI](https://circleci.com/)                | Yes           | [![Circle CI](https://img.shields.io/circleci/project/codecov/codecov-bash.svg)](https://circleci.com/gh/codecov/codecov-bash)    |
+| [Codeship](https://codeship.com/)                | Yes           |                                                                                                                                   |
+| [Jenkins](https://jenkins-ci.org/)               | Yes           |                                                                                                                                   |
+| [Semaphore](https://semaphoreci.com/)            | Yes           |                                                                                                                                   |
+| [drone.io](https://drone.io/)                    | Yes           |                                                                                                                                   |
+| [AppVeyor](http://www.appveyor.com/)             | Yes           |                                                                                                                                   |
+| [Wercker](http://wercker.com/)                   | Yes           |                                                                                                                                   |
+| [Magnum CI](https://magnum-ci.com/)              | Yes           | [![Build Status](https://magnum-ci.com/status/3b0c7f8c38439654750c09fae9db5dd9.png)](https://magnum-ci.com/projects/2797)         |
+| [Shippable](http://www.shippable.com/)           | Yes           |                                                                                                                                   |
+| [Gitlab CI](https://about.gitlab.com/gitlab-ci/) | Yes           |                                                                                                                                   |
+| [Buildbot](http://buildbot.net/)                 | `coming soon` |                                                                                                                                   |
+| [snap ci](https://snap-ci.com_)                  | `coming soon` |                                                                                                                                   |
+| [Solano Labs](https://www.solanolabs.com/)       | `coming soon` |                                                                                                                                   |
+| git                                              | Yes           |                                                                                                                                   |
 
 
 ### More Options

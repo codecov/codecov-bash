@@ -1,0 +1,4 @@
+before_test:
+  - curl -O https://shunit2.googlecode.com/files/shunit2-2.1.6.tgz
+  - tar zxvf shunit2-2.1.6.tgz
+test_script: tests/test
