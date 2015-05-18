@@ -338,11 +338,14 @@ do
   # escape file paths
   file="$(echo $file | sed -e 's/ /\\ /')"
   # read the coverage file
-  report=$(cat "$file")
-  # append to to upload
-  upload="$upload
+  if [ -f "$file" ];
+  then
+    report=$(cat "$file")
+    # append to to upload
+    upload="$upload
 <<<<<< EOF
 $report"
+  done
 done
 say "ok"
 
