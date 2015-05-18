@@ -345,7 +345,7 @@ do
     upload="$upload
 <<<<<< EOF
 $report"
-  done
+  fi
 done
 say "ok"
 
