@@ -318,7 +318,7 @@ upload=$(find . -type f | grep -v \
                                -e '/.git' \
                                -e '/*.yml' -e '/*.xml' -e '/*.json' \
                                -e 'readme.md' -e 'README.md' \
-                               -e 'shunit2-2.1.6' -e 'codecov' \
+                               -e 'shunit2-2.1.6' -e 'codecov' -e 'home/cainus/urlgrey/index.js' \
                                -e '**/.DS_Store' \
                                -e '/tests' \
                                -e '.ruby-version' \
