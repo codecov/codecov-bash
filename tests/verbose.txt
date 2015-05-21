@@ -6,14 +6,7 @@ Codecov v<%= ENV['_VERSION'] %> - Uploader
   Reading reports...  ok
   query: package=bash-v<%= ENV['_VERSION'] %>&branch=<%= ENV['_BRANCH'] %>&commit=<%= ENV['_SHA'] %>
 https://codecov.io/upload/v2?package=bash-v<%= ENV['_VERSION'] %>&branch=<%= ENV['_BRANCH'] %>&commit=<%= ENV['_SHA'] %>
-.
-./changelog.md
-./circle.yml
-./codecov
-./coverage
-./coverage/coverage.json
-./coverage/coverage.xml
-./coverage/not-file.json
+./coverage/file.rb
 <<<<<< EOF
 {"file.txt":[None, 1, 0]}
 <<<<<< EOF

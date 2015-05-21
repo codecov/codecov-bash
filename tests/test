@@ -3,16 +3,16 @@
 VERSION=$(grep VERSION= ./codecov | cut -d \" -f 2)
 export _SHA=$(git rev-parse HEAD)
 export _BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [ "$_BRANCH" = "HEAD" ]; then _BRANCH="master"; fi;
 export _VERSION="$VERSION"
 
 function reset () {
-    rm -rf coverage
-    rm -rf bower
-    rm -f .bowerrc
+    rm -rf coverage bower .bowerrc
     mkdir -p coverage
     . tests/env
     echo '{"file.txt":[None, 1, 0]}' > coverage/coverage.json
     echo '{"another.txt":[None, 1, 0]}' > coverage/coverage.xml
+    touch coverage/file.rb
     echo 'blank' > coverage/not-file.json
 }
 
@@ -261,6 +261,17 @@ function test_magnum (){
     export CI_BUILD_NUMBER="12311"
     export CI_COMMIT="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
     assertURL "https://codecov.io/upload/v2?package=bash-v$VERSION&service=magnum&branch=develop&build=12311&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f"
+}
+
+function test_snap_ci (){
+    reset
+    export CI="true"
+    export SNAP_CI="true"
+    export SNAP_BRANCH="develop"
+    export SNAP_PIPELINE_COUNTER="12311"
+    export SNAP_PULL_REQUEST_NUMBER="1"
+    export SNAP_COMMIT="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
+    assertURL "https://codecov.io/upload/v2?package=bash-v$VERSION&service=snap&branch=develop&build=12311&pr=1&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f"
 }
 
 function test_gitlab (){
