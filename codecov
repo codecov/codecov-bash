@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION="0.0.4"
+VERSION="0.0.5"
 
 url="https://codecov.io"
 verbose=0
@@ -58,7 +58,7 @@ urlencode() {
 bower_components="bower_components"
 if [ -f .bowerrc ];
 then
-  bower_components=$(python -c "import json as j; print j.load(open('.bowerrc')).get('directory', 'bower_components')")
+  bower_components=$(python -c "import json as j; print j.load(open('.bowerrc')).get('directory', 'bower_components')" | sed -e 's/^\///' | sed -e 's/\/$//')
 fi
 
 if [ $# != 0 ];
@@ -277,14 +277,25 @@ then
   say "Targeting specific file at $files"
 else
   say -n "Searching for coverage reports..."
-  files=$(find . -name '*coverage.*' \
+  files=$(find . -type f -name '*coverage.*' \
              -or -name 'jacoco*.xml' \
              -or -name 'clover.xml' \
              -or -name 'report.xml' \
              -or -name 'cobertura.xml' \
-             -or -name 'lcov.info' -or -name '*.lcov' \
-             -or -name 'gcov.info' -or -name '*.gcov' \
-             -or -name '*.lst')
+             -or -name 'lcov.info' \
+             -or -name '*.lcov' \
+             -or -name 'gcov.info' \
+             -or -name '*.gcov' \
+             -or -name '*.lst' \
+             -not -path "*/vendor/*" \
+             -not -path "*/home/cainus/*" \
+             -not -path '*/venv/*' \
+             -not -path '*/virtualenv/*' \
+             -not -path '*/.virtualenv/*' \
+             -not -path '*/.git/*' \
+             -not -path '*/__pycache__/*' \
+             -not -path '*/.egg-info*' \
+             -not -path '*/node_modules/*')
   say "ok"
 fi
 
@@ -312,24 +323,31 @@ then
 fi
 
 say -n "Detecting file structure..."
-upload=$(find . -type f | grep -v \
-                               -e '/venv' -e '/virtualenv' -e '/.virtualenv' \
-                               -e '/build/lib' \
-                               -e '/.git' \
-                               -e '/*.yml' -e '/*.xml' -e '/*.json' \
-                               -e 'readme.md' -e 'README.md' \
-                               -e 'shunit2-2.1.6' -e 'codecov' -e 'home/cainus/urlgrey/index.js' \
-                               -e '**/.DS_Store' \
-                               -e '/tests' \
-                               -e '.ruby-version' \
-                               -e '.egg-info' \
-                               -e '/log/*' \
-                               -e '/tmp/*' \
-                               -e '/vendor' \
-                               -e '**/*.gcov' \
-                               -e '/node_modules' \
-                               -e "/$bower_components" \
-                               -e '/coverage/instrumented' | tr " " "\n")
+upload=$(find . -type f \
+                -not -path '*/venv/*' \
+                -not -path '*/virtualenv/*' \
+                -not -path '*/.virtualenv/*' \
+                -not -path '*/build/lib/*' \
+                -not -path '*/.git/*' \
+                -not -path '*/.egg-info/*' \
+                -not -path '*/shunit2-2.1.6/*' \
+                -not -path '*/vendor/*' \
+                -not -path '*/__pycache__/*' \
+                -not -path '*/node_modules/*' \
+                -not -path "*/$bower_components/*" \
+                -not -path '*/coverage/instrumented/*' \
+                -not -name 'shunit2-2.1.6.tgz' \
+                -not -name '*.gcov' \
+                -not -name '.ruby-version' \
+                -not -name '.gitignore' \
+                -not -name '*.lcov' \
+                -not -name '*.yml' \
+                -not -name '*.txt' \
+                -not -name '*.xml' \
+                -not -name '*.json' \
+                -not -name 'readme.md' \
+                -not -name 'codecov' \
+                -not -name '.DS_Store')
 say "ok"
 
 say -n "Reading reports..."

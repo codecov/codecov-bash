@@ -4,6 +4,8 @@ BUILD_ID=apples
 COMMIT=abc
 <<<<<< ENV
 ./coverage/file.rb
+./tests/env
+./tests/test
 <<<<<< EOF
 {"file.txt":[None, 1, 0]}
 <<<<<< EOF
