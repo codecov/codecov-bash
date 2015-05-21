@@ -267,7 +267,7 @@ if [ -d ~/Library/Developer/Xcode/DerivedData ];
 then
   find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' | while read -r i
   do
-      gcov $i &> /dev/null
+      gcov "$i" &> /dev/null
   done
 fi;
 
