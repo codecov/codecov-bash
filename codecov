@@ -329,7 +329,7 @@ upload=$(find . -type f | grep -v \
                                -e '**/*.gcov' \
                                -e '/node_modules' \
                                -e "/$bower_components" \
-                               -e '/coverage/instrumented' | tr " " "\n")
+                               -e '/coverage/instrumented')
 say "ok"
 
 say -n "Reading reports..."
