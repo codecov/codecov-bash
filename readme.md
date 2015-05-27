@@ -2,14 +2,15 @@ Codecov Global Uploader
 =======================
 > Upload reports to Codecov for all supported languages.
 
-
-### Simply
+------
 
 ```bash
 bash <(curl -s https://codecov.io/bash)
 ```
 
-### CI Companies Supported
+------
+
+### CI's Supported
 |                       Company                       |                                                               Supported                                                               | Tokens Required  |
 | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
 | [Travis CI](https://travis-ci.org/)                 | Yes [![Build Status](https://secure.travis-ci.org/codecov/codecov-bash.svg?branch=master)](http://travis-ci.org/codecov/codecov-bash) | Private only     |
@@ -25,13 +26,13 @@ bash <(curl -s https://codecov.io/bash)
 | [Gitlab CI](https://about.gitlab.com/gitlab-ci/)    | Yes                                                                                                                                   | Public & Private |
 | [snap ci](https://snap-ci.com_)                     | Yes                                                                                                                                   | Public & Private |
 | git                                                 | Yes (as a fallback)                                                                                                                   | Public & Private |
-| [Buildbot](http://buildbot.net/)                    | `coming soon` https://github.com/buildbot/buildbot/pull/1671                                                                          |                  |
+| [Buildbot](http://buildbot.net/)                    | `coming soon` [buildbot/buildbot#1671](https://github.com/buildbot/buildbot/pull/1671)                                                |                  |
 | [Bamboo](https://www.atlassian.com/software/bamboo) | `coming soon`                                                                                                                         |                  |
 | [Solano Labs](https://www.solanolabs.com/)          | `coming soon`                                                                                                                         |                  |
 
-> Using Travis CI? Settings `sudo: false` may speed up your builds and still works with this uploader.
+> Using **Travis CI**? Uploader is compatable with `sudo: false` which can speed up your builds. :+1:
 
-### More Options
+### Advanced Usage
 
 ```
 CODECOV_TOKEN   Private repo token for uploading
@@ -53,7 +54,7 @@ after_success:
   - bash <(curl -s https://codecov.io/bash)
 ```
 
-#### One line
+or
 
 ```bash
 curl -s https://codecov.io/bash | bash /dev/stdin -t 15482e9c-3612-4812-b19b-f5e79139dfe3
