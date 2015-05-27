@@ -350,6 +350,12 @@ upload=$(find . -type f \
                 -not -name '.DS_Store')
 say "ok"
 
+if [ -d "shunit2-2.1.6" ];
+then
+  # need to sort for testing purposes
+  upload=$(echo "$upload" | sort)
+fi
+
 say -n "Reading reports..."
 for file in $files
 do
