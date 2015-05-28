@@ -299,27 +299,31 @@ else
   say "ok"
 fi
 
-# no files found
-if [ "$files" = "" ];
+# Python coveragepy generation
+if [ "$(which coverage)" != "coverage not found" ];
 then
-  say "No files found."
-  # python coverage command found
-  if [ "$(which coverage)" != "" ];
+  say "coverage cli exists"
+  if [ "$(echo "$files" | grep 'coverage.xml')" = "" ];
   then
-    say "Trying python coverage."
+    say "Trying (coverage xml)"
     # run python coverage
     if [ "$(coverage xml)" != "No data to report." ];
     then
       say "coverage.xml generated"
-      files="coverage.xml"
+      files="$files
+coverage.xml"
     else
-      echo "Python: coverage report could not be generated. No data to report."
-      exit 1;
+      say "Python: coverage report could not be generated. No data to report."
     fi
-  else
-    echo "No coverage report found."
-    exit 1;
   fi
+fi
+
+# no files found
+if [ "$files" = "" ];
+then
+  say "No reports found."
+  echo "No coverage report found."
+  exit 1;
 fi
 
 say -n "Detecting file structure..."
