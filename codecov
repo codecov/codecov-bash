@@ -271,6 +271,12 @@ then
   done
 fi;
 
+# all other gcov
+find . -name '*.gcno' | while read -r i
+do
+    gcov "$i" &> /dev/null
+done
+
 # find all the reports
 if [ $files != 0 ];
 then
