@@ -1,6 +1,6 @@
 Codecov Global Uploader
 =======================
-> Upload reports to Codecov for all supported languages.
+> Upload reports to Codecov for almost every supported languages.
 
 ------
 
@@ -10,7 +10,34 @@ bash <(curl -s https://codecov.io/bash)
 
 ------
 
-### CI's Supported
+### Languages
+> [C#/.net](https://github.com/codecov/example-csharp), [C/C++](https://github.com/codecov/example-c), [D](https://github.com/codecov/example-d), [Go](https://github.com/codecov/example-go), [Groovy](https://github.com/codecov/example-groovy), [Java](https://github.com/codecov/example-java), [Kotlin](https://github.com/codecov/example-kotlin), [Node/Javascript/Coffee](https://github.com/codecov/example-node), [PHP](https://github.com/codecov/example-php), [Python](https://github.com/codecov/example-python), [R](https://github.com/codecov/example-r), [Scala](https://github.com/codecov/example-scala), [Xtern](https://github.com/codecov/example-xtend), [Xcode](https://github.com/codecov/example-xcode) and more...
+
+
+### Usage
+
+|         Argument        |                                                                    Description                                                                     |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `-t` or `CODECOV_TOKEN` | Private repo token for uploading                                                                                                                   |
+| `-e` or `CODECOV_ENV`   | List of config vars to store for the build [see example](https://codecov.io/github/pyca/cryptography?ref=d47946f3d3e358b706e996d0b951d496ffc2461f) |
+| `-u` or `CODECOV_URL`   | **Enterprise** url of your instance of Codecov                                                                                                     |
+| `-r` or `CODECOV_SLUG`  | **Enterprise** repository slug ex. "owner/repo"                                                                                                    |
+
+```yaml
+# .travis.yml example
+after_success:
+  # ex. public repo
+  - bash <(curl -s https://codecov.io/bash)
+  # ex. private repo
+  - bash <(curl -s https://codecov.io/bash) -t :repo-token
+  # ex. w/ environment variables
+  - bash <(curl -s https://codecov.io/bash) -e TOX_ENV,CUSTOM_VAR
+  # ex. Enterprise
+  - bash <(curl -s https://codecov.io/bash) -u https://my-codecov.com -r company/awesome-repo
+```
+
+
+### CI Providers
 |                       Company                       |                                                               Supported                                                               | Tokens Required  |
 | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
 | [Travis CI](https://travis-ci.org/)                 | Yes [![Build Status](https://secure.travis-ci.org/codecov/codecov-bash.svg?branch=master)](http://travis-ci.org/codecov/codecov-bash) | Private only     |
@@ -32,30 +59,3 @@ bash <(curl -s https://codecov.io/bash)
 
 > Using **Travis CI**? Uploader is compatable with `sudo: false` which can speed up your builds. :+1:
 
-### Advanced Usage
-
-```
-CODECOV_TOKEN   Private repo token for uploading
-CODECOV_ENV     List of config vars that are stored for this build
-CODECOV_URL     Enterprise url
-CODECOV_SLUG    Repository slug (ex "owner/repo") used in Enterprise instead of private repo token
-```
-
-```yaml
-# .travis.yml example
-env:
-  global:
-    - CODECOV_TOKEN=9dcefbad-1cef-4895-8fb7-a90cf4737904
-    - CODECOV_ENV=KEEP,THESE,ENV,VALUES
-    - CODECOV_URL=https://your-enterprise.com
-    - CODECOV_SLUG=myteam/myrepo
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
-```
-
-or
-
-```bash
-curl -s https://codecov.io/bash | bash /dev/stdin -t 15482e9c-3612-4812-b19b-f5e79139dfe3
-```
