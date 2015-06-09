@@ -296,6 +296,7 @@ else
              -not -path "*/vendor/*" \
              -not -path "*/home/cainus/*" \
              -not -path '*/venv/*' \
+             -not -path '*/.env/*' \
              -not -path '*/virtualenv/*' \
              -not -path '*/.virtualenv/*' \
              -not -path '*/.git/*' \
@@ -336,6 +337,7 @@ say -n "Detecting file structure..."
 upload=$(find . -type f \
                 -not -path '*/venv/*' \
                 -not -path '*/virtualenv/*' \
+                -not -path '*/.env/*' \
                 -not -path '*/.virtualenv/*' \
                 -not -path '*/build/lib/*' \
                 -not -path '*/.git/*' \
