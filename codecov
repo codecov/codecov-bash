@@ -284,25 +284,25 @@ then
 else
   say -n "Searching for coverage reports..."
   files=$(find . -type f -name '*coverage.*' \
-             -or -name 'jacoco*.xml' \
-             -or -name 'clover.xml' \
-             -or -name 'report.xml' \
-             -or -name 'cobertura.xml' \
-             -or -name 'lcov.info' \
-             -or -name '*.lcov' \
-             -or -name 'gcov.info' \
-             -or -name '*.gcov' \
-             -or -name '*.lst' \
-             -not -path "*/vendor/*" \
-             -not -path "*/home/cainus/*" \
-             -not -path '*/venv/*' \
-             -not -path '*/.env/*' \
-             -not -path '*/virtualenv/*' \
-             -not -path '*/.virtualenv/*' \
-             -not -path '*/.git/*' \
-             -not -path '*/__pycache__/*' \
-             -not -path '*/.egg-info*' \
-             -not -path '*/node_modules/*')
+                     -or -name 'jacoco*.xml' \
+                     -or -name 'clover.xml' \
+                     -or -name 'report.xml' \
+                     -or -name 'cobertura.xml' \
+                     -or -name 'lcov.info' \
+                     -or -name '*.lcov' \
+                     -or -name 'gcov.info' \
+                     -or -name '*.gcov' \
+                     -or -name '*.lst' \
+                    -not -path '*/vendor/*' \
+                    -not -path '*/home/cainus/*' \
+                    -not -path '*/venv/*' \
+                    -not -path '*/.env/*' \
+                    -not -path '*/virtualenv/*' \
+                    -not -path '*/.virtualenv/*' \
+                    -not -path '*/.git/*' \
+                    -not -path '*/__pycache__/*' \
+                    -not -path '*/.egg-info*' \
+                    -not -path '*/node_modules/*')
   say "ok"
 fi
 
