@@ -11,6 +11,7 @@ dump=0
 files=0
 gcov_ignore=""
 gcov=1
+proj_root="."
 
 set -e
 
@@ -35,8 +36,9 @@ Upload reports to Codecov
                  ex. codecov -r mycompany/home
     -v           Verbose Mode
     -d           Dont upload and dump to stdin
-    -g GLOB      Paths to ignore during gcov gathering
     -X gcov      Disable gcov globally
+    -g GLOB      Paths to ignore during gcov gathering
+    -p dir       Project root used when preparing gcov
 
 Contribute and source at https://github.com/codecov/codecov-bash
 EOF
@@ -67,7 +69,7 @@ fi
 
 if [ $# != 0 ];
 then
-  while getopts "vdhu:t:f:r:e:g:X:" o
+  while getopts "vdhu:t:f:r:e:g:p:X:" o
   do
     case "$o" in
       "v")
@@ -88,6 +90,9 @@ then
         ;;
       "f")
         files="$OPTARG"
+        ;;
+      "p")
+        proj_root="$OPTARG"
         ;;
       "r")
         slug="&slug=$OPTARG"
@@ -285,7 +290,7 @@ then
   fi;
 
   # all other gcov
-  bash -c "find . -type f -name '*.gcno' $gcov_ignore" -exec gcov {} \;
+  bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec gcov {} \;"
 fi
 
 # find all the reports
