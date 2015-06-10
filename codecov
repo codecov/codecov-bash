@@ -9,6 +9,8 @@ token=""
 slug=""
 dump=0
 files=0
+gcov_ignore=""
+gcov=1
 
 set -e
 
@@ -33,6 +35,8 @@ Upload reports to Codecov
                  ex. codecov -r mycompany/home
     -v           Verbose Mode
     -d           Dont upload and dump to stdin
+    -g GLOB      Paths to ignore during gcov gathering
+    -X gcov      Disable gcov globally
 
 Contribute and source at https://github.com/codecov/codecov-bash
 EOF
@@ -63,7 +67,7 @@ fi
 
 if [ $# != 0 ];
 then
-  while getopts "vdhu:t:f:r:e:" o
+  while getopts "vdhu:t:f:r:e:g:X:" o
   do
     case "$o" in
       "v")
@@ -87,6 +91,16 @@ then
         ;;
       "r")
         slug="&slug=$OPTARG"
+        ;;
+      "X")
+        if [ "$OPTARG" = "gcov" ];
+        then
+          gcov=0
+        fi
+        ;;
+      "g")
+        gcov_ignore="$gcov_ignore
+-not -path '$OPTARG'"
         ;;
       "e")
         for e in $(echo "$OPTARG" | tr ',' ' ')
@@ -262,20 +276,17 @@ else
   query="branch=$branch&commit=$(git rev-parse HEAD)"
 fi;
 
-# osx gcov
-if [ -d ~/Library/Developer/Xcode/DerivedData ];
+if [ $gcov != 0 ];
 then
-  find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' | while read -r i
-  do
-      gcov "$i" &> /dev/null
-  done
-fi;
+  # osx gcov
+  if [ -d ~/Library/Developer/Xcode/DerivedData ];
+  then
+    find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' -exec gcov {} \;
+  fi;
 
-# all other gcov
-find . -name '*.gcno' | while read -r i
-do
-    gcov "$i" &> /dev/null
-done
+  # all other gcov
+  bash -c "find . -type f -name '*.gcno' $gcov_ignore" -exec gcov {} \;
+fi
 
 # find all the reports
 if [ $files != 0 ];

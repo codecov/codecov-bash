@@ -17,5 +17,7 @@ Upload reports to Codecov
                  ex. codecov -r mycompany/home
     -v           Verbose Mode
     -d           Dont upload and dump to stdin
+    -g GLOB      Paths to ignore during gcov gathering
+    -X gcov      Disable gcov globally
 
 Contribute and source at https://github.com/codecov/codecov-bash
