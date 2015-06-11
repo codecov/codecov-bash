@@ -290,7 +290,7 @@ then
   fi;
 
   # all other gcov
-  bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec gcov {} \;"
+  bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore | xargs gcov -s `cd .. && pwd`"
 fi
 
 # find all the reports
