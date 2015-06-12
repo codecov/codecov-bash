@@ -14,6 +14,8 @@ files=0
 gcov_ignore=""
 gcov=1
 proj_root="."
+gcov_exe="gcov"
+gcov_arg=""
 
 show_help() {
 cat << EOF
@@ -39,6 +41,8 @@ Upload reports to Codecov
     -X gcov      Disable gcov globally
     -g GLOB      Paths to ignore during gcov gathering
     -p dir       Project root used when preparing gcov
+    -x gcovexe   gcov executable to run. Defaults to 'gcov'
+    -a gcovargs  extra arguments to pass o gcov
 
 Contribute and source at https://github.com/codecov/codecov-bash
 EOF
@@ -67,9 +71,10 @@ then
   bower_components=$(python -c "import json as j; print j.load(open('.bowerrc')).get('directory', 'bower_components')" | sed -e 's/^\///' | sed -e 's/\/$//')
 fi
 
+
 if [ $# != 0 ];
 then
-  while getopts "vdhu:t:f:r:e:g:p:X:" o
+  while getopts "vdhu:t:f:r:e:g:p:X:x:a:" o
   do
     case "$o" in
       "v")
@@ -106,6 +111,12 @@ then
       "g")
         gcov_ignore="$gcov_ignore
 -not -path '$OPTARG'"
+        ;;
+      "x")
+        gcov_exe=$OPTARG
+        ;;
+      "a")
+        gcov_arg=$OPTARG
         ;;
       "e")
         for e in $(echo "$OPTARG" | tr ',' ' ')
@@ -286,11 +297,13 @@ then
   # osx gcov
   if [ -d ~/Library/Developer/Xcode/DerivedData ];
   then
-    find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' -exec gcov {} \;
+    find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' -exec $gcov_exe $gcov_arg {} +
   fi;
 
+  echo "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe $gcov_arg {} +"
+
   # all other gcov
-  bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec gcov {} \;"
+  bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe $gcov_arg {} +"
 fi
 
 # find all the reports
