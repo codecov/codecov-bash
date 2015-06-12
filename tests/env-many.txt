@@ -1,5 +1,15 @@
-Codecov v<%= ENV['_VERSION'] %> - Uploader
-https://codecov.io/upload/v2?package=bash-v<%= ENV['_VERSION'] %>&branch=<%= ENV['_BRANCH'] %>&commit=<%= ENV['_SHA'] %>
+Codecov v0.0.6
+(url) https://codecov.io
+==> No CI detected, using git for branch and commit sha.
+==> Found gcda in ~/Library/Developer/Xcode/DerivedData
+==> find . -type f -name '*.gcno'  -exec gcov  {} +
+==> Searching for coverage reports
+==> coverage cli exists
+==> Detecting file structure
+==> Reading reports
+==> Appending env variables
+(query) package=bash-v0.0.6&branch=master&commit=f8b87ab4e56e3181a66fa78d0fc8790e4211d87e
+https://codecov.io/upload/v2?package=bash-v0.0.6&branch=master&commit=f8b87ab4e56e3181a66fa78d0fc8790e4211d87e
 BUILD_ID=apples
 COMMIT=abc
 <<<<<< ENV

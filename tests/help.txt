@@ -1,4 +1,4 @@
-Codecov v<%= ENV['_VERSION'] %> - Global Uploader
+Codecov v<%= ENV['_VERSION'] %>
 Usage: codecov [-hv] [-f COVERAGE]
 Upload reports to Codecov
 
@@ -17,8 +17,11 @@ Upload reports to Codecov
                  ex. codecov -r mycompany/home
     -v           Verbose Mode
     -d           Dont upload and dump to stdin
-    -X gcov      Disable gcov globally
+    -X feature   Disable functionalities, accepting: 'gcov'
     -g GLOB      Paths to ignore during gcov gathering
     -p dir       Project root used when preparing gcov
+    -x gcovexe   gcov executable to run. Defaults to 'gcov'
+    -a gcovargs  extra arguments to pass o gcov
+    -s silent    Enable silent mode
 
 Contribute and source at https://github.com/codecov/codecov-bash

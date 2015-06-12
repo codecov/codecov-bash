@@ -31,7 +31,7 @@ function test_help () {
 # ------------
 function test_url_opt () {
     reset
-    res=$(./codecov -d -u http://example.com | grep "http://example.com")
+    res=$(./codecov -d -u http://example.com | grep "http://example.com/")
     diff <(echo "http://example.com/upload/v2?package=bash-v$VERSION&branch=$_BRANCH&commit=$_SHA") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
@@ -39,7 +39,7 @@ function test_url_opt () {
 function test_url_env () {
     reset
     export CODECOV_URL="http://other.com"
-    res=$(./codecov -d | grep "http://other.com")
+    res=$(./codecov -d | grep "http://other.com/")
     diff <(echo "http://other.com/upload/v2?package=bash-v$VERSION&branch=$_BRANCH&commit=$_SHA") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
@@ -86,7 +86,7 @@ function test_env_env () {
 
 function test_slug_opt () {
     reset
-    res=$(./codecov -dr myowner/myrepo | grep "https://codecov.io")
+    res=$(./codecov -dr myowner/myrepo | grep "https://codecov.io/")
     diff <(echo "https://codecov.io/upload/v2?package=bash-v$VERSION&branch=$_BRANCH&commit=$_SHA&slug=myowner/myrepo") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
@@ -97,6 +97,17 @@ function test_slug_env () {
     assertURL "https://codecov.io/upload/v2?package=bash-v$VERSION&branch=$_BRANCH&commit=$_SHA&slug=myowner/myrepo"
 }
 
+function test_gcov () {
+    reset
+    ./codecov -dv -X gcov | grep '==> gcov disable'
+    assertTrue 'gcov was disabled' $?
+}
+
+function test_silent () {
+    reset
+    assertDiff "$(./codecov -sd)" ./tests/silent.txt
+}
+
 function test_file_opt () {
     reset
     assertDiff "$(./codecov -df coverage/coverage.json)" ./tests/file.txt
@@ -105,7 +116,7 @@ function test_file_opt () {
 function test_token_opt () {
     reset
     token="38cd42da-4df4-4760-a998-4ebeca536904"
-    res=$(./codecov -d -t "$token" | grep "https://codecov.io")
+    res=$(./codecov -d -t "$token" | grep "https://codecov.io/")
     diff <(echo "https://codecov.io/upload/v2?package=bash-v$VERSION&branch=$_BRANCH&commit=$_SHA&token=$token") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
@@ -113,7 +124,7 @@ function test_token_opt () {
 function test_token_env () {
     reset
     export CODECOV_TOKEN="38cd42da-4df4-4760-a998-4ebeca536904"
-    res=$(./codecov -d | grep "https://codecov.io")
+    res=$(./codecov -d | grep "https://codecov.io/")
     diff <(echo "https://codecov.io/upload/v2?package=bash-v$VERSION&branch=$_BRANCH&commit=$_SHA&token=$token") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
@@ -143,7 +154,7 @@ function test_upload () {
 # Test CI Companies
 # -----------------
 function assertURL () {
-    url=$(./codecov -d | grep 'https://codecov.io')
+    url=$(./codecov -d | grep 'https://codecov.io/')
     diff <(echo "$1") <(echo "$url")
     assertTrue 'Expected output differs.' $?
 }

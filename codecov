@@ -2,10 +2,11 @@
 
 set -e
 
-VERSION="0.0.5"
+VERSION="0.0.6"
 
 url="https://codecov.io"
 verbose=0
+silent=0
 env=""
 token=""
 slug=""
@@ -19,7 +20,7 @@ gcov_arg=""
 
 show_help() {
 cat << EOF
-Codecov v$VERSION - Global Uploader
+Codecov v$VERSION
 Usage: ${0##*/} [-hv] [-f COVERAGE]
 Upload reports to Codecov
 
@@ -38,25 +39,33 @@ Upload reports to Codecov
                  ex. codecov -r mycompany/home
     -v           Verbose Mode
     -d           Dont upload and dump to stdin
-    -X gcov      Disable gcov globally
+    -X feature   Disable functionalities, accepting: 'gcov'
     -g GLOB      Paths to ignore during gcov gathering
     -p dir       Project root used when preparing gcov
     -x gcovexe   gcov executable to run. Defaults to 'gcov'
     -a gcovargs  extra arguments to pass o gcov
+    -s silent    Enable silent mode
 
 Contribute and source at https://github.com/codecov/codecov-bash
 EOF
 }
 
 say() {
-  if [ $verbose != 0 ];
+  if [ $silent = 0 ];
   then
     if [ "$1" = "-n" ]
     then
-      echo -n "  $2"
+      echo -n "$2"
     else
-      echo "  $1"
+      echo "$1"
     fi
+  fi
+}
+
+saymore() {
+  if [ $verbose != 0 ];
+  then
+    say "$1"
   fi
 }
 
@@ -74,11 +83,14 @@ fi
 
 if [ $# != 0 ];
 then
-  while getopts "vdhu:t:f:r:e:g:p:X:x:a:" o
+  while getopts "svdhu:t:f:r:e:g:p:X:x:a:" o
   do
     case "$o" in
       "v")
         verbose=1
+        ;;
+      "s")
+        silent=1
         ;;
       "d")
         dump=1
@@ -129,23 +141,28 @@ then
   done
 fi
 
+say "Codecov v$VERSION"
+
 if [ "$CODECOV_URL" != "" ];
 then
+  saymore "--> url set from env"
   url=$(echo "$CODECOV_URL" | sed -e 's/\/$//')
 fi
 
+say "(url) $url"
+
 if [ "$CODECOV_TOKEN" != "" ];
 then
+  saymore "--> token set from env"
   token="&token=$CODECOV_TOKEN"
 fi
 
 if [ "$CODECOV_SLUG" != "" ];
 then
+  saymore "--> slug set from env"
   slug="&slug=$CODECOV_SLUG"
 fi
 
-echo "Codecov v$VERSION - Uploader"
-say "url: $url"
 
 if [ "$JENKINS_URL" != "" ];
 then
@@ -286,9 +303,12 @@ then
 
 else
   # find branch, commit, repo from git command
-  say "No CI detected, using git for branch and commit sha."
+  say "==> No CI detected, using git for branch and commit sha."
   branch=$(git rev-parse --abbrev-ref HEAD)
-  if [ "$branch" = "HEAD" ]; then branch="master"; fi;
+  if [ "$branch" = "HEAD" ]; then
+    saymore "--> branch was HEAD, set to master"
+    branch="master"
+  fi
   query="branch=$branch&commit=$(git rev-parse HEAD)"
 fi;
 
@@ -297,21 +317,24 @@ then
   # osx gcov
   if [ -d ~/Library/Developer/Xcode/DerivedData ];
   then
+    say "==> Found gcda in ~/Library/Developer/Xcode/DerivedData"
     find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' -exec $gcov_exe $gcov_arg {} +
-  fi;
+  fi
 
-  echo "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe $gcov_arg {} +"
+  say "==> find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe $gcov_arg {} +"
 
   # all other gcov
   bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe $gcov_arg {} +"
+else
+  say '==> gcov disable'
 fi
 
 # find all the reports
 if [ $files != 0 ];
 then
-  say "Targeting specific file at $files"
+  say "==> Targeting specific file at $files"
 else
-  say -n "Searching for coverage reports..."
+  say "==> Searching for coverage reports"
   files=$(find . -type f -name '*coverage.*' \
                      -or -name 'jacoco*.xml' \
                      -or -name 'clover.xml' \
@@ -332,24 +355,23 @@ else
                     -not -path '*/__pycache__/*' \
                     -not -path '*/.egg-info*' \
                     -not -path '*/node_modules/*')
-  say "ok"
 fi
 
 # Python coveragepy generation
-if which coverage >/dev/null 2>&1; then
+if which coverage >/dev/null 2>&1;
 then
-  say "coverage cli exists"
+  say "==> coverage cli exists"
   if [ "$(echo "$files" | grep 'coverage.xml')" = "" ];
   then
-    say "Trying (coverage xml)"
+    say -n "==> Trying coverage xml... "
     # run python coverage
     if [ "$(coverage xml)" != "No data to report." ];
     then
-      say "coverage.xml generated"
       files="$files
 coverage.xml"
+      say "ok"
     else
-      say "Python: coverage report could not be generated. No data to report."
+      say "No data to report"
     fi
   fi
 fi
@@ -357,12 +379,11 @@ fi
 # no files found
 if [ "$files" = "" ];
 then
-  say "No reports found."
-  echo "No coverage report found."
+  say "==> No coverage report found."
   exit 1;
 fi
 
-say -n "Detecting file structure..."
+say "==> Detecting file structure"
 upload=$(find . -type f \
                 -not -path '*/venv/*' \
                 -not -path '*/virtualenv/*' \
@@ -389,15 +410,14 @@ upload=$(find . -type f \
                 -not -name 'readme.md' \
                 -not -name 'codecov' \
                 -not -name '.DS_Store')
-say "ok"
 
 if [ -d "shunit2-2.1.6" ];
 then
-  # need to sort for testing purposes
+  saymore "--> sorting output for unit testing"
   upload=$(echo "$upload" | sort)
 fi
 
-say -n "Reading reports..."
+say "==> Reading reports"
 for file in $files
 do
   # escape file paths
@@ -405,6 +425,7 @@ do
   # read the coverage file
   if [ -f "$file" ];
   then
+    saymore "--> read: $file"
     report=$(cat "$file")
     # append to to upload
     upload="$upload
@@ -412,30 +433,30 @@ do
 $report"
   fi
 done
-say "ok"
 
 if [ "$env" ] || [ "$CODECOV_ENV" ];
 then
   for e in $(echo "$CODECOV_ENV" | tr ',' ' ')
   do
+    saymore "--> env: $e"
     env="$env$e=$(eval echo "\$$e")
 "
   done
-  say "Appending env variables"
+  say "==> Appending env variables"
   upload="$env<<<<<< ENV
 $upload"
 fi
 
 # trim whitespace from query
 query=$(echo "package=bash-v$VERSION&$query$slug$token" | tr -d ' ')
-say "query: $query"
+say "(query) $query"
 
 if [ $dump != 0 ];
 then
   echo "$url/upload/v2?$query"
   echo "$upload"
 else
-  say "Uploading reports"
+  say -n "==> Uploading reports"
   res=$(echo "$upload" | \
             curl -X POST \
                  --silent \
@@ -443,7 +464,7 @@ else
                  -H "Content-Type: text/plain" \
                  -H "Accept: text/plain" \
                  "$url/upload/v2?$query")
-  echo "$res"
+  say "$res"
 fi
 
 # EOF
