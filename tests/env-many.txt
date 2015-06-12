@@ -18,6 +18,6 @@ COMMIT=abc
 ./tests/env
 ./tests/test
 <<<<<< EOF
-{"file.txt":[None, 1, 0]}
+{"file.txt":[null, 1, 0]}
 <<<<<< EOF
-{"another.txt":[None, 1, 0]}
+{"another.txt":[null, 1, 0]}
