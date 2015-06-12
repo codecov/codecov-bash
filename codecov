@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 VERSION="0.0.5"
 
 url="https://codecov.io"
@@ -12,8 +14,6 @@ files=0
 gcov_ignore=""
 gcov=1
 proj_root="."
-
-set -e
 
 show_help() {
 cat << EOF
