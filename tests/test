@@ -9,6 +9,7 @@ export _VERSION="$VERSION"
 function reset () {
     rm -rf coverage bower .bowerrc
     mkdir -p coverage
+    mkdir -p ~/Library/Developer/Xcode/DerivedData
     . tests/env
     echo '{"file.txt":[None, 1, 0]}' > coverage/coverage.json
     echo '{"another.txt":[None, 1, 0]}' > coverage/coverage.xml
