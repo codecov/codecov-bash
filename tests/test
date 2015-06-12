@@ -3,18 +3,24 @@
 VERSION=$(grep VERSION= ./codecov | cut -d \" -f 2)
 export _SHA=$(git rev-parse HEAD)
 export _BRANCH=$(git rev-parse --abbrev-ref HEAD)
-if [ "$_BRANCH" = "HEAD" ]; then _BRANCH="master"; fi;
+if [ "$_BRANCH" = "HEAD" ];
+then
+  _BRANCH="master"
+fi
 export _VERSION="$VERSION"
 
+export PATH=$PWD:$PATH
+
 function reset () {
-    rm -rf coverage bower .bowerrc
-    mkdir -p coverage
+    rm -rf temp bower .bowerrc coverage
+    mkdir -p temp
     mkdir -p ~/Library/Developer/Xcode/DerivedData
+    install -b -m 755 /dev/null coverage
     . tests/env
-    echo '{"file.txt":[None, 1, 0]}' > coverage/coverage.json
-    echo '{"another.txt":[None, 1, 0]}' > coverage/coverage.xml
-    touch coverage/file.rb
-    echo 'blank' > coverage/not-file.json
+    echo '{"file.txt":[None, 1, 0]}' > temp/coverage.json
+    echo '{"another.txt":[None, 1, 0]}' > temp/coverage.xml
+    touch temp/file.rb
+    echo 'blank' > temp/not-file.json
 }
 
 function assertDiff () {
@@ -111,7 +117,7 @@ function test_silent () {
 
 function test_file_opt () {
     reset
-    assertDiff "$(./codecov -df coverage/coverage.json)" ./tests/file.txt
+    assertDiff "$(./codecov -df temp/coverage.json)" ./tests/file.txt
 }
 
 function test_token_opt () {

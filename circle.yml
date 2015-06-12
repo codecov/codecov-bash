@@ -5,7 +5,6 @@ dependencies:
   override:
     - curl -O https://shunit2.googlecode.com/files/shunit2-2.1.6.tgz
     - tar zxvf shunit2-2.1.6.tgz
-    - pip install coverage --user
 test:
   override:
     - tests/test
