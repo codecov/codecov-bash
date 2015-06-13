@@ -71,6 +71,19 @@ function test_bowerrc () {
     assertEquals '' "$res"
 }
 
+function test_bowerrc_2 () {
+    reset
+    echo '{    "directory":
+
+  "bower/" }' > .bowerrc
+    mkdir bower
+    touch bower/file.md
+    res=$(./codecov -d | grep "bower/file.md")
+    rm -rf bower
+    rm .bowerrc
+    assertEquals '' "$res"
+}
+
 function test_env_opt () {
     reset
     export BUILD_ID="apples"

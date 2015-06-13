@@ -77,7 +77,11 @@ urlencode() {
 bower_components="bower_components"
 if [ -f .bowerrc ];
 then
-  bower_components=$(python -c "import json as j; print j.load(open('.bowerrc')).get('directory', 'bower_components')" | sed -e 's/^\///' | sed -e 's/\/$//')
+  bower_components=$(cat .bowerrc | tr -d '\n' | grep '"directory"' | cut -d'"' -f4 | sed -e 's/\/$//')
+  if [ "$bower_components" = "" ];
+  then
+    bower_components="bower_components"
+  fi
 fi
 
 
