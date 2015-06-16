@@ -125,8 +125,7 @@ then
         fi
         ;;
       "g")
-        gcov_ignore="$gcov_ignore
--not -path '$OPTARG'"
+        gcov_ignore="$gcov_ignore -not -path '$OPTARG'"
         ;;
       "x")
         gcov_exe=$OPTARG
