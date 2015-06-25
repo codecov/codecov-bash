@@ -14,6 +14,7 @@ dump=0
 files=0
 gcov_ignore=""
 gcov=1
+rlang=1
 proj_root="."
 gcov_exe="gcov"
 gcov_arg=""
@@ -39,10 +40,10 @@ Upload reports to Codecov
                  ex. codecov -r mycompany/home
     -v           Verbose Mode
     -d           Dont upload and dump to stdin
-    -X feature   Disable functionalities, accepting: 'gcov'
+    -X feature   Disable functionalities, accepting: gcov, Rscript
     -g GLOB      Paths to ignore during gcov gathering
     -p dir       Project root used when preparing gcov
-    -x gcovexe   gcov executable to run. Defaults to 'gcov'
+    -x gcovexe   gcov executable to run. Defaults to gcov
     -a gcovargs  extra arguments to pass o gcov
     -s silent    Enable silent mode
 
@@ -122,6 +123,9 @@ then
         if [ "$OPTARG" = "gcov" ];
         then
           gcov=0
+        elif [ "$OPTARG" = "Rscript" ];
+        then
+          rlang=0
         fi
         ;;
       "g")
@@ -328,7 +332,7 @@ then
   # all other gcov
   bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe $gcov_arg {} +" || true
 else
-  say '==> gcov disable'
+  say '==> Skipped gcov'
 fi
 
 # find all the reports
@@ -376,6 +380,18 @@ coverage.xml"
       say "No data to report"
     fi
   fi
+fi
+
+# R lang: include jimhester/covr package
+if [ "$rlang" = "0" ]; then
+  say "==> Skipped Rscript"
+elif which Rscript >/dev/null 2>&1; then
+  say "==> Running Rscript jimhester/covr"
+  Rscript -e 'if (!require("devtools")) install.packages("devtools")' \
+          -e 'devtools::install_github("jimhester/covr")' \
+          -e 'covr::codecov()' || true
+else
+  say "==> No Rscript command found"
 fi
 
 # no files found
