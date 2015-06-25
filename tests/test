@@ -12,7 +12,7 @@ export _VERSION="$VERSION"
 export PATH=$PWD:$PATH
 
 function reset () {
-    rm -rf temp bower .bowerrc coverage
+    rm -rf temp bower .bowerrc coverage Rscript
     mkdir -p temp
     mkdir -p ~/Library/Developer/Xcode/DerivedData
     install -b -m 755 /dev/null coverage
@@ -24,7 +24,7 @@ function reset () {
 }
 
 function assertDiff () {
-    diff <(erb "$2") <(echo "$1")
+    diff <(erb "$2") <(echo "$1" | grep -v 'Rscript')
     assertTrue 'Expected output differs.' $?
 }
 
@@ -117,9 +117,23 @@ function test_slug_env () {
     assertURL "https://codecov.io/upload/v2?package=bash-v$VERSION&branch=$_BRANCH&commit=$_SHA&slug=myowner/myrepo"
 }
 
+function test_rscript () {
+    reset
+    ./codecov -dv -X Rscript | grep '==> Skipped Rscript'
+    assertTrue 'Rscript was disabled' $?
+}
+
+function test_rscript_raises_no_errors () {
+    reset
+    install -b -m 755 /dev/null Rscript
+    echo "exit 1;" > Rscript
+    ./codecov -dv | grep '==> Running Rscript jimhester/covr'
+    assertTrue 'Rscript raises no errors' $?
+}
+
 function test_gcov () {
     reset
-    ./codecov -dv -X gcov | grep '==> gcov disable'
+    ./codecov -dv -X gcov | grep '==> Skipped gcov'
     assertTrue 'gcov was disabled' $?
 }
 

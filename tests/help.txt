@@ -17,10 +17,9 @@ Upload reports to Codecov
                  ex. codecov -r mycompany/home
     -v           Verbose Mode
     -d           Dont upload and dump to stdin
-    -X feature   Disable functionalities, accepting: 'gcov'
     -g GLOB      Paths to ignore during gcov gathering
     -p dir       Project root used when preparing gcov
-    -x gcovexe   gcov executable to run. Defaults to 'gcov'
+    -x gcovexe   gcov executable to run. Defaults to gcov
     -a gcovargs  extra arguments to pass o gcov
     -s silent    Enable silent mode
 
