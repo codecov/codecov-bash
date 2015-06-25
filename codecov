@@ -326,7 +326,7 @@ then
   say "==> find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe $gcov_arg {} +"
 
   # all other gcov
-  bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe $gcov_arg {} +"
+  bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe $gcov_arg {} +" || true
 else
   say '==> gcov disable'
 fi
