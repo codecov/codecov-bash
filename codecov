@@ -383,13 +383,20 @@ coverage.xml"
 fi
 
 # R lang: include jimhester/covr package
-if [ "$rlang" = "0" ]; then
+Rscript_report=""
+if [ "$rlang" = "0" ];
+then
   say "==> Skipped Rscript"
-elif which Rscript >/dev/null 2>&1; then
+elif which Rscript >/dev/null 2>&1;
+then
   say "==> Running Rscript jimhester/covr"
-  Rscript -e 'if (!require("devtools")) install.packages("devtools")' \
-          -e 'devtools::install_github("jimhester/covr")' \
-          -e 'covr::codecov()' || true
+  Rscript_report=$(Rscript -e 'if (!require("devtools")) install.packages("devtools")' \
+                           -e 'devtools::install_github("codecov/Rscript-covr")' \
+                           -e 'covr::codecov()' || true)
+  if [ "$Rscript_report" != "" ] && [ "$files" = "" ];
+  then
+    files=1
+  fi
 else
   say "==> No Rscript command found"
 fi
@@ -436,22 +443,34 @@ then
 fi
 
 say "==> Reading reports"
-for file in $files
-do
-  # escape file paths
-  file="$(echo $file | sed -e 's/ /\\ /')"
-  # read the coverage file
-  if [ -f "$file" ];
-  then
-    saymore "--> read: $file"
-    report=$(cat "$file")
-    # append to to upload
-    upload="$upload
+if [ "$files" != "1" ];
+then
+  for file in $files
+  do
+    # escape file paths
+    file="$(echo $file | sed -e 's/ /\\ /')"
+    # read the coverage file
+    if [ -f "$file" ];
+    then
+      saymore "--> read: $file"
+      report=$(cat "$file")
+      # append to to upload
+      upload="$upload
 <<<<<< EOF
 $report"
-  fi
-done
+    fi
+  done
+fi
 
+# add Rscript report
+if [ "$Rscript_report" != "" ];
+then
+  upload="$upload
+<<<<<< EOF
+$Rscript_report"
+fi
+
+# add environment variables
 if [ "$env" ] || [ "$CODECOV_ENV" ];
 then
   for e in $(echo "$CODECOV_ENV" | tr ',' ' ')
