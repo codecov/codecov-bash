@@ -302,7 +302,6 @@ then
          &build=$CI_BUILD_ID\
          &slug=$_slug\
          &commit=$CI_BUILD_REF"
-  cd "$CI_PROJECT_DIR"
 
 else
   # find branch, commit, repo from git command
