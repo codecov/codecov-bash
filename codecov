@@ -362,19 +362,18 @@ fi
 # Python coveragepy generation
 if which coverage >/dev/null 2>&1;
 then
-  say "==> coverage cli exists"
-  if [ "$(echo "$files" | grep 'coverage.xml')" = "" ];
+  say "==> Coverage cli exists, replacing with https://bitbucket.org/codecov/coverage.py, replacing with https://bitbucket.org/codecov/coverage.py"
+  pip uninstall -y coverage
+  pip install https://bitbucket.org/codecov/coverage.py/get/9b848b6.tar.gz
+  say -n "==> Generating coverage xml..."
+  coverage xml
+  if [ "$(coverage xml)" != "No data to report." ];
   then
-    say -n "==> Trying coverage xml... "
-    # run python coverage
-    if [ "$(coverage xml)" != "No data to report." ];
-    then
-      files="$files
+    files="$files
 coverage.xml"
-      say "ok"
-    else
-      say "No data to report"
-    fi
+    say "ok"
+  else
+    say "No data to report"
   fi
 fi
 
