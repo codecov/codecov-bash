@@ -169,7 +169,7 @@ fi
 
 if [ "$JENKINS_URL" != "" ];
 then
-  say "Jenkins CI detected."
+  say "==> Jenkins CI detected."
   # https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project
   # https://wiki.jenkins-ci.org/display/JENKINS/GitHub+pull+request+builder+plugin#GitHubpullrequestbuilderplugin-EnvironmentVariables
   build_url=$(urlencode "$BUILD_URL")
@@ -185,7 +185,7 @@ then
 
 elif [ "$CI" = "true" ] && [ "$TRAVIS" = "true" ];
 then
-  say "Travis CI detected."
+  say "==> Travis CI detected."
   # http://docs.travis-ci.com/user/ci-environment/#Environment-variables
   query="service=travis-org\
          &branch=$TRAVIS_BRANCH\
@@ -198,7 +198,7 @@ then
 
 elif [ "$CI" = "true" ] && [ "$CI_NAME" = "codeship" ];
 then
-  say "Codeship CI detected."
+  say "==> Codeship CI detected."
   # https://www.codeship.io/documentation/continuous-integration/set-environment-variables/
   build_url=$(urlencode "$CI_BUILD_URL")
   query="service=codeship\
@@ -209,7 +209,7 @@ then
 
 elif [ "$CI" = "true" ] && [ "$CIRCLECI" = "true" ];
 then
-  say "Circle CI detected."
+  say "==> Circle CI detected."
   # https://circleci.com/docs/environment-variables
   query="service=circleci\
          &branch=$CIRCLE_BRANCH\
@@ -219,7 +219,7 @@ then
 
 elif [ "$CI" = "true" ] && [ "$SEMAPHORE" = "true" ];
 then
-  say "Semaphore CI detected."
+  say "==> Semaphore CI detected."
   # https://semaphoreapp.com/docs/available-environment-variables.html
   query="service=semaphore\
          &branch=$BRANCH_NAME\
@@ -229,7 +229,7 @@ then
 
 elif [ "$CI" = "true" ] && [ "$DRONE" = "true" ];
 then
-  say "Drone CI detected."
+  say "==> Drone CI detected."
   # http://docs.drone.io/env.html
   build_url=$(urlencode "$DRONE_BUILD_URL")
   query="service=drone.io\
@@ -240,7 +240,7 @@ then
 
 elif [ "$CI" = "True" ] && [ "$APPVEYOR" = "True" ];
 then
-  say "Appveyor CI detected."
+  say "==> Appveyor CI detected."
   # http://www.appveyor.com/docs/environment-variables
   query="service=appveyor\
          &branch=$APPVEYOR_REPO_BRANCH\
@@ -251,7 +251,7 @@ then
 
 elif [ "$CI" = "True" ] && [ "$WERCKER_GIT_BRANCH" != "" ];
 then
-  say "Wercker CI detected."
+  say "==> Wercker CI detected."
   # http://devcenter.wercker.com/articles/steps/variables.html
   query="service=wercker\
          &branch=$WERCKER_GIT_BRANCH\
@@ -261,7 +261,7 @@ then
 
 elif [ "$CI" = "true" ] && [ "$MAGNUM" = "true" ];
 then
-  say "Magnum CI detected."
+  say "==> Magnum CI detected."
   # https://magnum-ci.com/docs/environment
   query="service=magnum\
          &branch=$CI_BRANCH\
@@ -270,7 +270,7 @@ then
 
 elif [ "$CI" = "true" ] && [ "$SNAP_CI" = "true" ];
 then
-  say "Snap CI detected."
+  say "==> Snap CI detected."
   # https://docs.snap-ci.com/environment-variables/
   query="service=snap\
          &branch=$SNAP_BRANCH\
@@ -280,7 +280,7 @@ then
 
 elif [ "$SHIPPABLE" = "true" ];
 then
-  say "Shippable CI detected."
+  say "==> Shippable CI detected."
   # http://docs.shippable.com/en/latest/config.html#common-environment-variables
   _build_url=$(urlencode "$BUILD_URL")
   query="service=shippable\
@@ -293,7 +293,7 @@ then
 
 elif [ "$CI_SERVER_NAME" = "GitLab CI" ];
 then
-  say "GitLab CI detected."
+  say "==> GitLab CI detected."
   # http://doc.gitlab.com/ci/examples/README.html#environmental-variables
   # https://gitlab.com/gitlab-org/gitlab-ci-runner/blob/master/lib/build.rb#L96
   _slug=$(echo "$CI_BUILD_REPO" | cut -d'/' -f4-5 | sed -e 's/.git//')
