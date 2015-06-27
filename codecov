@@ -2,7 +2,7 @@
 
 set -e
 
-VERSION="0.0.6"
+VERSION="tbd"
 
 url="https://codecov.io"
 verbose=0
