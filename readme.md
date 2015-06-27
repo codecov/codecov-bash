@@ -2,6 +2,8 @@ Codecov Global Uploader
 =======================
 > Upload reports to Codecov for almost every supported languages.
 
+[![Deployed Version](https://codecov.io/bash?badge=y)](https://codecov.io/bash?redirect=y)
+
 ------
 
 ```bash
