@@ -14,6 +14,7 @@ dump=0
 files=0
 gcov_ignore=""
 gcov=1
+ft_coveragepy=1
 proj_root="."
 gcov_exe="gcov"
 gcov_arg=""
@@ -39,7 +40,7 @@ Upload reports to Codecov
                  ex. codecov -r mycompany/home
     -v           Verbose Mode
     -d           Dont upload and dump to stdin
-    -X feature   Disable functionalities, accepting: 'gcov'
+    -X feature   Disable functionalities, accepting: 'gcov', 'coveragepy'
     -g GLOB      Paths to ignore during gcov gathering
     -p dir       Project root used when preparing gcov
     -x gcovexe   gcov executable to run. Defaults to 'gcov'
@@ -122,6 +123,9 @@ then
         if [ "$OPTARG" = "gcov" ];
         then
           gcov=0
+        elif [ "$OPTARG" = "coveragepy" ];
+        then
+          ft_coveragepy=0
         fi
         ;;
       "g")
@@ -362,18 +366,22 @@ fi
 # Python coveragepy generation
 if which coverage >/dev/null 2>&1;
 then
-  say "==> Coverage cli exists, replacing with https://bitbucket.org/codecov/coverage.py, replacing with https://bitbucket.org/codecov/coverage.py"
-  pip uninstall -y coverage
-  pip install https://bitbucket.org/codecov/coverage.py/get/9b848b6.tar.gz
-  say -n "==> Generating coverage xml..."
-  coverage xml
+  say "==> Python coveragepy exists"
+  if [ "$ft_coveragepy" = "1" ];
+  then
+    say "    Replacing coveragepy with https://github.com/codecov/coveragepy"
+    say "    Read more at https://github.com/codecov/support/issues/43"
+    say "    -X coveragepy to disable"
+    pip uninstall -y coverage
+    pip install git+git://github.com/codecov/coveragepy.git
+  fi
+  say "    Running coverage xml"
   if [ "$(coverage xml)" != "No data to report." ];
   then
     files="$files
 coverage.xml"
-    say "ok"
   else
-    say "No data to report"
+    say "    No data to report."
   fi
 fi
 

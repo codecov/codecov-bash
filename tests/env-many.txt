@@ -4,8 +4,11 @@ Codecov v0.0.6
 ==> Found gcda in ~/Library/Developer/Xcode/DerivedData
 ==> find . -type f -name '*.gcno'  -exec gcov  {} +
 ==> Searching for coverage reports
-==> Coverage cli exists, replacing with https://bitbucket.org/codecov/coverage.py
-==> Generating coverage xml...ok
+==> Python coveragepy exists
+    Replacing coveragepy with https://github.com/codecov/coveragepy
+    Read more at https://github.com/codecov/support/issues/43
+    -X coveragepy to disable
+    Running coverage xml
 ==> Detecting file structure
 ==> Reading reports
 ==> Appending env variables
