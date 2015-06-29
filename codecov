@@ -135,11 +135,7 @@ then
         gcov_arg=$OPTARG
         ;;
       "e")
-        for e in $(echo "$OPTARG" | tr ',' ' ')
-        do
-          env="$env$e=$(eval echo "\$$e")
-"
-        done
+        env=$OPTARG
         ;;
     esac
   done
@@ -465,14 +461,21 @@ done
 
 if [ "$env" ] || [ "$CODECOV_ENV" ];
 then
+  inc_env=""
   say "==> Appending build variables"
   for e in $(echo "$CODECOV_ENV" | tr ',' ' ')
   do
     say "    + $e"
-    env="$env$e=$(eval echo "\$$e")
+    env="$inc_env$e=$(eval echo "\$$e")
 "
   done
-  upload="$env<<<<<< ENV
+  for e in $(echo "$env" | tr ',' ' ')
+  do
+    say "    + $e"
+    env="$inc_env$e=$(eval echo "\$$e")
+"
+  done
+  upload="$inc_env<<<<<< ENV
 $upload"
 fi
 
