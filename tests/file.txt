@@ -4,8 +4,9 @@ Codecov
 ==> No CI detected, using git for branch and commit sha.
 ==> Found gcda in ~/Library/Developer/Xcode/DerivedData
 ==> find . -type f -name '*.gcno'  -exec gcov  {} +
-==> Targeting specific file at temp/coverage.json
+==> Targeting specific file
 ==> Detecting file structure
+==> Sorting output for unit testing
 ==> Reading reports
     + ./temp/coverage.json
     + ./temp/coverage.xml

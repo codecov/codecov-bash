@@ -5,6 +5,7 @@ Codecov
 ==> Found gcda in ~/Library/Developer/Xcode/DerivedData
 ==> find . -type f -name '*.gcno'  -exec gcov  {} +
 ==> Searching for coverage reports
+**> Python coverage not found
 ==> Detecting file structure
 ==> Sorting output for unit testing
 ==> Reading reports

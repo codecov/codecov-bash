@@ -5,17 +5,17 @@ set -e
 VERSION="tbd"
 
 url="https://codecov.io"
-verbose=0
-silent=0
+verbose="0"
+silent="0"
 env=""
 token=""
 slug=""
-dump=0
-files=0
+dump="0"
+files=""
 gcov_ignore=""
-ft_gcov=1
-ft_coveragepy=1
-ft_issue43=1
+ft_gcov="1"
+ft_coveragepy="1"
+ft_issue43="1"
 proj_root="."
 gcov_exe="gcov"
 gcov_arg=""
@@ -53,7 +53,7 @@ EOF
 }
 
 say() {
-  if [ $silent = 0 ];
+  if [ "$silent" = "0" ];
   then
     if [ "$1" = "-n" ]
     then
@@ -86,13 +86,13 @@ then
   do
     case "$o" in
       "v")
-        verbose=1
+        verbose="1"
         ;;
       "s")
-        silent=1
+        silent="1"
         ;;
       "d")
-        dump=1
+        dump="1"
         ;;
       "h")
         show_help
@@ -116,13 +116,13 @@ then
       "X")
         if [ "$OPTARG" = "gcov" ];
         then
-          ft_gcov=0
+          ft_gcov="0"
         elif [ "$OPTARG" = "coveragepy" ];
         then
-          ft_coveragepy=0
+          ft_coveragepy="0"
         elif [ "$OPTARG" = "issue/43" ];
         then
-          ft_issue43=0
+          ft_issue43="0"
         fi
         ;;
       "g")
@@ -327,28 +327,30 @@ else
   query="branch=$branch&commit=$(git rev-parse HEAD)"
 fi
 
-if [ "$ft_gcov" = "1" ];
-then
-  # osx gcov
-  if [ -d ~/Library/Developer/Xcode/DerivedData ];
-  then
-    say "==> Found gcda in ~/Library/Developer/Xcode/DerivedData"
-    find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' -exec $gcov_exe $gcov_arg {} +
-  fi
-
-  say "==> find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe $gcov_arg {} +"
-
-  # all other gcov
-  bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe $gcov_arg {} +" || true
-else
-  say '**> gcov disable'
-fi
-
 # find all the reports
-if [ $files != 0 ];
+if [ "$files" != "" ];
 then
   say "==> Targeting specific file"
+
 else
+
+  if [ "$ft_gcov" = "1" ];
+  then
+    # osx gcov
+    if [ -d ~/Library/Developer/Xcode/DerivedData ];
+    then
+      say "==> Found gcda in ~/Library/Developer/Xcode/DerivedData"
+      find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' -exec $gcov_exe $gcov_arg {} +
+    fi
+
+    say "==> find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe $gcov_arg {} +"
+
+    # all other gcov
+    bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe $gcov_arg {} +" || true
+  else
+    say '**> gcov disable'
+  fi
+
   say "==> Searching for coverage reports"
   files=$(find . -type f -name '*coverage.*' \
                      -or -name 'nosetests.xml' \
@@ -371,35 +373,36 @@ else
                     -not -path '*/__pycache__/*' \
                     -not -path '*/.egg-info*' \
                     -not -path '*/node_modules/*')
-fi
 
-# Python coveragepy generation
-if [ "$ft_coveragepy" = "1" ];
-then
-  if which coverage >/dev/null 2>&1;
+  # Python coveragepy generation
+  if [ "$ft_coveragepy" = "1" ];
   then
-    say "==> Python coveragepy exists"
-    if [ "$ft_issue43" = "1" ];
+    if which coverage >/dev/null 2>&1;
     then
-      say "    Replacing coveragepy with https://github.com/codecov/coveragepy"
-      say "    Read more at https://github.com/codecov/support/issues/43"
-      say "    -X coveragepy to disable"
-      pip uninstall -y coverage || true
-      pip install git+git://github.com/codecov/coveragepy.git@stable || true
-    fi
-    say "    Running coverage xml"
-    if [ "$(coverage xml)" != "No data to report." ];
-    then
-      files="$files
+      say "==> Python coveragepy exists"
+
+      if [ "$ft_issue43" = "1" ];
+      then
+        say "    Replacing coveragepy with https://github.com/codecov/coveragepy"
+        say "    Read more at https://github.com/codecov/support/issues/43"
+        pip uninstall -y coverage || true
+        pip install git+git://github.com/codecov/coveragepy.git@stable || true
+      fi
+
+      say "    Running coverage xml"
+      if [ "$(coverage xml)" != "No data to report." ];
+      then
+        files="$files
 coverage.xml"
+      else
+        say "    No data to report."
+      fi
     else
-      say "    No data to report."
+      say "**> Python coverage not found"
     fi
   else
-    say "**> Python coverage not found"
+    say "**> Python coverage disabled"
   fi
-else
-  say "**> Python coverage disabled"
 fi
 
 # no files found
@@ -477,7 +480,7 @@ fi
 query=$(echo "package=bash-$VERSION&$query$slug$token" | tr -d ' ')
 say "(query) $query"
 
-if [ $dump != 0 ];
+if [ "$dump" != "0" ];
 then
   echo "$url/upload/v2?$query"
   echo "$upload"
