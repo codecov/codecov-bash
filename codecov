@@ -381,8 +381,8 @@ then
       say "    Replacing coveragepy with https://github.com/codecov/coveragepy"
       say "    Read more at https://github.com/codecov/support/issues/43"
       say "    -X coveragepy to disable"
-      pip uninstall -y coverage
-      pip install git+git://github.com/codecov/coveragepy.git@stable
+      pip uninstall -y coverage || true
+      pip install git+git://github.com/codecov/coveragepy.git@stable || true
     fi
     say "    Running coverage xml"
     if [ "$(coverage xml)" != "No data to report." ];
