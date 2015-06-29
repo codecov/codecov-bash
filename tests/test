@@ -118,7 +118,7 @@ function test_slug_env () {
 
 function test_gcov () {
     reset
-    ./codecov -dv -X gcov | grep '==> gcov disable'
+    ./codecov -dv -X gcov | grep '**> gcov disable'
     assertTrue 'gcov was disabled' $?
 }
 
