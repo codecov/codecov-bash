@@ -13,7 +13,6 @@ https://codecov.io/upload/v2?package=bash-<%= ENV['_VERSION'] %>&branch=<%= ENV[
 BUILD_ID=apples
 COMMIT=abc
 <<<<<< ENV
-./coverage
 ./temp/file.rb
 ./tests/env
 ./tests/test
