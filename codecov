@@ -382,7 +382,7 @@ then
       say "    Read more at https://github.com/codecov/support/issues/43"
       say "    -X coveragepy to disable"
       pip uninstall -y coverage
-      pip install git+git://github.com/codecov/coveragepy.git
+      pip install git+git://github.com/codecov/coveragepy.git@stable
     fi
     say "    Running coverage xml"
     if [ "$(coverage xml)" != "No data to report." ];
