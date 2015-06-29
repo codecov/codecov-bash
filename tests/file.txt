@@ -5,8 +5,8 @@ Codecov
 ==> Found gcda in ~/Library/Developer/Xcode/DerivedData
 ==> find . -type f -name '*.gcno'  -exec gcov  {} +
 ==> Targeting specific file at temp/coverage.json
-==> coverage cli exists
-==> Trying coverage xml... ok
+==> Coverage cli exists, replacing with https://bitbucket.org/codecov/coverage.py
+==> Generating coverage xml...ok
 ==> Detecting file structure
 ==> Reading reports
 (query) package=bash-<%= ENV['_VERSION'] %>&branch=<%= ENV['_BRANCH'] %>&commit=<%= ENV['_SHA'] %>

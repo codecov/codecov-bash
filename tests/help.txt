@@ -17,7 +17,7 @@ Upload reports to Codecov
                  ex. codecov -r mycompany/home
     -v           Verbose Mode
     -d           Dont upload and dump to stdin
-    -X feature   Disable functionalities, accepting: 'gcov'
+    -X feature   Disable functionalities, accepting: 'gcov', 'coveragepy'
     -g GLOB      Paths to ignore during gcov gathering
     -p dir       Project root used when preparing gcov
     -x gcovexe   gcov executable to run. Defaults to 'gcov'
