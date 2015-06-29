@@ -12,10 +12,9 @@ export _VERSION="$VERSION"
 export PATH=$PWD:$PATH
 
 function reset () {
-    rm -rf temp bower .bowerrc coverage
+    rm -rf temp bower .bowerrc
     mkdir -p temp
     mkdir -p ~/Library/Developer/Xcode/DerivedData
-    install -b -m 755 /dev/null coverage
     . tests/env
     echo '{"file.txt":[null, 1, 0]}' > temp/coverage.json
     echo '{"another.txt":[null, 1, 0]}' > temp/coverage.xml
