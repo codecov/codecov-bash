@@ -246,6 +246,7 @@ then
   query="service=appveyor\
          &branch=$APPVEYOR_REPO_BRANCH\
          &build=$APPVEYOR_JOB_ID\
+         &pr=$APPVEYOR_PULL_REQUEST_NUMBER\
          &job=$APPVEYOR_ACCOUNT_NAME/$APPVEYOR_PROJECT_SLUG/$APPVEYOR_BUILD_VERSION\
          &slug=$APPVEYOR_REPO_NAME\
          &commit=$APPVEYOR_REPO_COMMIT"
