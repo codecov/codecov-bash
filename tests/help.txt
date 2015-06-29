@@ -1,4 +1,4 @@
-Codecov v<%= ENV['_VERSION'] %>
+Codecov <%= ENV['_VERSION'] %>
 Usage: codecov [-hv] [-f COVERAGE]
 Upload reports to Codecov
 

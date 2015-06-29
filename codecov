@@ -20,7 +20,7 @@ gcov_arg=""
 
 show_help() {
 cat << EOF
-Codecov v$VERSION
+Codecov $VERSION
 Usage: ${0##*/} [-hv] [-f COVERAGE]
 Upload reports to Codecov
 
@@ -144,7 +144,8 @@ then
   done
 fi
 
-say "Codecov v$VERSION"
+say "Codecov"
+say "(version) $VERSION"
 
 if [ "$CODECOV_URL" != "" ];
 then
@@ -451,7 +452,7 @@ $upload"
 fi
 
 # trim whitespace from query
-query=$(echo "package=bash-v$VERSION&$query$slug$token" | tr -d ' ')
+query=$(echo "package=bash-$VERSION&$query$slug$token" | tr -d ' ')
 say "(query) $query"
 
 if [ $dump != 0 ];

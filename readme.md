@@ -4,6 +4,8 @@ Codecov Global Uploader
 
 [![Deployed Version](https://codecov.io/bash?badge=y)](https://codecov.io/bash?redirect=y)
 
+[![Build Status](https://secure.travis-ci.org/codecov/codecov-bash.svg?branch=master)](http://travis-ci.org/codecov/codecov-bash) [![Circle CI](https://img.shields.io/circleci/project/codecov/codecov-bash.svg)](https://circleci.com/gh/codecov/codecov-bash)
+
 ------
 
 ```bash
@@ -40,24 +42,24 @@ after_success:
 
 
 ### CI Providers
-|                       Company                       |                                                               Supported                                                               | Tokens Required  |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
-| [Travis CI](https://travis-ci.org/)                 | Yes [![Build Status](https://secure.travis-ci.org/codecov/codecov-bash.svg?branch=master)](http://travis-ci.org/codecov/codecov-bash) | Private only     |
-| [CircleCI](https://circleci.com/)                   | Yes [![Circle CI](https://img.shields.io/circleci/project/codecov/codecov-bash.svg)](https://circleci.com/gh/codecov/codecov-bash)    | Private only     |
-| [Codeship](https://codeship.com/)                   | Yes                                                                                                                                   | Public & Private |
-| [Jenkins](https://jenkins-ci.org/)                  | Yes                                                                                                                                   | Public & Private |
-| [Semaphore](https://semaphoreci.com/)               | Yes                                                                                                                                   | Public & Private |
-| [drone.io](https://drone.io/)                       | Yes                                                                                                                                   | Public & Private |
-| [AppVeyor](http://www.appveyor.com/)                | Yes                                                                                                                                   | Public & Private |
-| [Wercker](http://wercker.com/)                      | Yes                                                                                                                                   | Public & Private |
-| [Magnum CI](https://magnum-ci.com/)                 | Yes                                                                                                                                   | Public & Private |
-| [Shippable](http://www.shippable.com/)              | Yes                                                                                                                                   | Public & Private |
-| [Gitlab CI](https://about.gitlab.com/gitlab-ci/)    | Yes                                                                                                                                   | Public & Private |
-| [snap ci](https://snap-ci.com_)                     | Yes                                                                                                                                   | Public & Private |
-| git                                                 | Yes (as a fallback)                                                                                                                   | Public & Private |
-| [Buildbot](http://buildbot.net/)                    | `coming soon` [buildbot/buildbot#1671](https://github.com/buildbot/buildbot/pull/1671)                                                |                  |
-| [Bamboo](https://www.atlassian.com/software/bamboo) | `coming soon`                                                                                                                         |                  |
-| [Solano Labs](https://www.solanolabs.com/)          | `coming soon`                                                                                                                         |                  |
+|                       Company                       |                                       Supported                                        | Tokens Required  |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------- | ---------------- |
+| [Travis CI](https://travis-ci.org/)                 | Yes                                                                                    | Private only     |
+| [CircleCI](https://circleci.com/)                   | Yes                                                                                    | Private only     |
+| [Codeship](https://codeship.com/)                   | Yes                                                                                    | Public & Private |
+| [Jenkins](https://jenkins-ci.org/)                  | Yes                                                                                    | Public & Private |
+| [Semaphore](https://semaphoreci.com/)               | Yes                                                                                    | Public & Private |
+| [drone.io](https://drone.io/)                       | Yes                                                                                    | Public & Private |
+| [AppVeyor](http://www.appveyor.com/)                | Yes                                                                                    | Public & Private |
+| [Wercker](http://wercker.com/)                      | Yes                                                                                    | Public & Private |
+| [Magnum CI](https://magnum-ci.com/)                 | Yes                                                                                    | Public & Private |
+| [Shippable](http://www.shippable.com/)              | Yes                                                                                    | Public & Private |
+| [Gitlab CI](https://about.gitlab.com/gitlab-ci/)    | Yes                                                                                    | Public & Private |
+| [snap ci](https://snap-ci.com_)                     | Yes                                                                                    | Public & Private |
+| git                                                 | Yes (as a fallback)                                                                    | Public & Private |
+| [Buildbot](http://buildbot.net/)                    | `coming soon` [buildbot/buildbot#1671](https://github.com/buildbot/buildbot/pull/1671) |                  |
+| [Bamboo](https://www.atlassian.com/software/bamboo) | `coming soon`                                                                          |                  |
+| [Solano Labs](https://www.solanolabs.com/)          | `coming soon`                                                                          |                  |
 
 > Using **Travis CI**? Uploader is compatable with `sudo: false` which can speed up your builds. :+1:
 
