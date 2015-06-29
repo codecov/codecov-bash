@@ -4,7 +4,7 @@ Codecov Global Uploader
 
 [![Deployed Version](https://codecov.io/bash?badge=y)](https://codecov.io/bash?redirect=y)
 
-[![Build Status](https://secure.travis-ci.org/codecov/codecov-bash.svg?branch=master)](http://travis-ci.org/codecov/codecov-bash) [![Circle CI](https://img.shields.io/circleci/project/codecov/codecov-bash.svg)](https://circleci.com/gh/codecov/codecov-bash)
+[![Build Status](https://secure.travis-ci.org/codecov/codecov-bash.svg?branch=master)](http://travis-ci.org/codecov/codecov-bash) [![Circle CI](https://img.shields.io/circleci/project/codecov/codecov-bash.svg?branch=master)](https://circleci.com/gh/codecov/codecov-bash)
 
 ------
 
