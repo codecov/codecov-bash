@@ -322,7 +322,7 @@ else
     branch="master"
   fi
   query="branch=$branch&commit=$(git rev-parse HEAD)"
-fi;
+fi
 
 if [ $gcov != 0 ];
 then
@@ -372,6 +372,7 @@ fi
 
 # Python coveragepy generation
 if [ "$ft_coveragepy" = "1" ];
+then
   if which coverage >/dev/null 2>&1;
   then
     say "==> Python coveragepy exists"
