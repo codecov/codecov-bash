@@ -287,11 +287,16 @@ then
   else
     _branch="$SNAP_UPSTREAM_BRANCH"
   fi
+  if [ "$SNAP_COMMIT" != "" ]; then
+    _commit="$SNAP_COMMIT"
+  else
+    _commit="$SNAP_UPSTREAM_COMMIT"
+  fi
   query="service=snap\
          &branch=$_branch\
          &build=$SNAP_PIPELINE_COUNTER\
          &pr=$SNAP_PULL_REQUEST_NUMBER\
-         &commit=$SNAP_COMMIT"
+         &commit=$_commit"
 
 elif [ "$SHIPPABLE" = "true" ];
 then
