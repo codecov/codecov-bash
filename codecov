@@ -282,8 +282,13 @@ elif [ "$CI" = "true" ] && [ "$SNAP_CI" = "true" ];
 then
   say "==> Snap CI detected."
   # https://docs.snap-ci.com/environment-variables/
+  if [ "$SNAP_BRANCH" != "" ]; then
+    _branch="$SNAP_BRANCH"
+  else
+    _branch="$SNAP_UPSTREAM_BRANCH"
+  fi
   query="service=snap\
-         &branch=$SNAP_BRANCH\
+         &branch=$_branch\
          &build=$SNAP_PIPELINE_COUNTER\
          &pr=$SNAP_PULL_REQUEST_NUMBER\
          &commit=$SNAP_COMMIT"
