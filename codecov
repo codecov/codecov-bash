@@ -383,6 +383,8 @@ else
         say "    Read more at https://github.com/codecov/support/issues/43"
         pip uninstall -y coverage || true
         pip install git+git://github.com/codecov/coveragepy.git@stable || true
+      else
+        say "**> #43 disabled"
       fi
 
       say "    Running coverage xml"
