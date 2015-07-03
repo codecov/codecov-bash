@@ -317,10 +317,11 @@ else
   say "==> No CI detected, using git for branch and commit sha."
   branch=$(git rev-parse --abbrev-ref HEAD)
   if [ "$branch" = "HEAD" ]; then
-    say "    branch was HEAD, set to master"
-    branch="master"
+    branch=""
+  else
+    branch="branch=$branch&"
   fi
-  query="branch=$branch&commit=$(git rev-parse HEAD)"
+  query="$branchcommit=$(git rev-parse HEAD)"
 fi
 
 # find all the reports

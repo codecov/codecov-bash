@@ -150,7 +150,7 @@ function test_token_env () {
 
 function test_verbose_opt () {
     reset
-    assertDiff "$(./codecov -vd | grep -v 'coverage cli exists' | grep -v '    branch was HEAD, set to master')" ./tests/verbose.txt
+    assertDiff "$(./codecov -vd | grep -v 'coverage cli exists')" ./tests/verbose.txt
 }
 
 function test_upload () {
