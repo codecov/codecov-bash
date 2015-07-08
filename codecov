@@ -40,15 +40,14 @@ Upload reports to Codecov
     -g GLOB      Paths to ignore during gcov gathering
     -p dir       Project root used when preparing gcov
     -x gcovexe   gcov executable to run. Defaults to 'gcov'
-    -a gcovargs  extra arguments to pass o gcov
+    -a gcovargs  extra arguments to pass to gcov
     -s silent    Enable silent mode
 
     -- Enterprise customers --
     -u URL       Set the target url for Enterprise customers [default https://codecov.io]
-                 (or) set environment variable $CODECOV_URL=https://my-hosted-codecov.com
+                 (or) set environment variable CODECOV_URL=https://my-hosted-codecov.com
     -r           owner/repo slug used instead of the private repo token in Enterprise
                  (or) set environment variable CODECOV_SLUG=:owner/:repo
-                 ex. codecov -r mycompany/home
 
 Contribute and source at https://github.com/codecov/codecov-bash
 EOF
@@ -57,12 +56,7 @@ EOF
 say() {
   if [ "$silent" = "0" ];
   then
-    if [ "$1" = "-n" ]
-    then
-      echo -n "$2"
-    else
-      echo "$1"
-    fi
+    echo "$1"
   fi
 }
 
@@ -108,6 +102,7 @@ then
         ;;
       "f")
         if [ "$files" = "" ];
+        then
           files="$OPTARG"
         else
           files="$files $OPTARG"
@@ -471,6 +466,7 @@ then
   fi
 
   if [ "$env" != "" ];
+  then
     for e in $(echo "$env" | tr ',' ' ')
     do
       say "    + $e"

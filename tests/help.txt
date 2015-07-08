@@ -5,23 +5,24 @@ Upload reports to Codecov
     -h           display this help and exit
     -f COVERAGE  reference a specific file only to upload
                  otherwise all files will be searched, recursively current directoy.
-    -u URL       Set the target url for Enterprise customers [default https://codecov.io]
-                 (or) set environment variable =https://my-hosted-codecov.com
     -t TOKEN     Set the private repo token
                  (or) set environment variable =:uuid
     -e ENV       Specify environment variables to be included with this build
                  ex. codecov -e VAR,VAR2
                  (or) set environment variable =VAR,VAR2
-    -r           owner/repo slug used instead of the private repo token in Enterprise
-                 (or) set environment variable CODECOV_SLUG=:owner/:repo
-                 ex. codecov -r mycompany/home
     -v           Verbose Mode
     -d           Dont upload and dump to stdin
     -X feature   Disable functionalities, accepting: 'gcov', 'coveragepy', 'issue/43'
     -g GLOB      Paths to ignore during gcov gathering
     -p dir       Project root used when preparing gcov
     -x gcovexe   gcov executable to run. Defaults to 'gcov'
-    -a gcovargs  extra arguments to pass o gcov
+    -a gcovargs  extra arguments to pass to gcov
     -s silent    Enable silent mode
+
+    -- Enterprise customers --
+    -u URL       Set the target url for Enterprise customers [default https://codecov.io]
+                 (or) set environment variable CODECOV_URL=https://my-hosted-codecov.com
+    -r           owner/repo slug used instead of the private repo token in Enterprise
+                 (or) set environment variable CODECOV_SLUG=:owner/:repo
 
 Contribute and source at https://github.com/codecov/codecov-bash
