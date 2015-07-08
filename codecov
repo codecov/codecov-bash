@@ -29,16 +29,11 @@ Upload reports to Codecov
     -h           display this help and exit
     -f COVERAGE  reference a specific file only to upload
                  otherwise all files will be searched, recursively current directoy.
-    -u URL       Set the target url for Enterprise customers [default https://codecov.io]
-                 (or) set environment variable $CODECOV_URL=https://my-hosted-codecov.com
     -t TOKEN     Set the private repo token
                  (or) set environment variable $CODECOV_TOKEN=:uuid
     -e ENV       Specify environment variables to be included with this build
                  ex. codecov -e VAR,VAR2
                  (or) set environment variable $CODECOV_ENV=VAR,VAR2
-    -r           owner/repo slug used instead of the private repo token in Enterprise
-                 (or) set environment variable CODECOV_SLUG=:owner/:repo
-                 ex. codecov -r mycompany/home
     -v           Verbose Mode
     -d           Dont upload and dump to stdin
     -X feature   Disable functionalities, accepting: 'gcov', 'coveragepy', 'issue/43'
@@ -47,6 +42,13 @@ Upload reports to Codecov
     -x gcovexe   gcov executable to run. Defaults to 'gcov'
     -a gcovargs  extra arguments to pass o gcov
     -s silent    Enable silent mode
+
+    -- Enterprise customers --
+    -u URL       Set the target url for Enterprise customers [default https://codecov.io]
+                 (or) set environment variable $CODECOV_URL=https://my-hosted-codecov.com
+    -r           owner/repo slug used instead of the private repo token in Enterprise
+                 (or) set environment variable CODECOV_SLUG=:owner/:repo
+                 ex. codecov -r mycompany/home
 
 Contribute and source at https://github.com/codecov/codecov-bash
 EOF
@@ -105,7 +107,11 @@ then
         token="&token=$OPTARG"
         ;;
       "f")
-        files="$OPTARG"
+        if [ "$files" = "" ];
+          files="$OPTARG"
+        else
+          files="$files $OPTARG"
+        fi
         ;;
       "p")
         proj_root="$OPTARG"
@@ -135,7 +141,12 @@ then
         gcov_arg=$OPTARG
         ;;
       "e")
-        env=$OPTARG
+        if [ "$env" = "" ];
+        then
+          env="$OPTARG"
+        else
+          env="$env,$OPTARG"
+        fi
         ;;
     esac
   done
@@ -444,6 +455,35 @@ then
   upload=$(echo "$upload" | sort)
 fi
 
+# Append Environment Variables
+if [ "$env" != "" ] || [ "$CODECOV_ENV" != "" ];
+then
+  inc_env=""
+  say "==> Appending build variables"
+  if [ "$CODECOV_ENV" != "" ];
+  then
+    for e in $(echo "$CODECOV_ENV" | tr ',' ' ')
+    do
+      say "    + $e"
+      inc_env="$inc_env$e=$(eval echo "\$$e")
+"
+    done
+  fi
+
+  if [ "$env" != "" ];
+    for e in $(echo "$env" | tr ',' ' ')
+    do
+      say "    + $e"
+      inc_env="$inc_env$e=$(eval echo "\$$e")
+"
+    done
+  fi
+
+  upload="$inc_env<<<<<< ENV
+$upload"
+fi
+
+# Append Reports
 say "==> Reading reports"
 for file in $files
 do
@@ -460,26 +500,6 @@ do
 $report"
   fi
 done
-
-if [ "$env" != "" ] || [ "$CODECOV_ENV" ];
-then
-  inc_env=""
-  say "==> Appending build variables"
-  for e in $(echo "$CODECOV_ENV" | tr ',' ' ')
-  do
-    say "    + $e"
-    inc_env="$inc_env$e=$(eval echo "\$$e")
-"
-  done
-  for e in $(echo "$env" | tr ',' ' ')
-  do
-    say "    + $e"
-    inc_env="$inc_env$e=$(eval echo "\$$e")
-"
-  done
-  upload="$inc_env<<<<<< ENV
-$upload"
-fi
 
 # trim whitespace from query
 query=$(echo "package=bash-$VERSION&$query$slug$token" | tr -d ' ')
