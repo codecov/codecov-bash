@@ -354,7 +354,7 @@ else
   fi
 
   say "==> Searching for coverage reports"
-  files=$(find . -type f -name '*coverage.*' \
+  files=$(find . -type f \( -name '*coverage.*' \
                      -or -name 'nosetests.xml' \
                      -or -name 'jacoco*.xml' \
                      -or -name 'clover.xml' \
@@ -364,7 +364,7 @@ else
                      -or -name '*.lcov' \
                      -or -name 'gcov.info' \
                      -or -name '*.gcov' \
-                     -or -name '*.lst' \
+                     -or -name '*.lst' \) \
                     -not -path '*/vendor/*' \
                     -not -path '*/home/cainus/*' \
                     -not -path '*/venv/*' \
@@ -374,6 +374,7 @@ else
                     -not -path '*/.git/*' \
                     -not -path '*/__pycache__/*' \
                     -not -path '*/.egg-info*' \
+                    -not -path "*/$bower_components/*" \
                     -not -path '*/node_modules/*')
 
   # Python coveragepy generation
