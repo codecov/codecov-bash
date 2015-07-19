@@ -14,7 +14,7 @@ Upload reports to Codecov
     -d           Dont upload and dump to stdin
     -X feature   Disable functionalities, accepting: 'gcov', 'coveragepy', 'issue/43'
     -g GLOB      Paths to ignore during gcov gathering
-    -p dir       Project root used when preparing gcov
+    -p dir       Project root (default to current directory or WORKSPACE / TRAVIS_BUILD_DIR)
     -x gcovexe   gcov executable to run. Defaults to 'gcov'
     -a gcovargs  extra arguments to pass to gcov
     -s silent    Enable silent mode
