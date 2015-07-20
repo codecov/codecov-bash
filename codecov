@@ -406,7 +406,7 @@ else
       # find the .coverage
       find "$proj_root" \( -name '.coverage' -or -name '.coverage.*' \) -not -path '.coveragerc'
       dotcoverage=$(find "$proj_root" \( -name '.coverage' -or -name '.coverage.*' \) -not -path '.coveragerc' | head -1)
-      cd "(dotcoverage) $dotcoverage"
+      cd "$(dirname "$dotcoverage")"
       if [ "$dotcoverage" != "" ];
       then
         say "    Running coverage xml"
