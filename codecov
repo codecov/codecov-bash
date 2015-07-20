@@ -401,11 +401,16 @@ else
         pip uninstall -y coverage || true
         pip install git+git://github.com/codecov/coveragepy.git@stable || true
       else
-        say "**> #43 disabled"
+        say "    **> #43 disabled"
       fi
       # find the .coverage
-      find "$proj_root" \( -name '.coverage' -or -name '.coverage.*' \) -not -path '.coveragerc'
+      if [ "$verbose" = "1" ];
+      then
+        say "    -> Searching for .coverage file"
+        find "$proj_root" \( -name '.coverage' -or -name '.coverage.*' \) -not -path '.coveragerc'
+      fi
       dotcoverage=$(find "$proj_root" \( -name '.coverage' -or -name '.coverage.*' \) -not -path '.coveragerc' | head -1)
+      say "    -> $dotcoverage"
       cd "$(dirname "$dotcoverage")"
       if [ "$dotcoverage" != "" ];
       then
@@ -507,8 +512,8 @@ do
   # read the coverage file
   if [ -f "$file" ];
   then
-    say "    + $file"
     report=$(cat "$file")
+    say "    + $file bytes=${#report}"
     # append to to upload
     upload="$upload
 <<<<<< EOF
