@@ -403,15 +403,22 @@ else
       else
         say "**> #43 disabled"
       fi
-      ls -all
-      echo "$PWD"
-      say "    Running coverage xml"
-      if [ "$(coverage xml)" != "No data to report." ];
+      # find the .coverage
+      find "$proj_root" (-name '.coverage' -or -name '.coverage.*') -not -path '.coveragerc'
+      dotcoverage=$(find "$proj_root" (-name '.coverage' -or -name '.coverage.*') -not -path '.coveragerc' | head -1)
+      cd "(dotcoverage) $dotcoverage"
+      if [ "$dotcoverage" != "" ];
       then
-        files="$files
+        say "    Running coverage xml"
+        if [ "$(coverage xml)" != "No data to report." ];
+        then
+          files="$files
 coverage.xml"
+        else
+          say "    No data to report."
+        fi
       else
-        say "    No data to report."
+        say "    No .coverage file found."
       fi
     else
       say "**> Python coverage not found"
@@ -496,7 +503,7 @@ say "==> Reading reports"
 for file in $files
 do
   # escape file paths
-  file="$(echo $file | sed -e 's/ /\\ /')"
+  file=$(echo "$file" | sed -e 's/ /\\ /')
   # read the coverage file
   if [ -f "$file" ];
   then
