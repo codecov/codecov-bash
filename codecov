@@ -325,6 +325,8 @@ else
   query="branch=$branch&commit=$(git rev-parse HEAD)"
 fi
 
+say "(project root) $proj_root"
+
 # detect bower comoponents location
 bower_components="bower_components"
 bower_rc=$(find "$proj_root" -name .bowerrc)
@@ -401,7 +403,8 @@ else
       else
         say "**> #43 disabled"
       fi
-
+      ls -all
+      echo "$PWD"
       say "    Running coverage xml"
       if [ "$(coverage xml)" != "No data to report." ];
       then
