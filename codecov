@@ -404,8 +404,8 @@ else
         say "**> #43 disabled"
       fi
       # find the .coverage
-      find "$proj_root" (-name '.coverage' -or -name '.coverage.*') -not -path '.coveragerc'
-      dotcoverage=$(find "$proj_root" (-name '.coverage' -or -name '.coverage.*') -not -path '.coveragerc' | head -1)
+      find "$proj_root" ( -name '.coverage' -or -name '.coverage.*' ) -not -path '.coveragerc'
+      dotcoverage=$(find "$proj_root" ( -name '.coverage' -or -name '.coverage.*' ) -not -path '.coveragerc' | head -1)
       cd "(dotcoverage) $dotcoverage"
       if [ "$dotcoverage" != "" ];
       then
