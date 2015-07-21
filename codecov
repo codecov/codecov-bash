@@ -227,7 +227,7 @@ then
   # https://semaphoreapp.com/docs/available-environment-variables.html
   query="service=semaphore\
          &branch=$BRANCH_NAME\
-         &build=$SEMAPHORE_BUILD_NUMBER\
+         &build=$SEMAPHORE_BUILD_NUMBER.$SEMAPHORE_CURRENT_THREAD\
          &slug=$SEMAPHORE_REPO_SLUG\
          &commit=$REVISION"
 
