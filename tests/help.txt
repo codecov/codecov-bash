@@ -18,6 +18,7 @@ Upload reports to Codecov
     -x gcovexe   gcov executable to run. Defaults to 'gcov'
     -a gcovargs  extra arguments to pass to gcov
     -s silent    Enable silent mode
+    -b build     Tag upload to a specific build (automatically detected in supported CI companies)
 
     -- Enterprise customers --
     -u URL       Set the target url for Enterprise customers [default https://codecov.io]

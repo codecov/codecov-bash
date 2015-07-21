@@ -9,6 +9,7 @@ verbose="0"
 silent="0"
 env=""
 token=""
+build=""
 slug=""
 dump="0"
 files=""
@@ -42,6 +43,7 @@ Upload reports to Codecov
     -x gcovexe   gcov executable to run. Defaults to 'gcov'
     -a gcovargs  extra arguments to pass to gcov
     -s silent    Enable silent mode
+    -b build     Tag upload to a specific build (automatically detected in supported CI companies)
 
     -- Enterprise customers --
     -u URL       Set the target url for Enterprise customers [default https://codecov.io]
@@ -78,7 +80,7 @@ fi
 
 if [ $# != 0 ];
 then
-  while getopts "svdhu:t:f:r:e:g:p:X:x:a:" o
+  while getopts "svdhu:t:f:r:e:g:p:X:x:a:b:" o
   do
     case "$o" in
       "v")
@@ -89,6 +91,9 @@ then
         ;;
       "d")
         dump="1"
+        ;;
+      "b")
+        build="$OPTARG"
         ;;
       "h")
         show_help
@@ -326,7 +331,7 @@ else
   then
     branch=""
   fi
-  query="branch=$branch&commit=$(git rev-parse HEAD)"
+  query="branch=$branch&commit=$(git rev-parse HEAD)&build=$build"
 fi
 
 # find all the reports
