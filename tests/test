@@ -165,7 +165,7 @@ function test_upload () {
     export TRAVIS_PULL_REQUEST="false"
     export TRAVIS_JOB_NUMBER="4.1"
     res=$(./codecov | grep "http://codecov.io" | cut -d \" -f 4)
-    diff <(echo "http://codecov.io/github/codecov/ci-repo?ref=c739768fcac68144a3a6d82305b9c4106934d31a") <(echo "$res")
+    diff <(echo "    http://codecov.io/github/codecov/ci-repo?ref=c739768fcac68144a3a6d82305b9c4106934d31a") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
