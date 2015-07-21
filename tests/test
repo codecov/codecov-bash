@@ -50,6 +50,13 @@ function test_url_env () {
     assertTrue 'Expected output differs.' $?
 }
 
+function test_build_arg () {
+    reset
+    res=$(./codecov -d -b 1.6 | grep "https://codecov.io/")
+    diff <(echo "http://example.com/upload/v2?package=bash-$VERSION&branch=$_BRANCH&commit=$_SHA&build=1.6") <(echo "$res")
+    assertTrue 'Expected output differs.' $?
+}
+
 function test_bowerrc_empty () {
     reset
     mkdir bower_components

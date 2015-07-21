@@ -331,7 +331,13 @@ else
   then
     branch=""
   fi
-  query="branch=$branch&commit=$(git rev-parse HEAD)&build=$build"
+
+  query="branch=$branch&commit=$(git rev-parse HEAD)"
+
+  if [ "$build" != "" ];
+  then
+    query="$query&build=$build"
+  fi
 fi
 
 # find all the reports
