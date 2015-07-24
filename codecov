@@ -376,12 +376,21 @@ else
                      -or -name 'gcov.info' \
                      -or -name '*.gcov' \
                      -or -name '*.lst' \) \
+                    -not -name '*.sh' \
                     -not -path '*/vendor/*' \
                     -not -path '*/home/cainus/*' \
-                    -not -path '*/venv/*' \
-                    -not -path '*/.env/*' \
                     -not -path '*/virtualenv/*' \
                     -not -path '*/.virtualenv/*' \
+                    -not -path '*/virtualenvs/*' \
+                    -not -path '*/.virtualenvs/*' \
+                    -not -path '*/.env/*' \
+                    -not -path '*/.envs/*' \
+                    -not -path '*/env/*' \
+                    -not -path '*/envs/*' \
+                    -not -path '*/.venv/*' \
+                    -not -path '*/.venvs/*' \
+                    -not -path '*/venv/*' \
+                    -not -path '*/venvs/*' \
                     -not -path '*/.git/*' \
                     -not -path '*/__pycache__/*' \
                     -not -path '*/.egg-info*' \
@@ -430,10 +439,18 @@ fi
 
 say "==> Detecting file structure"
 upload=$(find . -type f \
-                -not -path '*/venv/*' \
                 -not -path '*/virtualenv/*' \
-                -not -path '*/.env/*' \
                 -not -path '*/.virtualenv/*' \
+                -not -path '*/virtualenvs/*' \
+                -not -path '*/.virtualenvs/*' \
+                -not -path '*/.env/*' \
+                -not -path '*/.envs/*' \
+                -not -path '*/env/*' \
+                -not -path '*/envs/*' \
+                -not -path '*/.venv/*' \
+                -not -path '*/.venvs/*' \
+                -not -path '*/venv/*' \
+                -not -path '*/venvs/*' \
                 -not -path '*/build/lib/*' \
                 -not -path '*/.git/*' \
                 -not -path '*/.egg-info/*' \
