@@ -371,7 +371,6 @@ else
                      -or -name 'clover.xml' \
                      -or -name 'report.xml' \
                      -or -name 'cobertura.xml' \
-                     -or -name 'test-results.xml' \
                      -or -name 'lcov.info' \
                      -or -name '*.lcov' \
                      -or -name 'gcov.info' \
