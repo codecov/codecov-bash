@@ -396,7 +396,8 @@ else
                     -not -path '*/__pycache__/*' \
                     -not -path '*/.egg-info*' \
                     -not -path "*/$bower_components/*" \
-                    -not -path '*/node_modules/*')
+                    -not -path '*/node_modules/*' \
+                    -not -path '*/conftest_*.c.gcov')
 
   # Python coveragepy generation
   if [ "$ft_coveragepy" = "1" ];
