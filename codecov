@@ -222,8 +222,9 @@ then
   # https://circleci.com/docs/environment-variables
   query="service=circleci\
          &branch=$CIRCLE_BRANCH\
-         &build=$CIRCLE_BUILD_NUM\
+         &build=$CIRCLE_BUILD_NUM.$CIRCLE_NODE_INDEX\
          &slug=$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME\
+         &pr=$CIRCLE_PR_NUMBER\
          &commit=$CIRCLE_SHA1"
 
 elif [ "$CI" = "true" ] && [ "$SEMAPHORE" = "true" ];
