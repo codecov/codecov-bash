@@ -13,5 +13,5 @@ https://codecov.io/upload/v2?package=bash-<%= ENV['_VERSION'] %>&branch=<%= ENV[
 ./tests/env
 ./tests/test
 <<<<<< EOF
-# path=temp/coverage.json
+# path=./temp/coverage.json
 {"file.txt":[null, 1, 0]}
