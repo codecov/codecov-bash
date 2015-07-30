@@ -524,6 +524,7 @@ do
     # append to to upload
     upload="$upload
 <<<<<< EOF
+# path=$file
 $report"
   fi
 done
