@@ -380,6 +380,8 @@ else
                      -or -name '*.lst' \) \
                     -not -name '*.sh' \
                     -not -name 'inputFiles.lst' \
+                    -not -name 'coverage.html' \
+                    -not -name 'test_*_coverage.txt' \
                     -not -path '*/vendor/*' \
                     -not -path '*/home/cainus/*' \
                     -not -path '*/virtualenv/*' \
