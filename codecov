@@ -380,11 +380,13 @@ else
                      -or -name '*.lst' \) \
                     -not -name '*.sh' \
                     -not -name 'inputFiles.lst' \
+                    -not -name 'createdFiles.lst' \
                     -not -name 'coverage.html' \
                     -not -name 'test_*_coverage.txt' \
                     -not -path '*/vendor/*' \
                     -not -path '*/home/cainus/*' \
                     -not -path '*/virtualenv/*' \
+                    -not -path '*/js/generated/coverage/*' \
                     -not -path '*/.virtualenv/*' \
                     -not -path '*/virtualenvs/*' \
                     -not -path '*/.virtualenvs/*' \
@@ -462,6 +464,7 @@ upload=$(find . -type f \
                 -not -path '*/.egg-info/*' \
                 -not -path '*/shunit2-2.1.6/*' \
                 -not -path '*/vendor/*' \
+                -not -path '*/js/generated/coverage/*' \
                 -not -path '*/__pycache__/*' \
                 -not -path '*/node_modules/*' \
                 -not -path "*/$bower_components/*" \
@@ -472,6 +475,9 @@ upload=$(find . -type f \
                 -not -name '.gitignore' \
                 -not -name '*.lcov' \
                 -not -name '*.yml' \
+                -not -name '*.png' \
+                -not -name '*.jpg' \
+                -not -name '*.jpeg' \
                 -not -name '*.txt' \
                 -not -name '*.xml' \
                 -not -name '*.json' \
