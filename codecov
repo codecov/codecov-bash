@@ -382,6 +382,7 @@ else
                     -not -name 'inputFiles.lst' \
                     -not -name 'createdFiles.lst' \
                     -not -name 'coverage.html' \
+                    -not -name 'scoverage.measurements.*' \
                     -not -name 'test_*_coverage.txt' \
                     -not -path '*/vendor/*' \
                     -not -path '*/home/cainus/*' \
