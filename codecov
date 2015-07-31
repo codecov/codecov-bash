@@ -474,6 +474,12 @@ then
   upload=$(echo "$upload" | sort)
 fi
 
+# Append .gitignore
+upload="$(echo "$upload")
+<<<<<< network
+$(cat "$proj_root/.gitignore" || echo "")
+<<<<<< .gitignore"
+
 # Append Environment Variables
 if [ "$env" != "" ] || [ "$CODECOV_ENV" != "" ];
 then
