@@ -379,6 +379,7 @@ else
                      -or -name '*.gcov' \
                      -or -name '*.lst' \) \
                     -not -name '*.sh' \
+                    -not -name 'inputFiles.lst' \
                     -not -path '*/vendor/*' \
                     -not -path '*/home/cainus/*' \
                     -not -path '*/virtualenv/*' \
