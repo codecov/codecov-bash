@@ -344,7 +344,7 @@ fi
 # find all the reports
 if [ "$files" != "" ];
 then
-  say "==> Targeting specific file"
+  say "==> Targeting specific file(s)"
 
 else
 
@@ -537,6 +537,9 @@ do
 <<<<<< EOF
 # path=$file
 $report"
+  else
+    say "    -> File not found or was not readable."
+    exit 1
   fi
 done
 
