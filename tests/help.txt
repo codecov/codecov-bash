@@ -1,24 +1,29 @@
-Codecov <%= ENV['_VERSION'] %>
+Codecov tbd
 Usage: codecov [-hv] [-f COVERAGE]
 Upload reports to Codecov
 
-    -h           display this help and exit
-    -f COVERAGE  reference a specific file only to upload
-                 otherwise all files will be searched, recursively current directoy.
+    -h           Display this help and exit
+    -f COVERAGE  Reference a specific file only to upload
+                 When not specified commonly known coverage files will found
     -t TOKEN     Set the private repo token
-                 (or) set environment variable =:uuid
+                 (or) set environment variable $CODECOV_TOKEN=:uuid
     -e ENV       Specify environment variables to be included with this build
                  ex. codecov -e VAR,VAR2
-                 (or) set environment variable =VAR,VAR2
-    -v           Verbose Mode
-    -d           Dont upload and dump to stdin
+                 (or) set environment variable $CODECOV_ENV=VAR,VAR2
     -X feature   Disable functionalities, accepting: 'gcov', 'coveragepy', 'issue/43'
-    -g GLOB      Paths to ignore during gcov gathering
-    -p dir       Project root used when preparing gcov
-    -x gcovexe   gcov executable to run. Defaults to 'gcov'
-    -a gcovargs  extra arguments to pass to gcov
     -s silent    Enable silent mode
     -b build     Tag upload to a specific build (automatically detected in supported CI companies)
+
+    -- Debugging --
+    -v           Verbose Mode
+    -d           Dont upload and dump to stdin
+
+    -- gcov --
+    -g GLOB      Paths to ignore during gcov gathering
+    -p dir       Project root directory (default: PWD, WORKSPACE, or TRAVIS_BUILD_DIR)
+                 Also used when preparing gcov
+    -x gcovexe   gcov executable to run. Defaults to 'gcov'
+    -a gcovargs  extra arguments to pass to gcov
 
     -- Enterprise customers --
     -u URL       Set the target url for Enterprise customers [default https://codecov.io]

@@ -1,5 +1,5 @@
 Codecov
-(version) <%= ENV['_VERSION'] %>
+(version) tbd
 (url) https://codecov.io
 ==> No CI detected, using git for branch and commit sha.
 ==> Found gcda in ~/Library/Developer/Xcode/DerivedData

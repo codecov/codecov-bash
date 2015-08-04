@@ -17,7 +17,8 @@ gcov_ignore=""
 ft_gcov="1"
 ft_coveragepy="1"
 ft_issue43="1"
-proj_root="."
+proj_root="$PWD"
+proj_root_set="0"
 gcov_exe="gcov"
 gcov_arg=""
 
@@ -27,23 +28,28 @@ Codecov $VERSION
 Usage: ${0##*/} [-hv] [-f COVERAGE]
 Upload reports to Codecov
 
-    -h           display this help and exit
-    -f COVERAGE  reference a specific file only to upload
-                 otherwise all files will be searched, recursively current directoy.
+    -h           Display this help and exit
+    -f COVERAGE  Reference a specific file only to upload
+                 When not specified commonly known coverage files will found
     -t TOKEN     Set the private repo token
                  (or) set environment variable $CODECOV_TOKEN=:uuid
     -e ENV       Specify environment variables to be included with this build
                  ex. codecov -e VAR,VAR2
                  (or) set environment variable $CODECOV_ENV=VAR,VAR2
-    -v           Verbose Mode
-    -d           Dont upload and dump to stdin
     -X feature   Disable functionalities, accepting: 'gcov', 'coveragepy', 'issue/43'
-    -g GLOB      Paths to ignore during gcov gathering
-    -p dir       Project root used when preparing gcov
-    -x gcovexe   gcov executable to run. Defaults to 'gcov'
-    -a gcovargs  extra arguments to pass to gcov
     -s silent    Enable silent mode
     -b build     Tag upload to a specific build (automatically detected in supported CI companies)
+
+    -- Debugging --
+    -v           Verbose Mode
+    -d           Dont upload and dump to stdin
+
+    -- gcov --
+    -g GLOB      Paths to ignore during gcov gathering
+    -p dir       Project root directory (default: PWD, WORKSPACE, or TRAVIS_BUILD_DIR)
+                 Also used when preparing gcov
+    -x gcovexe   gcov executable to run. Defaults to 'gcov'
+    -a gcovargs  extra arguments to pass to gcov
 
     -- Enterprise customers --
     -u URL       Set the target url for Enterprise customers [default https://codecov.io]
@@ -65,18 +71,6 @@ say() {
 urlencode() {
   echo "$1" | curl -Gso /dev/null -w %{url_effective} --data-urlencode @- "" | cut -c 3- | sed -e 's/%0A//'
 }
-
-# detect bower comoponents location
-bower_components="bower_components"
-if [ -f .bowerrc ];
-then
-  bower_components=$(cat .bowerrc | tr -d '\n' | grep '"directory"' | cut -d'"' -f4 | sed -e 's/\/$//')
-  if [ "$bower_components" = "" ];
-  then
-    bower_components="bower_components"
-  fi
-fi
-
 
 if [ $# != 0 ];
 then
@@ -115,6 +109,7 @@ then
         ;;
       "p")
         proj_root="$OPTARG"
+        proj_root_set="1"
         ;;
       "r")
         slug="&slug=$OPTARG"
@@ -190,7 +185,10 @@ then
          &build=$BUILD_NUMBER\
          &pr=$ghprbPullId\
          &build_url=$build_url"
-  cd "$WORKSPACE"
+  if [ "$proj_root_set" = "0" ];
+  then
+    proj_root="$WORKSPACE"
+  fi
 
 elif [ "$CI" = "true" ] && [ "$TRAVIS" = "true" ];
 then
@@ -203,7 +201,10 @@ then
          &pull_request=$TRAVIS_PULL_REQUEST\
          &job=$TRAVIS_JOB_ID\
          &slug=$TRAVIS_REPO_SLUG"
-  cd "$TRAVIS_BUILD_DIR"
+  if [ "$proj_root_set" = "0" ];
+  then
+    proj_root="$TRAVIS_BUILD_DIR"
+  fi
 
 elif [ "$CI" = "true" ] && [ "$CI_NAME" = "codeship" ];
 then
@@ -341,6 +342,20 @@ else
   fi
 fi
 
+say "(project root) $proj_root"
+
+# detect bower comoponents location
+bower_components="bower_components"
+bower_rc=$(find "$proj_root" -name .bowerrc)
+if [ "$bower_rc" != "" ];
+then
+  bower_components=$(cat "$bower_rc" | tr -d '\n' | grep '"directory"' | cut -d'"' -f4 | sed -e 's/\/$//')
+  if [ "$bower_components" = "" ];
+  then
+    bower_components="bower_components"
+  fi
+fi
+
 # find all the reports
 if [ "$files" != "" ];
 then
@@ -366,7 +381,7 @@ else
   fi
 
   say "==> Searching for coverage reports"
-  files=$(find . -type f \( -name '*coverage.*' \
+  files=$(find "$proj_root" -type f \( -name '*coverage.*' \
                      -or -name 'nosetests.xml' \
                      -or -name 'jacoco*.xml' \
                      -or -name 'clover.xml' \
@@ -420,16 +435,29 @@ else
         pip uninstall -y coverage || true
         pip install git+git://github.com/codecov/coveragepy.git@stable || true
       else
-        say "**> #43 disabled"
+        say "    **> #43 disabled"
       fi
-
-      say "    Running coverage xml"
-      if [ "$(coverage xml)" != "No data to report." ];
+      # find the .coverage
+      if [ "$verbose" = "1" ];
       then
-        files="$files
+        say "    -> Searching for .coverage file"
+        find "$proj_root" \( -name '.coverage' -or -name '.coverage.*' \) -not -path '.coveragerc'
+      fi
+      dotcoverage=$(find "$proj_root" \( -name '.coverage' -or -name '.coverage.*' \) -not -path '.coveragerc' | head -1)
+      say "    -> $dotcoverage"
+      cd "$(dirname "$dotcoverage")"
+      if [ "$dotcoverage" != "" ];
+      then
+        say "    Running coverage xml"
+        if [ "$(coverage xml)" != "No data to report." ];
+        then
+          files="$files
 coverage.xml"
+        else
+          say "    No data to report."
+        fi
       else
-        say "    No data to report."
+        say "    No .coverage file found."
       fi
     else
       say "**> Python coverage not found"
@@ -447,7 +475,7 @@ then
 fi
 
 say "==> Detecting file structure"
-upload=$(find . -type f \
+upload=$(find "$proj_root" -type f \
                 -not -path '*/virtualenv/*' \
                 -not -path '*/.virtualenv/*' \
                 -not -path '*/virtualenvs/*' \
@@ -492,6 +520,12 @@ then
   upload=$(echo "$upload" | sort)
 fi
 
+# Append .gitignore
+upload="$(echo "$upload")
+<<<<<< network
+$(cat "$proj_root/.gitignore" || echo "")
+<<<<<< .gitignore"
+
 # Append Environment Variables
 if [ "$env" != "" ] || [ "$CODECOV_ENV" != "" ];
 then
@@ -526,12 +560,12 @@ say "==> Reading reports"
 for file in $files
 do
   # escape file paths
-  file="$(echo $file | sed -e 's/ /\\ /')"
+  file=$(echo "$file" | sed -e 's/ /\\ /')
   # read the coverage file
   if [ -f "$file" ];
   then
-    say "    + $file"
     report=$(cat "$file")
+    say "    + $file bytes=${#report}"
     # append to to upload
     upload="$upload
 <<<<<< EOF
