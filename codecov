@@ -535,7 +535,7 @@ fi
 # Append .gitignore
 upload="$(echo "$upload" | sed "s|^$proj_root/||")
 <<<<<< network
-$(cat "$proj_root.gitignore" || echo "")
+$(cat "$proj_root/.gitignore" || echo "")
 <<<<<< .gitignore"
 
 # Append Environment Variables
