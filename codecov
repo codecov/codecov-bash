@@ -394,12 +394,16 @@ else
                      -or -name '*.gcov' \
                      -or -name '*.lst' \) \
                     -not -name '*.sh' \
+                    -not -name '*.cpp' \
+                    -not -name 'coverage.jade' \
+                    -not -name 'include.lst' \
                     -not -name 'inputFiles.lst' \
                     -not -name 'createdFiles.lst' \
                     -not -name 'coverage.html' \
                     -not -name 'scoverage.measurements.*' \
                     -not -name 'test_*_coverage.txt' \
                     -not -path '*/vendor/*' \
+                    -not -path '*/htmlcov/*' \
                     -not -path '*/home/cainus/*' \
                     -not -path '*/virtualenv/*' \
                     -not -path '*/js/generated/coverage/*' \
@@ -415,6 +419,7 @@ else
                     -not -path '*/venv/*' \
                     -not -path '*/venvs/*' \
                     -not -path '*/.git/*' \
+                    -not -path '*/.tox/*' \
                     -not -path '*/__pycache__/*' \
                     -not -path '*/.egg-info*' \
                     -not -path "*/$bower_components/*" \
@@ -505,9 +510,13 @@ upload=$(find "$proj_root" -type f \
                 -not -name '*.lcov' \
                 -not -name '*.yml' \
                 -not -name '*.png' \
+                -not -name '*.rst' \
+                -not -name '*.sav' \
+                -not -name '*.gif' \
                 -not -name '*.jpg' \
                 -not -name '*.jpeg' \
                 -not -name '*.txt' \
+                -not -name '*.pyc' \
                 -not -name '*.xml' \
                 -not -name '*.json' \
                 -not -name 'readme.md' \
