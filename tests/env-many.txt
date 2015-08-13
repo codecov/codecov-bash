@@ -35,3 +35,4 @@ temp
 <<<<<< EOF
 # path=./temp/coverage.xml
 {"another.txt":[null, 1, 0]}
+<<<<<< EOF

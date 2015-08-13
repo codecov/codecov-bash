@@ -342,7 +342,7 @@ else
   fi
 fi
 
-if [ "$proj_root" = "$PWD" ]; then
+if [ "$proj_root" = "$PWD" ] || [ ! -d "$proj_root" ]; then
   proj_root="."
 fi
 say "(project root) $proj_root"
@@ -584,9 +584,9 @@ do
     say "    + $file bytes=${#report}"
     # append to to upload
     upload="$upload
-<<<<<< EOF
 # path=$file
-$report"
+$report
+<<<<<< EOF"
   else
     say "    -> File not found or was not readable."
     exit 1
