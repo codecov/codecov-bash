@@ -580,7 +580,7 @@ do
     say "    + $file bytes=${#report}"
     # append to to upload
     upload="$upload
-# path=$file
+# path=$(echo "$file" | sed "s|^$proj_root/||")
 $report
 <<<<<< EOF"
   else
