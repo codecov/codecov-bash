@@ -2,7 +2,7 @@ Codecov
 (version) tbd
 (url) https://codecov.io
 ==> No CI detected, using git for branch and commit sha.
-(project root) <%= ENV['PWD'] %>
+(project root) .
 ==> Found gcda in ~/Library/Developer/Xcode/DerivedData
 ==> find . -type f -name '*.gcno'  -exec gcov  {} +
 ==> Searching for coverage reports
@@ -35,4 +35,3 @@ temp
 <<<<<< EOF
 # path=./temp/coverage.xml
 {"another.txt":[null, 1, 0]}
-<<<<<< EOF
