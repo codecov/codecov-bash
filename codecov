@@ -32,10 +32,10 @@ Upload reports to Codecov
     -f COVERAGE  Reference a specific file only to upload
                  When not specified commonly known coverage files will found
     -t TOKEN     Set the private repo token
-                 (or) set environment variable $CODECOV_TOKEN=:uuid
+                 (or) set environment variable CODECOV_TOKEN=:uuid
     -e ENV       Specify environment variables to be included with this build
                  ex. codecov -e VAR,VAR2
-                 (or) set environment variable $CODECOV_ENV=VAR,VAR2
+                 (or) set environment variable CODECOV_ENV=VAR,VAR2
     -X feature   Disable functionalities, accepting: 'gcov', 'coveragepy', 'issue/43'
     -s silent    Enable silent mode
     -b build     Tag upload to a specific build (automatically detected in supported CI companies)
@@ -342,6 +342,9 @@ else
   fi
 fi
 
+if [ "$proj_root" = "$PWD" ]; then
+  proj_root="."
+fi
 say "(project root) $proj_root"
 
 # detect bower comoponents location
@@ -529,10 +532,14 @@ then
   upload=$(echo "$upload" | sort)
 fi
 
+# cut out working dir
+proj_root="$proj_root/"
+upload=${upload/$proj_root/}
+
 # Append .gitignore
 upload="$(echo "$upload")
 <<<<<< network
-$(cat "$proj_root/.gitignore" || echo "")
+$(cat "$proj_root.gitignore" || echo "")
 <<<<<< .gitignore"
 
 # Append Environment Variables
