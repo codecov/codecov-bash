@@ -532,12 +532,8 @@ then
   upload=$(echo "$upload" | sort)
 fi
 
-# cut out working dir
-proj_root="$proj_root/"
-upload=${upload/$proj_root/}
-
 # Append .gitignore
-upload="$(echo "$upload")
+upload="$(echo "$upload" | sed "s|^$proj_root/||")
 <<<<<< network
 $(cat "$proj_root.gitignore" || echo "")
 <<<<<< .gitignore"

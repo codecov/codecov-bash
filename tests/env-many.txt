@@ -20,7 +20,7 @@ https://codecov.io/upload/v2?package=bash-<%= ENV['_VERSION'] %>&branch=<%= ENV[
 BUILD_ID=apples
 COMMIT=abc
 <<<<<< ENV
-./temp/file.rb
+temp/file.rb
 ./tests/env
 ./tests/test
 <<<<<< network
