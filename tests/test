@@ -287,7 +287,7 @@ function test_appveyor (){
 
 function test_wercker (){
     reset
-    export CI="True"
+    export CI="true"
     export WERCKER_GIT_BRANCH="develop"
     export WERCKER_MAIN_PIPELINE_STARTED="12311"
     export WERCKER_GIT_OWNER="myowner"

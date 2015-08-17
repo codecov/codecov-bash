@@ -261,7 +261,7 @@ then
          &slug=$APPVEYOR_REPO_NAME\
          &commit=$APPVEYOR_REPO_COMMIT"
 
-elif [ "$CI" = "True" ] && [ "$WERCKER_GIT_BRANCH" != "" ];
+elif [ "$CI" = "true" ] && [ "$WERCKER_GIT_BRANCH" != "" ];
 then
   say "==> Wercker CI detected."
   # http://devcenter.wercker.com/articles/steps/variables.html
