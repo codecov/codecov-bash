@@ -327,14 +327,14 @@ then
 
 else
   # find branch, commit, repo from git command
-  say "==> No CI detected, using git for branch and commit sha."
-  branch=$(git rev-parse --abbrev-ref HEAD)
+  say "==> No CI detected, using git/mercurial for branch and commit sha."
+  branch=$(git rev-parse --abbrev-ref HEAD || hg branch)
   if [ "$branch" = "HEAD" ];
   then
     branch=""
   fi
 
-  query="branch=$branch&commit=$(git rev-parse HEAD)"
+  query="branch=$branch&commit=$(git rev-parse HEAD || hg id -i --debug | tr -d 'x')"
 
   if [ "$build" != "" ];
   then
@@ -483,9 +483,8 @@ then
 fi
 
 say "==> Detecting file structure"
-upload=$(cd "$proj_root" && git ls-files)
+upload=$(cd "$proj_root" && git ls-files || hg locate)
 
-# Append .gitignore
 upload="$(echo "$upload" | sed "s|^$proj_root/||")
 <<<<<< network"
 
