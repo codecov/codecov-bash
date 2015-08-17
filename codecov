@@ -483,48 +483,7 @@ then
 fi
 
 say "==> Detecting file structure"
-upload=$(find "$proj_root" -type f \
-                -not -path '*/virtualenv/*' \
-                -not -path '*/.virtualenv/*' \
-                -not -path '*/virtualenvs/*' \
-                -not -path '*/.virtualenvs/*' \
-                -not -path '*/.env/*' \
-                -not -path '*/.envs/*' \
-                -not -path '*/env/*' \
-                -not -path '*/envs/*' \
-                -not -path '*/.venv/*' \
-                -not -path '*/.venvs/*' \
-                -not -path '*/venv/*' \
-                -not -path '*/venvs/*' \
-                -not -path '*/build/lib/*' \
-                -not -path '*/.git/*' \
-                -not -path '*/.egg-info/*' \
-                -not -path '*/shunit2-2.1.6/*' \
-                -not -path '*/vendor/*' \
-                -not -path '*/js/generated/coverage/*' \
-                -not -path '*/__pycache__/*' \
-                -not -path '*/node_modules/*' \
-                -not -path "*/$bower_components/*" \
-                -not -path '*/coverage/instrumented/*' \
-                -not -name 'shunit2-2.1.6.tgz' \
-                -not -name '*.gcov' \
-                -not -name '.ruby-version' \
-                -not -name '.gitignore' \
-                -not -name '*.lcov' \
-                -not -name '*.yml' \
-                -not -name '*.png' \
-                -not -name '*.rst' \
-                -not -name '*.sav' \
-                -not -name '*.gif' \
-                -not -name '*.jpg' \
-                -not -name '*.jpeg' \
-                -not -name '*.txt' \
-                -not -name '*.pyc' \
-                -not -name '*.xml' \
-                -not -name '*.json' \
-                -not -name 'readme.md' \
-                -not -name 'codecov' \
-                -not -name '.DS_Store')
+upload=$(cd "$proj_root" && git ls-files)
 
 if [ -d "shunit2-2.1.6" ];
 then
@@ -534,9 +493,7 @@ fi
 
 # Append .gitignore
 upload="$(echo "$upload" | sed "s|^$proj_root/||")
-<<<<<< network
-$(cat "$proj_root/.gitignore" || echo "")
-<<<<<< .gitignore"
+<<<<<< network"
 
 # Append Environment Variables
 if [ "$env" != "" ] || [ "$CODECOV_ENV" != "" ];
