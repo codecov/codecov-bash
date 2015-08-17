@@ -24,11 +24,19 @@ temp/file.rb
 tests/env
 tests/test
 <<<<<< network
-.DS_Store
-shunit2-2.1.6
-shunit2-2.1.6.tgz
-coverage
-temp
+.gitignore
+.travis.yml
+circle.yml
+codecov
+readme.md
+tests/env
+tests/env-many.txt
+tests/env.txt
+tests/file.txt
+tests/help.txt
+tests/silent.txt
+tests/test
+tests/verbose.txt
 <<<<<< .gitignore
 # path=temp/coverage.json
 {"file.txt":[null, 1, 0]}
