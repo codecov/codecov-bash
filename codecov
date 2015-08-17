@@ -485,12 +485,6 @@ fi
 say "==> Detecting file structure"
 upload=$(cd "$proj_root" && git ls-files)
 
-if [ -d "shunit2-2.1.6" ];
-then
-  say "==> Sorting output for unit testing"
-  upload=$(echo "$upload" | sort)
-fi
-
 # Append .gitignore
 upload="$(echo "$upload" | sed "s|^$proj_root/||")
 <<<<<< network"
