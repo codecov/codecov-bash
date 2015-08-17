@@ -422,6 +422,7 @@ else
                     -not -path '*/venv/*' \
                     -not -path '*/venvs/*' \
                     -not -path '*/.git/*' \
+                    -not -path '*/.hg/*' \
                     -not -path '*/.tox/*' \
                     -not -path '*/__pycache__/*' \
                     -not -path '*/.egg-info*' \
