@@ -5,7 +5,6 @@ Codecov
 (project root) .
 ==> Targeting specific file(s)
 ==> Detecting file structure
-==> Sorting output for unit testing
 ==> Reading reports
     + temp/coverage.json bytes=25
 (query) package=bash-<%= ENV['_VERSION'] %>&branch=<%= ENV['_BRANCH'] %>&commit=<%= ENV['_SHA'] %>

@@ -8,7 +8,6 @@ Codecov
 ==> Searching for coverage reports
 **> Python coverage not found
 ==> Detecting file structure
-==> Sorting output for unit testing
 ==> Appending build variables
     + BUILD_ID
     + COMMIT
@@ -20,10 +19,6 @@ https://codecov.io/upload/v2?package=bash-<%= ENV['_VERSION'] %>&branch=<%= ENV[
 BUILD_ID=apples
 COMMIT=abc
 <<<<<< ENV
-temp/file.rb
-tests/env
-tests/test
-<<<<<< network
 .gitignore
 .travis.yml
 circle.yml
@@ -37,7 +32,7 @@ tests/help.txt
 tests/silent.txt
 tests/test
 tests/verbose.txt
-<<<<<< .gitignore
+<<<<<< network
 # path=temp/coverage.json
 {"file.txt":[null, 1, 0]}
 <<<<<< EOF
