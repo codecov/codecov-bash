@@ -48,7 +48,7 @@ after_success:
 
 
 ### CI Providers
-|                       Company                       |                                                                    Supported                                                                     | Tokens Required  |
+|                       Company                       |                                                                    Supported                                                                     | Token Required   |
 | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------- |
 | [Travis CI](https://travis-ci.org/)                 | Yes [![Build Status](https://secure.travis-ci.org/codecov/codecov-bash.svg?branch=master)](http://travis-ci.org/codecov/codecov-bash)            | Private only     |
 | [CircleCI](https://circleci.com/)                   | Yes [![Circle CI](https://img.shields.io/circleci/project/codecov/codecov-bash.svg?branch=master)](https://circleci.com/gh/codecov/codecov-bash) | Private only     |
@@ -56,7 +56,7 @@ after_success:
 | [Jenkins](https://jenkins-ci.org/)                  | Yes                                                                                                                                              | Public & Private |
 | [Semaphore](https://semaphoreci.com/)               | Yes                                                                                                                                              | Public & Private |
 | [drone.io](https://drone.io/)                       | Yes                                                                                                                                              | Public & Private |
-| [AppVeyor](http://www.appveyor.com/)                | No **Coming soon**                                                                                                                               | Public & Private |
+| [AppVeyor](http://www.appveyor.com/)                | No. See [Codecov Python](https://github.com/codecov/codecov-python).                                                                             | Public & Private |
 | [Wercker](http://wercker.com/)                      | Yes                                                                                                                                              | Public & Private |
 | [Magnum CI](https://magnum-ci.com/)                 | Yes                                                                                                                                              | Public & Private |
 | [Shippable](http://www.shippable.com/)              | Yes                                                                                                                                              | Public & Private |
