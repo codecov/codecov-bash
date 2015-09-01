@@ -390,6 +390,10 @@ else
                      -or -name '*.gcov' \
                      -or -name '*.lst' \) \
                     -not -name '*.sh' \
+                    -not -name '*.py' \
+                    -not -name '*.egg' \
+                    -not -name '*.pyc' \
+                    -not -name '*.whl' \
                     -not -name '*.cpp' \
                     -not -name 'coverage.jade' \
                     -not -name 'include.lst' \
@@ -402,6 +406,7 @@ else
                     -not -path '*/htmlcov/*' \
                     -not -path '*/home/cainus/*' \
                     -not -path '*/virtualenv/*' \
+                    -not -path '*/tmp/circle-artifacts*' \
                     -not -path '*/js/generated/coverage/*' \
                     -not -path '*/.virtualenv/*' \
                     -not -path '*/virtualenvs/*' \
