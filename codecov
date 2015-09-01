@@ -398,6 +398,8 @@ else
                     -not -name '*.egg' \
                     -not -name '*.pyc' \
                     -not -name '*.whl' \
+                    -not -name '*.html' \
+                    -not -name '*.js' \
                     -not -name '*.cpp' \
                     -not -name 'coverage.jade' \
                     -not -name 'include.lst' \
