@@ -1,10 +1,12 @@
 Codecov
 (version) tbd
 (url) https://codecov.io
+(git root) .
 ==> No CI detected, using git/mercurial for branch and commit sha.
-(project root) .
-==> Found gcda in ~/Library/Developer/Xcode/DerivedData
-==> find . -type f -name '*.gcno'  -exec gcov  {} +
+==> Trying gcov (disable via -X gcov)
+    Project Root: .
+    Found gcda in ~/Library/Developer/Xcode/DerivedData
+    Searching for gcov via (find . -type f -name '*.gcno'  -exec gcov  {} +)
 ==> Searching for coverage reports
 **> Python coverage not found
 ==> Detecting file structure

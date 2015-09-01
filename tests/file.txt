@@ -1,8 +1,8 @@
 Codecov
 (version) tbd
 (url) https://codecov.io
+(git root) .
 ==> No CI detected, using git/mercurial for branch and commit sha.
-(project root) .
 ==> Targeting specific file(s)
 ==> Detecting file structure
 ==> Reading reports
