@@ -532,7 +532,6 @@ $report
 <<<<<< EOF"
   else
     say "    -> File not found or was not readable."
-    exit 1
   fi
 done
 
