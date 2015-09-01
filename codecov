@@ -17,7 +17,8 @@ gcov_ignore=""
 ft_gcov="1"
 ft_coveragepy="1"
 ft_issue43="1"
-proj_root="$PWD"
+git_root=$(git rev-parse --show-toplevel || hg root || echo $PWD)
+proj_root="$git_root"
 proj_root_set="0"
 gcov_exe="gcov"
 gcov_arg=""
@@ -185,10 +186,6 @@ then
          &build=$BUILD_NUMBER\
          &pr=$ghprbPullId\
          &build_url=$build_url"
-  if [ "$proj_root_set" = "0" ];
-  then
-    proj_root="$WORKSPACE"
-  fi
 
 elif [ "$CI" = "true" ] && [ "$TRAVIS" = "true" ];
 then
@@ -201,10 +198,6 @@ then
          &pull_request=$TRAVIS_PULL_REQUEST\
          &job=$TRAVIS_JOB_ID\
          &slug=$TRAVIS_REPO_SLUG"
-  if [ "$proj_root_set" = "0" ];
-  then
-    proj_root="$TRAVIS_BUILD_DIR"
-  fi
 
 elif [ "$CI" = "true" ] && [ "$CI_NAME" = "codeship" ];
 then
@@ -342,14 +335,11 @@ else
   fi
 fi
 
-if [ "$proj_root" = "$PWD" ] || [ ! -d "$proj_root" ]; then
-  proj_root="."
-fi
-say "(project root) $proj_root"
+say "(git root) $git_root"
 
 # detect bower comoponents location
 bower_components="bower_components"
-bower_rc=$(find "$proj_root" -name .bowerrc)
+bower_rc=$(find "$git_root" -name .bowerrc)
 if [ "$bower_rc" != "" ];
 then
   bower_components=$(cat "$bower_rc" | tr -d '\n' | grep '"directory"' | cut -d'"' -f4 | sed -e 's/\/$//')
@@ -368,23 +358,26 @@ else
 
   if [ "$ft_gcov" = "1" ];
   then
+    say "==> Trying GCOV"
+    say "    Project Root: $proj_root"
     # osx gcov
     if [ -d ~/Library/Developer/Xcode/DerivedData ];
     then
-      say "==> Found gcda in ~/Library/Developer/Xcode/DerivedData"
+      say "    Found gcda in ~/Library/Developer/Xcode/DerivedData"
       find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' -exec $gcov_exe $gcov_arg {} +
     fi
 
-    say "==> find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe $gcov_arg {} +"
+    say "    Searching for gcov via (find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe $gcov_arg {} +)"
 
     # all other gcov
     bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe $gcov_arg {} +" || true
+
   else
     say '**> gcov disable'
   fi
 
   say "==> Searching for coverage reports"
-  files=$(find "$proj_root" -type f \( -name '*coverage.*' \
+  files=$(find "$git_root" -type f \( -name '*coverage.*' \
                      -or -name 'nosetests.xml' \
                      -or -name 'jacoco*.xml' \
                      -or -name 'clover.xml' \
@@ -450,9 +443,9 @@ else
       if [ "$verbose" = "1" ];
       then
         say "    -> Searching for .coverage file"
-        find "$proj_root" \( -name '.coverage' -or -name '.coverage.*' \) -not -path '.coveragerc'
+        find "$git_root" \( -name '.coverage' -or -name '.coverage.*' \) -not -path '.coveragerc'
       fi
-      dotcoverage=$(find "$proj_root" \( -name '.coverage' -or -name '.coverage.*' \) -not -path '.coveragerc' | head -1)
+      dotcoverage=$(find "$git_root" \( -name '.coverage' -or -name '.coverage.*' \) -not -path '.coveragerc' | head -1)
       say "    -> $dotcoverage"
       cd "$(dirname "$dotcoverage")"
       if [ "$dotcoverage" != "" ];
@@ -484,9 +477,7 @@ then
 fi
 
 say "==> Detecting file structure"
-upload=$(cd "$proj_root" && git ls-files || hg locate)
-
-upload="$(echo "$upload" | sed "s|^$proj_root/||")
+upload="$(cd "$git_root" && git ls-files || hg locate)
 <<<<<< network"
 
 # Append Environment Variables
@@ -531,7 +522,7 @@ do
     say "    + $file bytes=${#report}"
     # append to to upload
     upload="$upload
-# path=$(echo "$file" | sed "s|^$proj_root/||")
+# path=$(echo "$file" | sed "s|^$git_root/||")
 $report
 <<<<<< EOF"
   else
