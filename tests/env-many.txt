@@ -38,6 +38,6 @@ tests/verbose.txt
 # path=./temp/coverage.json
 {"file.txt":[null, 1, 0]}
 <<<<<< EOF
-# path=temp/coverage.xml
+# path=./temp/coverage.xml
 {"another.txt":[null, 1, 0]}
 <<<<<< EOF
