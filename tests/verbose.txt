@@ -9,7 +9,7 @@ Codecov
     Searching for gcov via (find . -type f -name '*.gcno'  -exec gcov  {} +)
 ==> Searching for coverage reports
 **> Python coverage not found
-==> Detecting file structure
+==> Detecting git/mercurial file structure
 ==> Reading reports
     + ./temp/coverage.json bytes=25
     + ./temp/coverage.xml bytes=28
@@ -29,9 +29,9 @@ tests/silent.txt
 tests/test
 tests/verbose.txt
 <<<<<< network
-# path=temp/coverage.json
+# path=./temp/coverage.json
 {"file.txt":[null, 1, 0]}
 <<<<<< EOF
-# path=temp/coverage.xml
+# path=./temp/coverage.xml
 {"another.txt":[null, 1, 0]}
 <<<<<< EOF

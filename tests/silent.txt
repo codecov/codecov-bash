@@ -13,9 +13,9 @@ tests/silent.txt
 tests/test
 tests/verbose.txt
 <<<<<< network
-# path=temp/coverage.json
+# path=./temp/coverage.json
 {"file.txt":[null, 1, 0]}
 <<<<<< EOF
-# path=temp/coverage.xml
+# path=./temp/coverage.xml
 {"another.txt":[null, 1, 0]}
 <<<<<< EOF

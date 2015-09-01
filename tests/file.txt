@@ -4,7 +4,7 @@ Codecov
 (git root) .
 ==> No CI detected, using git/mercurial for branch and commit sha.
 ==> Targeting specific file(s)
-==> Detecting file structure
+==> Detecting git/mercurial file structure
 ==> Reading reports
     + temp/coverage.json bytes=25
 (query) package=bash-<%= ENV['_VERSION'] %>&branch=<%= ENV['_BRANCH'] %>&commit=<%= ENV['_SHA'] %>
@@ -23,6 +23,6 @@ tests/silent.txt
 tests/test
 tests/verbose.txt
 <<<<<< network
-# path=temp/coverage.json
+# path=./temp/coverage.json
 {"file.txt":[null, 1, 0]}
 <<<<<< EOF

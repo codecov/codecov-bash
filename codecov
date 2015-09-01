@@ -362,7 +362,7 @@ else
 
   if [ "$ft_gcov" = "1" ];
   then
-    say "==> Trying gcov  (disable via -X gcov)"
+    say "==> Trying gcov (disable via -X gcov)"
     say "    Project Root: $proj_root"
     # osx gcov
     if [ -d ~/Library/Developer/Xcode/DerivedData ];
@@ -485,7 +485,7 @@ then
   exit 1;
 fi
 
-say "==> Detecting git/mercurial file structure’"
+say "==> Detecting git/mercurial file structure"
 upload="$(cd "$git_root" && git ls-files || hg locate)
 <<<<<< network"
 
