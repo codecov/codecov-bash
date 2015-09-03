@@ -412,7 +412,6 @@ else
                     -not -path '*/htmlcov/*' \
                     -not -path '*/home/cainus/*' \
                     -not -path '*/virtualenv/*' \
-                    -not -path '*/tmp/circle-artifacts*' \
                     -not -path '*/js/generated/coverage/*' \
                     -not -path '*/.virtualenv/*' \
                     -not -path '*/virtualenvs/*' \
