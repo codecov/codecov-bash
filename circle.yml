@@ -1,10 +1,18 @@
 machine:
   ruby:
     version: 1.9.3-p0-falcon
+
 dependencies:
   override:
     - curl -O https://shunit2.googlecode.com/files/shunit2-2.1.6.tgz
     - tar zxvf shunit2-2.1.6.tgz
+
 test:
   override:
     - tests/test
+
+deployment:
+  suite:
+    branch: /.*/
+    commands:
+      - make testsuite
