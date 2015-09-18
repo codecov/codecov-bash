@@ -355,6 +355,27 @@ else
     then
       say "==> Found gcda in ~/Library/Developer/Xcode/DerivedData"
       find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' -exec $gcov_exe $gcov_arg {} +
+
+      # xcode 7 profdata
+      profdata=$(find ~/Library/Developer/Xcode/DerivedData -name 'Coverage.profdata' | head -1)
+      if [ -f "$profdata" ];
+      then
+        # /Users/travis/Library/Developer/Xcode/DerivedData/ProjectName-randomkey/Build/Intermediates/CodeCoverage/ProjectName/Coverage.profdata
+        _dir=$(dirname "$profdata")
+        echo "_dir: $_dir"
+        for _type in app framework xctest
+        do
+          echo "Trying $_type..."
+          _file=$(find "$_dir" -name "*.$_type" | head -1)
+          if [ "$_file" != "" ];
+          then
+            _proj=${_file##*/}
+            _proj=${_proj%."$_type"}
+            xcrun llvm-cov show -instr-profile "$profdata" "$_file/$_proj" > "$_type.coverage.txt" || true
+          fi
+        done
+      fi
+
     fi
 
     say "==> find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe $gcov_arg {} +"
@@ -379,10 +400,27 @@ else
                      -or -name '*.gcov' \
                      -or -name '*.lst' \) \
                     -not -name '*.sh' \
+                    -not -name '*.py' \
+                    -not -name 'Coverage.profdata' \
+                    -not -name '*.pyc' \
+                    -not -name '*.cfg' \
+                    -not -name '*.egg' \
+                    -not -name '*.whl' \
+                    -not -name '*.html' \
+                    -not -name '*.js' \
+                    -not -name '*.cpp' \
+                    -not -name 'coverage.jade' \
+                    -not -name 'include.lst' \
                     -not -name 'inputFiles.lst' \
+                    -not -name 'createdFiles.lst' \
+                    -not -name 'coverage.html' \
+                    -not -name 'scoverage.measurements.*' \
+                    -not -name 'test_*_coverage.txt' \
                     -not -path '*/vendor/*' \
+                    -not -path '*/htmlcov/*' \
                     -not -path '*/home/cainus/*' \
                     -not -path '*/virtualenv/*' \
+                    -not -path '*/js/generated/coverage/*' \
                     -not -path '*/.virtualenv/*' \
                     -not -path '*/virtualenvs/*' \
                     -not -path '*/.virtualenvs/*' \
