@@ -360,12 +360,9 @@ else
       profdata=$(find ~/Library/Developer/Xcode/DerivedData -name 'Coverage.profdata' | head -1)
       if [ -f "$profdata" ];
       then
-        # /Users/travis/Library/Developer/Xcode/DerivedData/ProjectName-randomkey/Build/Intermediates/CodeCoverage/ProjectName/Coverage.profdata
         _dir=$(dirname "$profdata")
-        echo "_dir: $_dir"
         for _type in app framework xctest
         do
-          echo "Trying $_type..."
           _file=$(find "$_dir" -name "*.$_type" | head -1)
           if [ "$_file" != "" ];
           then
