@@ -24,7 +24,6 @@ then
   git_root="."
 fi
 proj_root="$git_root"
-proj_root_set="0"
 gcov_exe="gcov"
 gcov_arg=""
 
@@ -115,7 +114,6 @@ then
         ;;
       "p")
         proj_root="$OPTARG"
-        proj_root_set="1"
         ;;
       "r")
         slug="&slug=$OPTARG"
