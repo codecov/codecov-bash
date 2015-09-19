@@ -23,6 +23,7 @@ COMMIT=abc
 <<<<<< ENV
 .gitignore
 .travis.yml
+Makefile
 circle.yml
 codecov
 readme.md
