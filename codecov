@@ -541,7 +541,7 @@ do
 $report
 <<<<<< EOF"
   else
-    say "    -> File not found or was not readable."
+    say "    -> File not found at $file"
   fi
 done
 
