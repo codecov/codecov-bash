@@ -16,7 +16,6 @@ files=""
 gcov_ignore=""
 ft_gcov="1"
 ft_coveragepy="1"
-ft_issue43="1"
 _git_root=$(git rev-parse --show-toplevel || hg root || echo $PWD)
 git_root="$_git_root"
 if [ "$git_root" = "$PWD" ];
@@ -41,7 +40,7 @@ Upload reports to Codecov
     -e ENV       Specify environment variables to be included with this build
                  ex. codecov -e VAR,VAR2
                  (or) set environment variable CODECOV_ENV=VAR,VAR2
-    -X feature   Disable functionalities, accepting: 'gcov', 'coveragepy', 'issue/43'
+    -X feature   Disable functionalities, accepting: 'gcov', 'coveragepy'
     -s silent    Enable silent mode
     -b build     Tag upload to a specific build (automatically detected in supported CI companies)
 
@@ -125,9 +124,6 @@ then
         elif [ "$OPTARG" = "coveragepy" ];
         then
           ft_coveragepy="0"
-        elif [ "$OPTARG" = "issue/43" ];
-        then
-          ft_issue43="0"
         fi
         ;;
       "g")
@@ -331,7 +327,7 @@ else
     branch=""
   fi
 
-  query="branch=$branch&commit=$(git rev-parse HEAD || hg id -i --debug | tr -d 'x')"
+  query="branch=$branch&commit=$(git rev-parse HEAD || hg id -i --debug | tr -d '+')"
 
   if [ "$build" != "" ];
   then
@@ -458,15 +454,6 @@ else
     then
       say "==> Python coveragepy exists (disable via -X coveragepy)"
 
-      if [ "$ft_issue43" = "1" ];
-      then
-        say "    Replacing coveragepy with https://github.com/codecov/coveragepy (disable via -X issue/43)"
-        say "    Read more at https://github.com/codecov/support/issues/43"
-        pip uninstall -y coverage || true
-        pip install git+git://github.com/codecov/coveragepy.git@stable || true
-      else
-        say "    **> Issue #43 disabled"
-      fi
       # find the .coverage
       if [ "$verbose" = "1" ];
       then
