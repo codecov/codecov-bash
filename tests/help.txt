@@ -10,7 +10,7 @@ Upload reports to Codecov
     -e ENV       Specify environment variables to be included with this build
                  ex. codecov -e VAR,VAR2
                  (or) set environment variable CODECOV_ENV=VAR,VAR2
-    -X feature   Disable functionalities, accepting: 'gcov', 'coveragepy', 'issue/43'
+    -X feature   Disable functionalities, accepting: 'gcov', 'coveragepy'
     -s silent    Enable silent mode
     -b build     Tag upload to a specific build (automatically detected in supported CI companies)
 
