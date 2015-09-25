@@ -235,12 +235,13 @@ elif [ "$CI" = "true" ] && [ "$DRONE" = "true" ];
 then
   say "==> Drone CI detected."
   # http://docs.drone.io/env.html
+  # drone commits are not full shas
   build_url=$(urlencode "$DRONE_BUILD_URL")
   query="service=drone.io\
          &branch=$DRONE_BRANCH\
          &build=$DRONE_BUILD_NUMBER\
          &build_url=$build_url\
-         &commit=$DRONE_COMMIT"
+         &commit=$(git rev-parse HEAD || hg id -i --debug | tr -d '+')"
 
 elif [ "$CI" = "True" ] && [ "$APPVEYOR" = "True" ];
 then
