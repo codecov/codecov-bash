@@ -409,6 +409,8 @@ else
                     -not -name '*.sh' \
                     -not -name '*.py' \
                     -not -name 'Coverage.profdata' \
+                    -not -name 'phpunit-code-coverage.xml' \
+                    -not -name 'coverage.serialized' \
                     -not -name '*.pyc' \
                     -not -name '*.cfg' \
                     -not -name '*.egg' \
