@@ -9,8 +9,15 @@ verbose="0"
 silent="0"
 env=""
 token=""
-build=""
-slug=""
+pr_o=""
+pr=""
+job=""
+build_url=""
+service=""
+build_o=""
+commit_o=""
+branch_o=""
+slug_o=""
 dump="0"
 files=""
 gcov_ignore=""
@@ -42,7 +49,13 @@ Upload reports to Codecov
                  (or) set environment variable CODECOV_ENV=VAR,VAR2
     -X feature   Disable functionalities, accepting: 'gcov', 'coveragepy'
     -s silent    Enable silent mode
-    -b build     Tag upload to a specific build (automatically detected in supported CI companies)
+
+    -- Override CI Environment Variables --
+       These variables are automatically detected by popular CI providers
+    -B branch    Specify the branch name
+    -C sha       Specify the commit sha
+    -P pr        Specify the pull request number
+    -b build     Specify the build number
 
     -- Debugging --
     -v           Verbose Mode
@@ -78,7 +91,7 @@ urlencode() {
 
 if [ $# != 0 ];
 then
-  while getopts "svdhu:t:f:r:e:g:p:X:x:a:b:" o
+  while getopts "svdhu:t:f:r:e:g:p:X:x:a:b:C:B:P:" o
   do
     case "$o" in
       "v")
@@ -90,8 +103,17 @@ then
       "d")
         dump="1"
         ;;
+      "C")
+        commit_o="$OPTARG"
+        ;;
+      "B")
+        branch_o="$OPTARG"
+        ;;
+      "P")
+        pr_o="$OPTARG"
+        ;;
       "b")
-        build="$OPTARG"
+        build_o="$OPTARG"
         ;;
       "h")
         show_help
@@ -115,7 +137,7 @@ then
         proj_root="$OPTARG"
         ;;
       "r")
-        slug="&slug=$OPTARG"
+        slug_o="&slug=$OPTARG"
         ;;
       "X")
         if [ "$OPTARG" = "gcov" ];
@@ -177,164 +199,147 @@ then
   say "==> Jenkins CI detected."
   # https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project
   # https://wiki.jenkins-ci.org/display/JENKINS/GitHub+pull+request+builder+plugin#GitHubpullrequestbuilderplugin-EnvironmentVariables
+  service="jenkins"
+  branch=$([ ! -z "$ghprbSourceBranch" ] && echo "$ghprbSourceBranch" || echo "$GIT_BRANCH")
+  commit=$([ ! -z "$ghprbActualCommit" ] && echo "$ghprbActualCommit" || echo "$GIT_COMMIT")
+  build="$BUILD_NUMBER"
+  pr="$ghprbPullId"
   build_url=$(urlencode "$BUILD_URL")
-  _commit=$([ ! -z "$ghprbActualCommit" ] && echo "$ghprbActualCommit" || echo "$GIT_COMMIT")
-  _branch=$([ ! -z "$ghprbSourceBranch" ] && echo "$ghprbSourceBranch" || echo "$GIT_BRANCH")
-  query="service=jenkins\
-         &branch=$_branch\
-         &commit=$_commit\
-         &build=$BUILD_NUMBER\
-         &pr=$ghprbPullId\
-         &build_url=$build_url"
 
 elif [ "$CI" = "true" ] && [ "$TRAVIS" = "true" ];
 then
   say "==> Travis CI detected."
   # http://docs.travis-ci.com/user/ci-environment/#Environment-variables
-  query="service=travis-org\
-         &branch=$TRAVIS_BRANCH\
-         &commit=$TRAVIS_COMMIT\
-         &build=$TRAVIS_JOB_NUMBER\
-         &pull_request=$TRAVIS_PULL_REQUEST\
-         &job=$TRAVIS_JOB_ID\
-         &slug=$TRAVIS_REPO_SLUG"
+  service="travis-org"
+  branch="$TRAVIS_BRANCH"
+  commit="$TRAVIS_COMMIT"
+  build="$TRAVIS_JOB_NUMBER"
+  pr="$TRAVIS_PULL_REQUEST"
+  job="$TRAVIS_JOB_ID"
+  slug="$TRAVIS_REPO_SLUG"
 
 elif [ "$CI" = "true" ] && [ "$CI_NAME" = "codeship" ];
 then
   say "==> Codeship CI detected."
   # https://www.codeship.io/documentation/continuous-integration/set-environment-variables/
+  service="codeship"
+  branch="$CI_BRANCH"
+  build="$CI_BUILD_NUMBER"
   build_url=$(urlencode "$CI_BUILD_URL")
-  query="service=codeship\
-         &branch=$CI_BRANCH\
-         &build=$CI_BUILD_NUMBER\
-         &build_url=$build_url\
-         &commit=$CI_COMMIT_ID"
+  commit="$CI_COMMIT_ID"
 
 elif [ "$CI" = "true" ] && [ "$CIRCLECI" = "true" ];
 then
   say "==> Circle CI detected."
   # https://circleci.com/docs/environment-variables
-  query="service=circleci\
-         &branch=$CIRCLE_BRANCH\
-         &build=$CIRCLE_BUILD_NUM.$CIRCLE_NODE_INDEX\
-         &slug=$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME\
-         &pr=$CIRCLE_PR_NUMBER\
-         &commit=$CIRCLE_SHA1"
+  service="circleci"
+  branch="$CIRCLE_BRANCH"
+  build="$CIRCLE_BUILD_NUM.$CIRCLE_NODE_INDEX"
+  slug="$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
+  pr="$CIRCLE_PR_NUMBER"
+  commit="$CIRCLE_SHA1"
 
 elif [ "$CI" = "true" ] && [ "$SEMAPHORE" = "true" ];
 then
   say "==> Semaphore CI detected."
   # https://semaphoreapp.com/docs/available-environment-variables.html
-  query="service=semaphore\
-         &branch=$BRANCH_NAME\
-         &build=$SEMAPHORE_BUILD_NUMBER.$SEMAPHORE_CURRENT_THREAD\
-         &slug=$SEMAPHORE_REPO_SLUG\
-         &commit=$REVISION"
+  service="semaphore"
+  branch="$BRANCH_NAME"
+  build="$SEMAPHORE_BUILD_NUMBER.$SEMAPHORE_CURRENT_THREAD"
+  slug="$SEMAPHORE_REPO_SLUG"
+  commit="$REVISION"
 
 elif [ "$CI" = "true" ] && [ "$DRONE" = "true" ];
 then
   say "==> Drone CI detected."
   # http://docs.drone.io/env.html
   # drone commits are not full shas
+  service="drone.io"
+  branch="$DRONE_BRANCH"
+  build="$DRONE_BUILD_NUMBER"
   build_url=$(urlencode "$DRONE_BUILD_URL")
-  query="service=drone.io\
-         &branch=$DRONE_BRANCH\
-         &build=$DRONE_BUILD_NUMBER\
-         &build_url=$build_url\
-         &commit=$(git rev-parse HEAD || hg id -i --debug | tr -d '+')"
+  commit=$(git rev-parse HEAD || hg id -i --debug | tr -d '+')
 
 elif [ "$CI" = "True" ] && [ "$APPVEYOR" = "True" ];
 then
   say "==> Appveyor CI detected."
   # http://www.appveyor.com/docs/environment-variables
-  query="service=appveyor\
-         &branch=$APPVEYOR_REPO_BRANCH\
-         &build=$APPVEYOR_JOB_ID\
-         &pr=$APPVEYOR_PULL_REQUEST_NUMBER\
-         &job=$APPVEYOR_ACCOUNT_NAME/$APPVEYOR_PROJECT_SLUG/$APPVEYOR_BUILD_VERSION\
-         &slug=$APPVEYOR_REPO_NAME\
-         &commit=$APPVEYOR_REPO_COMMIT"
+  service="appveyor"
+  branch="$APPVEYOR_REPO_BRANCH"
+  build="$APPVEYOR_JOB_ID"
+  pr="$APPVEYOR_PULL_REQUEST_NUMBER"
+  job="$APPVEYOR_ACCOUNT_NAME/$APPVEYOR_PROJECT_SLUG/$APPVEYOR_BUILD_VERSION"
+  slug="$APPVEYOR_REPO_NAME"
+  commit="$APPVEYOR_REPO_COMMIT"
 
 elif [ "$CI" = "true" ] && [ "$WERCKER_GIT_BRANCH" != "" ];
 then
   say "==> Wercker CI detected."
   # http://devcenter.wercker.com/articles/steps/variables.html
-  query="service=wercker\
-         &branch=$WERCKER_GIT_BRANCH\
-         &build=$WERCKER_MAIN_PIPELINE_STARTED\
-         &slug=$WERCKER_GIT_OWNER/$WERCKER_GIT_REPOSITORY\
-         &commit=$WERCKER_GIT_COMMIT"
+  service="wercker"
+  branch="$WERCKER_GIT_BRANCH"
+  build="$WERCKER_MAIN_PIPELINE_STARTED"
+  slug="$WERCKER_GIT_OWNER/$WERCKER_GIT_REPOSITORY"
+  commit="$WERCKER_GIT_COMMIT"
 
 elif [ "$CI" = "true" ] && [ "$MAGNUM" = "true" ];
 then
   say "==> Magnum CI detected."
   # https://magnum-ci.com/docs/environment
-  query="service=magnum\
-         &branch=$CI_BRANCH\
-         &build=$CI_BUILD_NUMBER\
-         &commit=$CI_COMMIT"
+  service="magnum"
+  branch="$CI_BRANCH"
+  build="$CI_BUILD_NUMBER"
+  commit="$CI_COMMIT"
 
 elif [ "$CI" = "true" ] && [ "$SNAP_CI" = "true" ];
 then
   say "==> Snap CI detected."
   # https://docs.snap-ci.com/environment-variables/
-  if [ "$SNAP_BRANCH" != "" ]; then
-    _branch="$SNAP_BRANCH"
-  else
-    _branch="$SNAP_UPSTREAM_BRANCH"
-  fi
-  if [ "$SNAP_COMMIT" != "" ]; then
-    _commit="$SNAP_COMMIT"
-  else
-    _commit="$SNAP_UPSTREAM_COMMIT"
-  fi
-  query="service=snap\
-         &branch=$_branch\
-         &build=$SNAP_PIPELINE_COUNTER\
-         &pr=$SNAP_PULL_REQUEST_NUMBER\
-         &commit=$_commit"
+  service="snap"
+  branch=$([ "$SNAP_BRANCH" ="" ] && echo "$SNAP_BRANCH" || echo "$SNAP_UPSTREAM_BRANCH")
+  build="$SNAP_PIPELINE_COUNTER"
+  pr="$SNAP_PULL_REQUEST_NUMBER"
+  commit=$([ "$SNAP_COMMIT" != "" ] && echo "$SNAP_COMMIT" || echo "$SNAP_UPSTREAM_COMMIT")
 
 elif [ "$SHIPPABLE" = "true" ];
 then
   say "==> Shippable CI detected."
   # http://docs.shippable.com/en/latest/config.html#common-environment-variables
-  _build_url=$(urlencode "$BUILD_URL")
-  query="service=shippable\
-         &branch=$BRANCH\
-         &build=$BUILD_NUMBER\
-         &build_url=$_build_url\
-         &pull_request=$PULL_REQUEST\
-         &slug=$REPO_NAME\
-         &commit=$COMMIT"
+  service="shippable"
+  branch="$BRANCH"
+  build="$BUILD_NUMBER"
+  build_url=$(urlencode "$BUILD_URL")
+  pr="$PULL_REQUEST"
+  slug="$REPO_NAME"
+  commit="$COMMIT"
 
 elif [ "$CI_SERVER_NAME" = "GitLab CI" ];
 then
   say "==> GitLab CI detected."
   # http://doc.gitlab.com/ci/examples/README.html#environmental-variables
   # https://gitlab.com/gitlab-org/gitlab-ci-runner/blob/master/lib/build.rb#L96
-  _slug=$(echo "$CI_BUILD_REPO" | cut -d'/' -f4-5 | sed -e 's/.git//')
-  query="service=gitlab\
-         &branch=$CI_BUILD_REF_NAME\
-         &build=$CI_BUILD_ID\
-         &slug=$_slug\
-         &commit=$CI_BUILD_REF"
+  service="gitlab"
+  branch="$CI_BUILD_REF_NAME"
+  build="$CI_BUILD_ID"
+  slug=$(echo "$CI_BUILD_REPO" | cut -d'/' -f4-5 | sed -e 's/.git//')
+  commit="$CI_BUILD_REF"
 
 else
   # find branch, commit, repo from git command
   say "==> No CI detected, using git/mercurial for branch and commit sha."
   branch=$(git rev-parse --abbrev-ref HEAD || hg branch)
-  if [ "$branch" = "HEAD" ];
-  then
-    branch=""
-  fi
+  if [ "$branch" = "HEAD" ]; then branch=""; fi
+  commit=$(git rev-parse HEAD || hg id -i --debug | tr -d '+')
 
-  query="branch=$branch&commit=$(git rev-parse HEAD || hg id -i --debug | tr -d '+')"
-
-  if [ "$build" != "" ];
-  then
-    query="$query&build=$build"
-  fi
 fi
+
+query="branch=$([ "$branch_o" = "" ] && echo "$branch" || echo "$branch_o")\
+       &commit=$([ "$commit_o" = "" ] && echo "$commit" || echo "$commit_o")\
+       &build=$([ "$build_o" = "" ] && echo "$build" || echo "$build_o")\
+       &slug=$([ "$slug_o" = "" ] && echo "$slug" || echo "$slug_o")\
+       &service=$service\
+       &pr=$([ "$pr_o" = "" ] && echo "$pr" || echo "$pr_o")\
+       &job=$job"
 
 # detect bower comoponents location
 bower_components="bower_components"
