@@ -582,8 +582,8 @@ else
             "$(echo "$res" | sed -n 2p)" | grep 'HTTP/1.1 ' | tail -1 | cut -d' ' -f2)
   if [ "$s3" != "200" ];
   then
-    # just incase, try traditional upload
-    res=$(echo "$upload" | curl -sX POST --data-binary @- "$url/upload/v2?s3=$s3&$query")
+    # just incase, try traditional upload FUTURE ^s3=$s3
+    res=$(echo "$upload" | curl -sX POST --data-binary @- "$url/upload/v2?$query")
     say "    $res"
   else
     say "    Finished"
