@@ -327,9 +327,20 @@ then
 else
   # find branch, commit, repo from git command
   say "==> No CI detected, using git/mercurial for branch and commit sha."
-  branch=$(git rev-parse --abbrev-ref HEAD || hg branch)
-  if [ "$branch" = "HEAD" ]; then branch=""; fi
-  commit=$(git rev-parse HEAD || hg id -i --debug | tr -d '+')
+  if [ "$GIT_BRANCH" != "" ];
+  then
+    branch="$GIT_BRANCH"
+  else
+    branch=$(git rev-parse --abbrev-ref HEAD || hg branch)
+    if [ "$branch" = "HEAD" ]; then branch=""; fi
+  fi
+
+  if [ "$GIT_COMMIT" != "" ];
+  then
+    commit="$GIT_COMMIT"
+  else
+    commit=$(git rev-parse HEAD || hg id -i --debug | tr -d '+')
+  fi
 
 fi
 
