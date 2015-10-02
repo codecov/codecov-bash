@@ -556,14 +556,21 @@ then
   echo "$upload"
 else
   say "==> Uploading reports"
-  res=$(echo "$upload" | \
-            curl -X POST \
-                 --silent \
-                 --data-binary @- \
-                 -H "Content-Type: text/plain" \
-                 -H "Accept: text/plain" \
-                 "$url/upload/v2?$query")
-  say "    $res"
+  res=$(curl -sX POST "$url/upload/v3?$query")
+  s3=$(echo "$upload" | \
+       curl -isX PUT --data-binary @- \
+            -H 'Content-Type: plain/text' -H 'x-amz-acl: public-read' \
+            "$(echo "$res" | sed -n 2p)" | grep '200 OK')
+  if [ "$s3" = "" ];
+  then
+    # just incase, try traditional upload
+    res=$(echo "$upload" | curl -sX POST --data-binary @- "$url/upload/v2?$query")
+    say "    $res"
+  else
+    say "    Finished"
+    say "    $(echo "$res" | sed -n 1p)"
+  fi
+
 fi
 
 # EOF
