@@ -38,7 +38,7 @@ function test_help () {
 function test_url_opt () {
     reset
     res=$(./codecov -d -u http://example.com | grep "http://example.com/")
-    diff <(echo "http://example.com/upload/v2?package=bash-$VERSION&branch=$_BRANCH&commit=$_SHA") <(echo "$res")
+    diff <(echo "http://example.com/upload/v2?package=bash-$VERSION&branch=$_BRANCH&commit=$_SHA&build=&build_url=&slug=&service=&pr=&job=") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
@@ -46,14 +46,14 @@ function test_url_env () {
     reset
     export CODECOV_URL="http://other.com"
     res=$(./codecov -d | grep "http://other.com/")
-    diff <(echo "http://other.com/upload/v2?package=bash-$VERSION&branch=$_BRANCH&commit=$_SHA") <(echo "$res")
+    diff <(echo "http://other.com/upload/v2?package=bash-$VERSION&branch=$_BRANCH&commit=$_SHA&build=&build_url=&slug=&service=&pr=&job=") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
 function test_build_arg () {
     reset
     res=$(./codecov -d -b 1.6 | grep "https://codecov.io/")
-    diff <(echo "https://codecov.io/upload/v2?package=bash-$VERSION&branch=$_BRANCH&commit=$_SHA&build=1.6") <(echo "$res")
+    diff <(echo "https://codecov.io/upload/v2?package=bash-$VERSION&branch=$_BRANCH&commit=$_SHA&build=1.6&build_url=&slug=&service=&pr=&job=") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
@@ -113,14 +113,14 @@ function test_env_env () {
 function test_slug_opt () {
     reset
     res=$(./codecov -dr myowner/myrepo | grep "https://codecov.io/")
-    diff <(echo "https://codecov.io/upload/v2?package=bash-$VERSION&branch=$_BRANCH&commit=$_SHA&slug=myowner/myrepo") <(echo "$res")
+    diff <(echo "https://codecov.io/upload/v2?package=bash-$VERSION&branch=$_BRANCH&commit=$_SHA&build=&build_url=&slug=myowner/myrepo&service=&pr=&job=") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
 function test_slug_env () {
     reset
     export CODECOV_SLUG="myowner/myrepo"
-    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&branch=$_BRANCH&commit=$_SHA&slug=myowner/myrepo"
+    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&branch=$_BRANCH&commit=$_SHA&build=&build_url=&slug=myowner/myrepo&service=&pr=&job="
 }
 
 function test_gcov () {
@@ -143,7 +143,7 @@ function test_token_opt () {
     reset
     token="38cd42da-4df4-4760-a998-4ebeca536904"
     res=$(./codecov -d -t "$token" | grep "https://codecov.io/")
-    diff <(echo "https://codecov.io/upload/v2?package=bash-$VERSION&branch=$_BRANCH&commit=$_SHA&token=$token") <(echo "$res")
+    diff <(echo "https://codecov.io/upload/v2?package=bash-$VERSION&branch=$_BRANCH&commit=$_SHA&build=&build_url=&slug=&service=&pr=&job=&token=$token") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
@@ -151,7 +151,7 @@ function test_token_env () {
     reset
     export CODECOV_TOKEN="38cd42da-4df4-4760-a998-4ebeca536904"
     res=$(./codecov -d | grep "https://codecov.io/")
-    diff <(echo "https://codecov.io/upload/v2?package=bash-$VERSION&branch=$_BRANCH&commit=$_SHA&token=$token") <(echo "$res")
+    diff <(echo "https://codecov.io/upload/v2?package=bash-$VERSION&branch=$_BRANCH&commit=$_SHA&build=&build_url=&slug=&service=&pr=&job=&token=$token") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
@@ -196,7 +196,7 @@ function test_travis () {
     export TRAVIS_JOB_ID="33116958"
     export TRAVIS_PULL_REQUEST="false"
     export TRAVIS_JOB_NUMBER="4.1"
-    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&service=travis-org&branch=master&commit=c739768fcac68144a3a6d82305b9c4106934d31a&build=4.1&pull_request=false&job=33116958&slug=codecov/ci-repo"
+    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&branch=master&commit=c739768fcac68144a3a6d82305b9c4106934d31a&build=4.1&build_url=&slug=codecov/ci-repo&service=travis-org&pr=false&job=33116958"
 }
 
 function test_jenkins (){
@@ -207,7 +207,7 @@ function test_jenkins (){
     export BUILD_NUMBER="15.1"
     export BUILD_URL="http://endpoint"
     export WORKSPACE="."
-    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&service=jenkins&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=15.1&pr=&build_url=http%3A%2F%2Fendpoint"
+    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=15.1&build_url=http%3A%2F%2Fendpoint&slug=&service=jenkins&pr=&job="
 }
 
 function test_jenkins_vars (){
@@ -219,7 +219,7 @@ function test_jenkins_vars (){
     export BUILD_URL="http://endpoint"
     export WORKSPACE="."
     export ghprbPullId="5"
-    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&service=jenkins&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=15.1&pr=5&build_url=http%3A%2F%2Fendpoint"
+    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=15.1&build_url=http%3A%2F%2Fendpoint&slug=&service=jenkins&pr=5&job="
 }
 
 function test_codeship (){
@@ -230,7 +230,7 @@ function test_codeship (){
     export CI_BUILD_NUMBER="12.1"
     export CI_BUILD_URL="http://endpoint"
     export CI_COMMIT_ID="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
-    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&service=codeship&branch=develop&build=12.1&build_url=http%3A%2F%2Fendpoint&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f"
+    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=12.1&build_url=http%3A%2F%2Fendpoint&slug=&service=codeship&pr=&job="
 }
 
 function test_circleci (){
@@ -244,7 +244,7 @@ function test_circleci (){
     export CIRCLE_PROJECT_USERNAME="myuser"
     export CIRCLE_PROJECT_REPONAME="myrepo"
     export CIRCLE_SHA1="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
-    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&service=circleci&branch=develop&build=9.1&slug=myuser/myrepo&pr=113&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f"
+    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=9.1&build_url=&slug=myuser/myrepo&service=circleci&pr=113&job="
 }
 
 function test_semaphore (){
@@ -256,7 +256,7 @@ function test_semaphore (){
     export SEMAPHORE_BUILD_NUMBER="8"
     export SEMAPHORE_CURRENT_THREAD="2"
     export REVISION="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
-    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&service=semaphore&branch=develop&build=8.2&slug=myowner/myrepo&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f"
+    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=8.2&build_url=&slug=myowner/myrepo&service=semaphore&pr=&job="
 }
 
 function test_drone (){
@@ -266,7 +266,7 @@ function test_drone (){
     export DRONE_BRANCH="develop"
     export DRONE_BUILD_NUMBER="7.5"
     export DRONE_BUILD_URL="http://drone"
-    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&service=drone.io&branch=develop&build=7.5&build_url=http%3A%2F%2Fdrone&commit=$(git rev-parse HEAD)"
+    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&branch=develop&commit=$(git rev-parse HEAD)&build=7.5&build_url=http%3A%2F%2Fdrone&slug=&service=drone.io&pr=&job="
 }
 
 function test_appveyor (){
@@ -281,7 +281,7 @@ function test_appveyor (){
     export APPVEYOR_PROJECT_SLUG="b"
     export APPVEYOR_JOB_ID="9r2qufuu8"
     export APPVEYOR_REPO_COMMIT="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
-    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&service=appveyor&branch=develop&build=9r2qufuu8&pr=1&job=a/b/1.2.3&slug=myowner/myrepo&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f"
+    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=9r2qufuu8&build_url=&slug=myowner/myrepo&service=appveyor&pr=1&job=a/b/1.2.3"
 }
 
 function test_wercker (){
@@ -292,7 +292,7 @@ function test_wercker (){
     export WERCKER_GIT_OWNER="myowner"
     export WERCKER_GIT_REPOSITORY="myrepo"
     export WERCKER_GIT_COMMIT="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
-    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&service=wercker&branch=develop&build=12311&slug=myowner/myrepo&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f"
+    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=12311&build_url=&slug=myowner/myrepo&service=wercker&pr=&job="
 }
 
 function test_magnum (){
@@ -302,7 +302,7 @@ function test_magnum (){
     export CI_BRANCH="develop"
     export CI_BUILD_NUMBER="12311"
     export CI_COMMIT="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
-    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&service=magnum&branch=develop&build=12311&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f"
+    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=12311&build_url=&slug=&service=magnum&pr=&job="
 }
 
 function test_snap_ci (){
@@ -313,7 +313,7 @@ function test_snap_ci (){
     export SNAP_PIPELINE_COUNTER="12311"
     export SNAP_PULL_REQUEST_NUMBER="1"
     export SNAP_COMMIT="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
-    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&service=snap&branch=develop&build=12311&pr=1&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f"
+    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=12311&build_url=&slug=&service=snap&pr=1&job="
 }
 
 function test_gitlab (){
@@ -323,7 +323,7 @@ function test_gitlab (){
     export CI_BUILD_ID="1.2"
     export CI_BUILD_REPO="https://gitlab.com/myowner/myrepo.git"
     export CI_BUILD_REF="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
-    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&service=gitlab&branch=develop&build=1.2&slug=myowner/myrepo&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f"
+    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=1.2&build_url=&slug=myowner/myrepo&service=gitlab&pr=&job="
 }
 
 function test_shippable (){
@@ -335,7 +335,7 @@ function test_shippable (){
     export BUILD_URL="http://shippable"
     export PULL_REQUEST="2"
     export COMMIT="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
-    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&service=shippable&branch=develop&build=1.2&build_url=http%3A%2F%2Fshippable&pull_request=2&slug=myowner/myrepo&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f"
+    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=1.2&build_url=http%3A%2F%2Fshippable&slug=myowner/myrepo&service=shippable&pr=2&job="
 }
 
 

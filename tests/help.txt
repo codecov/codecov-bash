@@ -12,7 +12,13 @@ Upload reports to Codecov
                  (or) set environment variable CODECOV_ENV=VAR,VAR2
     -X feature   Disable functionalities, accepting: 'gcov', 'coveragepy'
     -s silent    Enable silent mode
-    -b build     Tag upload to a specific build (automatically detected in supported CI companies)
+
+    -- Override CI Environment Variables --
+       These variables are automatically detected by popular CI providers
+    -B branch    Specify the branch name
+    -C sha       Specify the commit sha
+    -P pr        Specify the pull request number
+    -b build     Specify the build number
 
     -- Debugging --
     -v           Verbose Mode

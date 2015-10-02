@@ -137,7 +137,7 @@ then
         proj_root="$OPTARG"
         ;;
       "r")
-        slug_o="&slug=$OPTARG"
+        slug_o="$OPTARG"
         ;;
       "X")
         if [ "$OPTARG" = "gcov" ];
@@ -190,7 +190,7 @@ fi
 if [ "$CODECOV_SLUG" != "" ];
 then
   say "--> slug set from env"
-  slug="&slug=$CODECOV_SLUG"
+  slug_o="$CODECOV_SLUG"
 fi
 
 
@@ -296,7 +296,7 @@ then
   say "==> Snap CI detected."
   # https://docs.snap-ci.com/environment-variables/
   service="snap"
-  branch=$([ "$SNAP_BRANCH" ="" ] && echo "$SNAP_BRANCH" || echo "$SNAP_UPSTREAM_BRANCH")
+  branch=$([ "$SNAP_BRANCH" != "" ] && echo "$SNAP_BRANCH" || echo "$SNAP_UPSTREAM_BRANCH")
   build="$SNAP_PIPELINE_COUNTER"
   pr="$SNAP_PULL_REQUEST_NUMBER"
   commit=$([ "$SNAP_COMMIT" != "" ] && echo "$SNAP_COMMIT" || echo "$SNAP_UPSTREAM_COMMIT")
@@ -336,6 +336,7 @@ fi
 query="branch=$([ "$branch_o" = "" ] && echo "$branch" || echo "$branch_o")\
        &commit=$([ "$commit_o" = "" ] && echo "$commit" || echo "$commit_o")\
        &build=$([ "$build_o" = "" ] && echo "$build" || echo "$build_o")\
+       &build_url=$build_url\
        &slug=$([ "$slug_o" = "" ] && echo "$slug" || echo "$slug_o")\
        &service=$service\
        &pr=$([ "$pr_o" = "" ] && echo "$pr" || echo "$pr_o")\
@@ -554,7 +555,7 @@ $report
 done
 
 # trim whitespace from query
-query=$(echo "package=bash-$VERSION&$query$slug$token" | tr -d ' ')
+query=$(echo "package=bash-$VERSION&$query$token" | tr -d ' ')
 say "(query) $query"
 
 if [ "$dump" != "0" ];
