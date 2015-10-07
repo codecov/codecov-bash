@@ -425,6 +425,7 @@ else
                      -or -name '*.lst' \) \
                     -not -name '*.sh' \
                     -not -name '*.py' \
+                    -not -name '*.xcconfig' \
                     -not -name 'Coverage.profdata' \
                     -not -name 'phpunit-code-coverage.xml' \
                     -not -name 'coverage.serialized' \
