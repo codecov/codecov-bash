@@ -395,8 +395,11 @@ else
             for f in $_file
             do
               _proj=${f##*/}
-              _proj=${_proj%."$_type"}
-              xcrun llvm-cov show -instr-profile "$profdata" "$f/$_proj" > "$_proj.$_type.coverage.txt" || true
+              if [ "$_proj" != Pods_* ];
+              then
+                _proj=${_proj%."$_type"}
+                xcrun llvm-cov show -instr-profile "$profdata" "$f/$_proj" > "$_proj.$_type.coverage.txt" || true
+              fi
             done
           fi
         done
