@@ -398,6 +398,7 @@ else
               if [ "${_proj%%_*}" != "Pods" ];
               then
                 _proj=${_proj%."$_type"}
+                echo "    xcrun llvm-cov show -instr-profile $profdata $f/$_proj > $_proj.$_type.coverage.txt"
                 xcrun llvm-cov show -instr-profile "$profdata" "$f/$_proj" > "$_proj.$_type.coverage.txt" || true
               fi
             done
