@@ -387,7 +387,7 @@ else
       if [ -f "$profdata" ];
       then
         _dir=$(dirname "$profdata")
-        for _type in app framework xctest
+        for _type in app xctest
         do
           _file=$(find "$_dir" -name "*.$_type")
           if [ "$_file" != "" ];
@@ -584,18 +584,19 @@ then
 else
   say "==> Uploading reports"
   res=$(curl -sX POST "$url/upload/v3?$query")
-  echo "$upload" | \
-       curl -iX PUT --data-binary @- \
-            -H 'Content-Type: plain/text' -H 'x-amz-acl: public-read'
-  # if [ "$s3" != "200" ];
-  # then
-  #   # just incase, try traditional upload FUTURE ^s3=$s3
-  #   res=$(echo "$upload" | curl -sX POST --data-binary @- "$url/upload/v2?$query")
-  #   say "    $res"
-  # else
-  #   say "    Finished"
-  #   say "    $(echo "$res" | sed -n 1p)"
-  # fi
+  s3=$(echo "$upload" | \
+       curl -isX PUT --data-binary @- \
+            -H 'Content-Type: plain/text' -H 'x-amz-acl: public-read' \
+            "$(echo "$res" | sed -n 2p)" | grep 'HTTP/1.1 ' | tail -1 | cut -d' ' -f2)
+  if [ "$s3" != "200" ];
+  then
+    # just incase, try traditional upload FUTURE ^s3=$s3
+    res=$(echo "$upload" | curl -sX POST --data-binary @- "$url/upload/v2?$query")
+    say "    $res"
+  else
+    say "    Finished"
+    say "    $(echo "$res" | sed -n 1p)"
+  fi
 
 fi
 
