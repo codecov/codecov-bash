@@ -387,7 +387,7 @@ else
       if [ -f "$profdata" ];
       then
         _dir=$(dirname "$profdata")
-        for _type in app xctest
+        for _type in app framework xctest
         do
           _file=$(find "$_dir" -name "*.$_type")
           if [ "$_file" != "" ];
@@ -395,9 +395,9 @@ else
             for f in $_file
             do
               _proj=${f##*/}
+              _proj=${_proj%."$_type"}
               if [ "${_proj%%_*}" != "Pods" ];
               then
-                _proj=${_proj%."$_type"}
                 echo "    xcrun llvm-cov show -instr-profile $profdata $f/$_proj > $_proj.$_type.coverage.txt"
                 xcrun llvm-cov show -instr-profile "$profdata" "$f/$_proj" > "$_proj.$_type.coverage.txt" || true
               fi
