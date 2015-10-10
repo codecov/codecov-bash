@@ -383,10 +383,11 @@ else
       find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' -exec $gcov_exe $gcov_arg {} +
 
       # xcode 7 profdata
-      profdata=$(find ~/Library/Developer/Xcode/DerivedData -name 'Coverage.profdata' | head -1)
-      if [ -f "$profdata" ];
-      then
+      profdatas=$(find / -name 'Coverage.profdata')
+      for profdata in $profdatas
+      do
         _dir=$(dirname "$profdata")
+        echo "    Found Coverage.profdata in $_dir"
         for _type in app framework xctest
         do
           _file=$(find "$_dir" -name "*.$_type")
@@ -398,11 +399,11 @@ else
               _proj=${_proj%."$_type"}
               if [ "${_proj%%_*}" != "Pods" ];
               then
-                echo "    xcrun llvm-cov show -instr-profile $profdata $f/$_proj > $_proj.$_type.coverage.txt"
+                echo "    Building reports via (xcrun llvm-cov show -instr-profile $profdata $f/$_proj > $_proj.$_type.coverage.txt)"
                 xcrun llvm-cov show -instr-profile "$profdata" "$f/$_proj" > "$_proj.$_type.coverage.txt" || true
               fi
             done
-          fi
+          done
         done
       fi
 
