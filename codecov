@@ -108,7 +108,11 @@ swiftcov() {
         if [ "${_proj%%_*}" != "Pods" ];
         then
           echo "    Building reports via (xcrun llvm-cov show -instr-profile $1 $f/$_proj > $_proj.$_type.coverage.txt)"
-          xcrun llvm-cov show -instr-profile "$1" "$f/$_proj" > "$_proj.$_type.coverage.txt" || true
+          res=$(xcrun llvm-cov show -instr-profile "$1" "$f/$_proj" 2>/dev/null || true)
+          if [ "$res" != "" ];
+          then
+            echo "$res" > "$_proj.$_type.coverage.txt"
+          fi
         fi
       done
     fi
