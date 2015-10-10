@@ -403,9 +403,9 @@ else
                 xcrun llvm-cov show -instr-profile "$profdata" "$f/$_proj" > "$_proj.$_type.coverage.txt" || true
               fi
             done
-          done
+          fi
         done
-      fi
+      done
 
     fi
 
