@@ -388,7 +388,7 @@ else
     if [ "$(find . -name '*.swift')" != "" ];
     then
       echo "    Swift files found. Searching for Coverage.profdata"
-      profdatas=$(find / -name 'Coverage.profdata' 2>&1 | grep -v "Permission denied")
+      profdatas=$(find / -name 'Coverage.profdata' 2>/dev/null)
       if [ "$profdatas" != "" ];
       then
         for profdata in $profdatas
