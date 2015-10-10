@@ -376,37 +376,46 @@ else
   then
     say "==> Trying gcov (disable via -X gcov)"
     say "    Project Root: $proj_root"
+
     # osx gcov
     if [ -d ~/Library/Developer/Xcode/DerivedData ];
     then
       say "    Found gcda in ~/Library/Developer/Xcode/DerivedData"
       find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' -exec $gcov_exe $gcov_arg {} +
+    fi
 
-      # xcode 7 profdata
+    # xcode 7 profdata
+    if [ "$(find . -name '*.swift')" != "" ];
+    then
+      echo "    Swift files found. Searching for Coverage.profdata"
       profdatas=$(find / -name 'Coverage.profdata' 2>&1 | grep -v "Permission denied")
-      for profdata in $profdatas
-      do
-        _dir=$(dirname "$profdata")
-        echo "    Found Coverage.profdata in $_dir"
-        for _type in app framework xctest
+      if [ "$profdatas" != "" ];
+      then
+        for profdata in $profdatas
         do
-          _file=$(find "$_dir" -name "*.$_type")
-          if [ "$_file" != "" ];
-          then
-            for f in $_file
-            do
-              _proj=${f##*/}
-              _proj=${_proj%."$_type"}
-              if [ "${_proj%%_*}" != "Pods" ];
-              then
-                echo "    Building reports via (xcrun llvm-cov show -instr-profile $profdata $f/$_proj > $_proj.$_type.coverage.txt)"
-                xcrun llvm-cov show -instr-profile "$profdata" "$f/$_proj" > "$_proj.$_type.coverage.txt" || true
-              fi
-            done
-          fi
+          _dir=$(dirname "$profdata")
+          echo "    Found Coverage.profdata in $_dir"
+          for _type in app framework xctest
+          do
+            _file=$(find "$_dir" -name "*.$_type")
+            if [ "$_file" != "" ];
+            then
+              for f in $_file
+              do
+                _proj=${f##*/}
+                _proj=${_proj%."$_type"}
+                if [ "${_proj%%_*}" != "Pods" ];
+                then
+                  echo "    Building reports via (xcrun llvm-cov show -instr-profile $profdata $f/$_proj > $_proj.$_type.coverage.txt)"
+                  xcrun llvm-cov show -instr-profile "$profdata" "$f/$_proj" > "$_proj.$_type.coverage.txt" || true
+                fi
+              done
+            fi
+          done
         done
-      done
-
+      else
+        echo "    No coverage data found. Learn more at: https://github.com/codecov/example-swift"
+      fi
     fi
 
     say "    Searching for gcov via (find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe $gcov_arg {} +)"
