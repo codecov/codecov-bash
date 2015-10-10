@@ -383,7 +383,7 @@ else
       find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' -exec $gcov_exe $gcov_arg {} +
 
       # xcode 7 profdata
-      profdatas=$(find / -name 'Coverage.profdata')
+      profdatas=$(find / -name 'Coverage.profdata' 2>&1 | grep -v "Permission denied")
       for profdata in $profdatas
       do
         _dir=$(dirname "$profdata")
