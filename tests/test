@@ -259,6 +259,18 @@ function test_semaphore (){
     assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=8.2&build_url=&slug=myowner/myrepo&service=semaphore&pr=&job="
 }
 
+function test_buildkite (){
+    reset
+    export CI="true"
+    export BUILDKITE="true"
+    export BUILDKITE_PROJECT_SLUG="myowner/myrepo"
+    export BUILDKITE_BRANCH="develop"
+    export BUILDKITE_BUILD_NUMBER="8"
+    export BUILDKITE_BUILD_URL="http://buildkite"
+    export BUILDKITE_COMMIT="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
+    assertURL "https://codecov.io/upload/v2?package=bash-$VERSION&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=8&build_url=http%3A%2F%2Fbuildkite&slug=myowner/myrepo&service=buildkite&pr=&job="
+}
+
 function test_drone (){
     reset
     export CI="true"
