@@ -98,29 +98,22 @@ swiftcov() {
   say "    Found Coverage.profdata in $_dir"
   for _type in app framework xctest
   do
-    _file=$(find "$_dir" -name "*.$_type")
-    if [ "$_file" != "" ];
-    then
-      for f in $_file
-      do
-        if [ -f "$f" ];
+    find "$_dir" -name "*.$_type" | while read line
+    do
+      _proj=${f##*/}
+      _proj=${_proj%."$_type"}
+      if [ "${_proj%%_*}" != "Pods" ];
+      then
+        say "    Building reports via (xcrun llvm-cov show -instr-profile $1 $f/$_proj > $_proj.$_type.coverage.txt)"
+        res=$(xcrun llvm-cov show -instr-profile "$1" "$f/$_proj" || echo "")
+        if [ "$res" != "" ];
         then
-          _proj=${f##*/}
-          _proj=${_proj%."$_type"}
-          if [ "${_proj%%_*}" != "Pods" ];
-          then
-            say "    Building reports via (xcrun llvm-cov show -instr-profile $1 $f/$_proj > $_proj.$_type.coverage.txt)"
-            res=$(xcrun llvm-cov show -instr-profile "$1" "$f/$_proj" || echo "")
-            if [ "$res" != "" ];
-            then
-              echo "$res" > "$_proj.$_type.coverage.txt"
-            else
-              say "    No coverage data created for $1"
-            fi
-          fi
+          echo "$res" > "$_proj.$_type.coverage.txt"
+        else
+          say "    No coverage data created for $1"
         fi
-      done
-    fi
+      fi
+    done
   done
 }
 
