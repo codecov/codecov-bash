@@ -98,7 +98,7 @@ swiftcov() {
   say "    Found Coverage.profdata in $_dir"
   for _type in app framework xctest
   do
-    find "$_dir" -name "*.$_type" | while read line
+    find "$_dir" -name "*.$_type" | while read f
     do
       _proj=${f##*/}
       _proj=${_proj%."$_type"}
