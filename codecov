@@ -19,6 +19,7 @@ commit_o=""
 branch_o=""
 slug_o=""
 dump="0"
+derivedDataPath=""
 files=""
 gcov_ignore=""
 ft_gcov="1"
@@ -60,6 +61,9 @@ Upload reports to Codecov
     -- Debugging --
     -v           Verbose Mode
     -d           Dont upload and dump to stdin
+
+    -- xcode --
+    -D           Custom derivedDataPath for Coverage.profdata compiling
 
     -- gcov --
     -g GLOB      Paths to ignore during gcov gathering
@@ -113,7 +117,7 @@ swiftcov() {
 
 if [ $# != 0 ];
 then
-  while getopts "svdhu:t:f:r:e:g:p:X:x:a:b:C:B:P:" o
+  while getopts "svdhu:t:f:r:e:g:p:X:x:a:b:C:B:P:D:" o
   do
     case "$o" in
       "v")
@@ -127,6 +131,9 @@ then
         ;;
       "C")
         commit_o="$OPTARG"
+        ;;
+      "D")
+        derivedDataPath="$OPTARG"
         ;;
       "B")
         branch_o="$OPTARG"
@@ -425,17 +432,14 @@ else
       fi
     fi
 
-    # fastlane
-    fastlane=$(find . -name Fastfile | head -1)
-    if [ -f "$fastlane" ];
+    if [ "$derivedDataPath" != "" ];
     then
-      echo "    Found Fastlane file. Extracting derivedDataPath"
-      fastlane=$(cat "$fastlane" | grep 'derivedDataPath:' | sed -e 's/^[[:space:]]*//' -e s/[\"\']//g -e s/derivedDataPath:[[:space:]]*//)
-      if [ -d "$fastlane" ];
+      profdata=$(find "$derivedDataPath" -name 'Coverage.profdata' | head -1)
+      if [ -f "$profdata" ];
       then
-        swiftcov "$fastlane"
+        swiftcov "$profdata"
       else
-        echo "    Failed to extract derivedDataPath"
+        echo "    Swift: no coverage data found in $derivedDataPath. Learn more at: https://github.com/codecov/example-swift"
       fi
     fi
 
