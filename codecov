@@ -89,6 +89,28 @@ urlencode() {
   echo "$1" | curl -Gso /dev/null -w %{url_effective} --data-urlencode @- "" | cut -c 3- | sed -e 's/%0A//'
 }
 
+swiftcov() {
+  _dir=$(dirname "$1")
+  echo "    Found Coverage.profdata in $_dir"
+  for _type in app framework xctest
+  do
+    _file=$(find "$_dir" -name "*.$_type")
+    if [ "$_file" != "" ];
+    then
+      for f in $_file
+      do
+        _proj=${f##*/}
+        _proj=${_proj%."$_type"}
+        if [ "${_proj%%_*}" != "Pods" ];
+        then
+          echo "    Building reports via (xcrun llvm-cov show -instr-profile $1 $f/$_proj > $_proj.$_type.coverage.txt)"
+          xcrun llvm-cov show -instr-profile "$1" "$f/$_proj" > "$_proj.$_type.coverage.txt" || true
+        fi
+      done
+    fi
+  done
+}
+
 if [ $# != 0 ];
 then
   while getopts "svdhu:t:f:r:e:g:p:X:x:a:b:C:B:P:" o
@@ -382,39 +404,27 @@ else
     then
       say "    Found gcda in ~/Library/Developer/Xcode/DerivedData"
       find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' -exec $gcov_exe $gcov_arg {} +
+
+      profdata=$(find ~/Library/Developer/Xcode/DerivedData -name 'Coverage.profdata' | head -1)
+      if [ -f "$profdata" ];
+      then
+        swiftcov "$profdata"
+      else
+        echo "    Swift: no coverage data found. Learn more at: https://github.com/codecov/example-swift"
+      fi
     fi
 
-    # xcode 7 profdata
-    if [ "$(find . -name '*.swift')" != "" ];
+    # fastlane
+    fastlane=$(find . -name Fastfile | head -1)
+    if [ -f "$fastlane" ];
     then
-      echo "    Swift files found. Searching for Coverage.profdata"
-      profdatas=$(find / -name 'Coverage.profdata' 2>/dev/null)
-      if [ "$profdatas" != "" ];
+      echo "    Found Fastlane file. Extracting derivedDataPath"
+      fastlane=$(cat "$fastlane" | grep 'derivedDataPath:' | sed -e 's/^[[:space:]]*//' -e s/[\"\']//g -e s/derivedDataPath:[[:space:]]*//)
+      if [ -d "$fastlane" ];
       then
-        for profdata in $profdatas
-        do
-          _dir=$(dirname "$profdata")
-          echo "    Found Coverage.profdata in $_dir"
-          for _type in app framework xctest
-          do
-            _file=$(find "$_dir" -name "*.$_type")
-            if [ "$_file" != "" ];
-            then
-              for f in $_file
-              do
-                _proj=${f##*/}
-                _proj=${_proj%."$_type"}
-                if [ "${_proj%%_*}" != "Pods" ];
-                then
-                  echo "    Building reports via (xcrun llvm-cov show -instr-profile $profdata $f/$_proj > $_proj.$_type.coverage.txt)"
-                  xcrun llvm-cov show -instr-profile "$profdata" "$f/$_proj" > "$_proj.$_type.coverage.txt" || true
-                fi
-              done
-            fi
-          done
-        done
+        swiftcov "$fastlane"
       else
-        echo "    No coverage data found. Learn more at: https://github.com/codecov/example-swift"
+        echo "    Failed to extract derivedDataPath"
       fi
     fi
 
