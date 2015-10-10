@@ -95,7 +95,7 @@ urlencode() {
 
 swiftcov() {
   _dir=$(dirname "$1")
-  echo "    Found Coverage.profdata in $_dir"
+  say "    Found Coverage.profdata in $_dir"
   for _type in app framework xctest
   do
     _file=$(find "$_dir" -name "*.$_type")
@@ -107,7 +107,7 @@ swiftcov() {
         _proj=${_proj%."$_type"}
         if [ "${_proj%%_*}" != "Pods" ];
         then
-          echo "    Building reports via (xcrun llvm-cov show -instr-profile $1 $f/$_proj > $_proj.$_type.coverage.txt)"
+          say "    Building reports via (xcrun llvm-cov show -instr-profile $1 $f/$_proj > $_proj.$_type.coverage.txt)"
           res=$(xcrun llvm-cov show -instr-profile "$1" "$f/$_proj" 2>/dev/null || true)
           if [ "$res" != "" ];
           then
@@ -432,7 +432,7 @@ else
       then
         swiftcov "$profdata"
       else
-        echo "    Swift: no coverage data found. Learn more at: https://github.com/codecov/example-swift"
+        say "    Swift: no coverage data found. Learn more at: https://github.com/codecov/example-swift"
       fi
     fi
 
@@ -443,7 +443,7 @@ else
       then
         swiftcov "$profdata"
       else
-        echo "    Swift: no coverage data found in $derivedDataPath. Learn more at: https://github.com/codecov/example-swift"
+        say "    Swift: no coverage data found in $derivedDataPath. Learn more at: https://github.com/codecov/example-swift"
       fi
     fi
 
