@@ -284,12 +284,12 @@ then
 
 elif [ "$CI" = "true" ] && [ "$BUILDKITE" = "true" ];
 then
-  say "==> Buildkite detected."
+  say "==> Buildkite CI detected."
   # https://buildkite.com/docs/guides/environment-variables
   service="buildkite"
   branch="$BUILDKITE_BRANCH"
   build="$BUILDKITE_BUILD_NUMBER"
-  build_url="$BUILDKITE_BUILD_URL"
+  build_url=$(urlencode "$BUILDKITE_BUILD_URL")
   slug="$BUILDKITE_PROJECT_SLUG"
   commit="$BUILDKITE_COMMIT"
 

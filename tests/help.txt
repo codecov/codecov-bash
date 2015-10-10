@@ -24,6 +24,9 @@ Upload reports to Codecov
     -v           Verbose Mode
     -d           Dont upload and dump to stdin
 
+    -- xcode --
+    -D           Custom derivedDataPath for Coverage.profdata compiling
+
     -- gcov --
     -g GLOB      Paths to ignore during gcov gathering
     -p dir       Project root directory (default: PWD, WORKSPACE, or TRAVIS_BUILD_DIR)
