@@ -103,15 +103,20 @@ swiftcov() {
     then
       for f in $_file
       do
-        _proj=${f##*/}
-        _proj=${_proj%."$_type"}
-        if [ "${_proj%%_*}" != "Pods" ];
+        if [ -f "$f" ];
         then
-          say "    Building reports via (xcrun llvm-cov show -instr-profile $1 $f/$_proj > $_proj.$_type.coverage.txt)"
-          res=$(xcrun llvm-cov show -instr-profile "$1" "$f/$_proj" 2>/dev/null || true)
-          if [ "$res" != "" ];
+          _proj=${f##*/}
+          _proj=${_proj%."$_type"}
+          if [ "${_proj%%_*}" != "Pods" ];
           then
-            echo "$res" > "$_proj.$_type.coverage.txt"
+            say "    Building reports via (xcrun llvm-cov show -instr-profile $1 $f/$_proj > $_proj.$_type.coverage.txt)"
+            res=$(xcrun llvm-cov show -instr-profile "$1" "$f/$_proj" || echo "")
+            if [ "$res" != "" ];
+            then
+              echo "$res" > "$_proj.$_type.coverage.txt"
+            else
+              say "    No coverage data created for $1"
+            fi
           fi
         fi
       done
