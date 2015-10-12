@@ -108,7 +108,7 @@ swiftcov() {
         res=$(xcrun llvm-cov show -instr-profile "$1" "$f/$_proj" || echo "")
         if [ "$res" != "" ];
         then
-          _proj=$(echo "$_proj" | sed -e 's/^[[:space:]]*//')
+          _proj=$(echo "$_proj" | sed -e 's/[[:space:]]//g')
           echo "$res" > "$_proj.$_type.coverage.txt"
         else
           say "    No coverage data created for $1"
