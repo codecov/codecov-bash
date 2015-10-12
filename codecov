@@ -43,7 +43,7 @@ Upload reports to Codecov
     -h           Display this help and exit
     -f COVERAGE  Reference a specific file only to upload
                  When not specified commonly known coverage files will found
-    -t TOKEN     Set the private repo token
+    -t TOKEN     Set the private repository token
                  (or) set environment variable CODECOV_TOKEN=:uuid
     -e ENV       Specify environment variables to be included with this build
                  ex. codecov -e VAR,VAR2
@@ -108,6 +108,7 @@ swiftcov() {
         res=$(xcrun llvm-cov show -instr-profile "$1" "$f/$_proj" || echo "")
         if [ "$res" != "" ];
         then
+          _proj=$(echo "$_proj" | sed -e 's/^[[:space:]]*//')
           echo "$res" > "$_proj.$_type.coverage.txt"
         else
           say "    No coverage data created for $1"
