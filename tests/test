@@ -212,6 +212,7 @@ function test_jenkins (){
 
 function test_bitrise (){
     reset
+    export CI="true"
     export BITRISE_IO="true"
     export BITRISE_APP_SLUG="owner/repo"
     export BITRISE_GIT_BRANCH="develop"
