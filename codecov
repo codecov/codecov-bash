@@ -480,7 +480,9 @@ else
                      -or -name '*.gcov' \
                      -or -name '*.lst' \) \
                     -not -name '*.sh' \
+                    -not -name '*.data' \
                     -not -name '*.py' \
+                    -not -name '*.class' \
                     -not -name '*.xcconfig' \
                     -not -name 'Coverage.profdata' \
                     -not -name 'phpunit-code-coverage.xml' \
