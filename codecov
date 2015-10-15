@@ -271,6 +271,17 @@ then
   pr="$CIRCLE_PR_NUMBER"
   commit="$CIRCLE_SHA1"
 
+elif [ "$CI" = "true" ] && [ "$BITRISE_IO" = "true" ];
+then
+  say "==> Bitrise CI detected."
+  service="bitrise"
+  branch="$BITRISE_GIT_BRANCH"
+  build="$BITRISE_BUILD_NUMBER"
+  build_url=$(urlencode "$BITRISE_BUILD_URL")
+  slug="$BITRISE_APP_SLUG"
+  pr="$BITRISE_PULL_REQUEST"
+  commit="$BITRISE_GIT_COMMIT"
+
 elif [ "$CI" = "true" ] && [ "$SEMAPHORE" = "true" ];
 then
   say "==> Semaphore CI detected."
