@@ -634,19 +634,24 @@ then
   echo "$upload"
 else
   say "==> Uploading reports"
-  res=$(curl -sX POST "$url/upload/v3?$query")
-  s3=$(echo "$upload" | \
-       curl -isX PUT --data-binary @- \
-            -H 'Content-Type: plain/text' -H 'x-amz-acl: public-read' \
-            "$(echo "$res" | sed -n 2p)" | grep 'HTTP/1.1 ' | tail -1 | cut -d' ' -f2)
-  if [ "$s3" != "200" ];
+  res=$(curl -sX POST "$url/upload/v3?$query" -H 'Accept: text/plain')
+  if [ "$(echo "$res" | grep 'HTTP 400')" != "" ];
   then
-    # just incase, try traditional upload FUTURE ^s3=$s3
-    res=$(echo "$upload" | curl -sX POST --data-binary @- "$url/upload/v2?$query")
-    say "    $res"
+    s3=$(echo "$upload" | \
+         curl -isX PUT --data-binary @- \
+              -H 'Content-Type: plain/text' -H 'x-amz-acl: public-read' \
+              "$(echo "$res" | sed -n 2p)" | grep 'HTTP/1.1 ' | tail -1 | cut -d' ' -f2)
+    if [ "$s3" != "200" ];
+    then
+      # just incase, try traditional upload FUTURE ^s3=$s3
+      res=$(echo "$upload" | curl -sX POST --data-binary @- "$url/upload/v2?$query" -H 'Accept: text/plain')
+      say "    $res"
+    else
+      say "    Finished"
+      say "    $(echo "$res" | sed -n 1p)"
+    fi
   else
-    say "    Finished"
-    say "    $(echo "$res" | sed -n 1p)"
+    say "$res"
   fi
 
 fi
