@@ -457,7 +457,7 @@ else
       fi
     fi
 
-    say "    Searching for gcov"
+    say "    Running gcov"
 
     # all other gcov
     bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec gcov -pbcu -o $(find $proj_root -type f -name '*.gcno' -exec dirname {} \;) {} +" || true
