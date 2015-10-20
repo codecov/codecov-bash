@@ -27,9 +27,16 @@ function assertDiff () {
     assertTrue 'Expected output differs.' $?
 }
 
+function assertContains () {
+    if [ "$(echo "$1" | grep "$2")" = "" ];
+    then
+        echo "$1 does not contain $2"
+    fi
+}
+
 function test_help () {
     reset
-    assertDiff "$(./codecov -h)" ./tests/help.txt
+    assertContains "$(./codecov -h)" "Upload reports to Codecov"
 }
 
 # ------------
@@ -92,22 +99,29 @@ function test_bowerrc_2 () {
 
 function test_env_opt () {
     reset
+
     export BUILD_ID="apples"
-    assertDiff "$(./codecov -de BUILD_ID)" ./tests/env.txt
+    res="$(./codecov -de BUILD_ID)"
+    assertContains "$res" 'BUILD_ID=apples'
 
     export COMMIT="abc"
-    assertDiff "$(./codecov -de BUILD_ID,COMMIT)" ./tests/env-many.txt
+    res="$(./codecov -de BUILD_ID,COMMIT)"
+    assertContains "$res" 'BUILD_ID=apples'
+    assertContains "$res" 'COMMIT=abc'
 }
 
 function test_env_env () {
     reset
     export CODECOV_ENV="BUILD_ID"
     export BUILD_ID="apples"
-    assertDiff "$(./codecov -d)" ./tests/env.txt
+    res="$(./codecov -d)"
+    assertContains "$res" 'BUILD_ID=apples'
 
     export CODECOV_ENV="BUILD_ID,COMMIT"
     export COMMIT="abc"
-    assertDiff "$(./codecov -d)" ./tests/env-many.txt
+    res="$(./codecov -d)"
+    assertContains "$res" 'BUILD_ID=apples'
+    assertContains "$res" 'COMMIT=abc'
 }
 
 function test_slug_opt () {
@@ -125,18 +139,13 @@ function test_slug_env () {
 
 function test_gcov () {
     reset
-    ./codecov -dv -X gcov | grep '**> gcov disable'
+    ./codecov -d -X gcov -X nocolor | grep '**> gcov disable'
     assertTrue 'gcov was disabled' $?
-}
-
-function test_silent () {
-    reset
-    assertDiff "$(./codecov -sd)" ./tests/silent.txt
 }
 
 function test_file_opt () {
     reset
-    assertDiff "$(./codecov -df temp/coverage.json)" ./tests/file.txt
+    assertContains "$(./codecov -df temp/coverage.json -X nocolor)" "+ temp/coverage.json bytes=25"
 }
 
 function test_token_opt () {
@@ -155,11 +164,6 @@ function test_token_env () {
     assertTrue 'Expected output differs.' $?
 }
 
-function test_verbose_opt () {
-    reset
-    assertDiff "$(./codecov -vd | grep -v 'coverage cli exists')" ./tests/verbose.txt
-}
-
 function test_upload () {
     reset
     export CI="true"
@@ -172,8 +176,8 @@ function test_upload () {
     export TRAVIS_PULL_REQUEST="false"
     export TRAVIS_JOB_NUMBER="4.1"
     res=$(./codecov | grep "http://codecov.io")
-    diff <(echo "http://codecov.io/github/codecov/ci-repo?ref=c739768fcac68144a3a6d82305b9c4106934d31a") <(echo "$res")
-    assertTrue 'Expected output differs.' $?
+    assertContains "$res" "Reports queued to"
+    assertContains "$res" "http://codecov.io/github/codecov/ci-repo?ref=c739768fcac68144a3a6d82305b9c4106934d31a"
 }
 
 # -----------------
