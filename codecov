@@ -647,26 +647,60 @@ then
   echo "$url/upload/v2?$query"
   echo "$upload"
 else
-  say "==> Uploading reports"
-  res=$(curl -sX POST "$url/upload/v3?$query" -H 'Accept: text/plain')
-  if [ "$(echo "$res" | grep 'HTTP 400')" != "" ];
-  then
-    s3=$(echo "$upload" | \
-         curl -isX PUT --data-binary @- \
-              -H 'Content-Type: plain/text' -H 'x-amz-acl: public-read' \
-              "$(echo "$res" | sed -n 2p)" | grep 'HTTP/1.1 ' | tail -1 | cut -d' ' -f2)
-    if [ "$s3" != "200" ];
+  i="0"
+  while [ $i -lt 4 ]
+  do
+    i=$[$i+1]
+
+    say "${e}==>${x} Uploading reports"
+    say "    Pinging Codecov"
+    res=$(curl -sX POST "$url/upload/v3?$query")
+    status=$(echo "$res" | head -1 | grep 'HTTP ' | cut -d' ' -f2)
+    if [ "$status" = "" ];
     then
-      # just incase, try traditional upload FUTURE ^s3=$s3
+      say "    Uploading to S3"
+      s3=$(echo "$upload" | \
+           curl -isX PUT --data-binary @- \
+                -H 'Content-Type: plain/text' -H 'x-amz-acl: public-read' \
+                "$(echo "$res" | sed -n 2p)")
+      status=$(echo "$s3" | grep 'HTTP/1.1 ' | tail -1 | cut -d' ' -f2)
+      if [ "${status:0:1}" = "2" ];
+      then
+        say ""
+        say "Reports queued to ${b}$(echo "$res" | sed -n 1p)${x}"
+      else
+        say "  ${r}Failed to upload to s3${n}"
+        say "${e}>>>${n}"
+        echo "$s3"
+        say "${e}<<<${n}"
+      fi
+      exit 0
+
+    elif [ "$status" = "405" ];
+    then
+      say "  Uploading to Codecov"
       res=$(echo "$upload" | curl -sX POST --data-binary @- "$url/upload/v2?$query" -H 'Accept: text/plain')
-      say "    $res"
-    else
-      say "    Finished"
-      say "    $(echo "$res" | sed -n 1p)"
+      status=$(echo "$res" | head -1 | cut -d' ' -f2)
     fi
-  else
-    say "$res"
-  fi
+
+    if [ "$status" = "200" ];
+    then
+      say ""
+      say "${g}${res}${x}"
+      exit 0
+
+    elif [ "${status:0:1}" = "5" ];
+    then
+      say "${e}Sleeping for 15s and trying again.#{x}"
+      sleep 15
+
+    else
+      say ""
+      say "Reports queued to ${b}${res}${x}"
+      exit 0
+    fi
+
+  done
 
 fi
 
