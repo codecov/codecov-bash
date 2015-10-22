@@ -47,6 +47,14 @@ after_success:
 ```
 
 
+### Prevent build failures
+If Codecov fails to upload reports you can ensure the CI build does not fail by adding a catch all:
+
+```
+bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
+```
+
+
 ### CI Providers
 |                       Company                       |                                                                    Supported                                                                     | Token Required   |
 | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------- |
@@ -66,6 +74,7 @@ after_success:
 | [Buildbot](http://buildbot.net/)                    | `coming soon` [buildbot/buildbot#1671](https://github.com/buildbot/buildbot/pull/1671)                                                           |                  |
 | [Bamboo](https://www.atlassian.com/software/bamboo) | `coming soon`                                                                                                                                    |                  |
 | [Solano Labs](https://www.solanolabs.com/)          | `coming soon`                                                                                                                                    |                  |
+| [Bitrise](https://bitrise.io/)                      | `coming soon`                                                                                                                                    |                  |
 
 > Using **Travis CI**? Uploader is compatable with `sudo: false` which can speed up your builds. :+1:
 
