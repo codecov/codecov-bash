@@ -294,9 +294,9 @@ then
   branch="$BITRISE_GIT_BRANCH"
   build="$BITRISE_BUILD_NUMBER"
   build_url=$(urlencode "$BITRISE_BUILD_URL")
-  slug="$BITRISE_APP_SLUG"
+  slug="app/$BITRISE_APP_SLUG"
   pr="$BITRISE_PULL_REQUEST"
-  commit="$BITRISE_GIT_COMMIT"
+  commit=$([ "$BITRISE_GIT_COMMIT" != "" ] && echo "$BITRISE_GIT_COMMIT" || echo $(git rev-parse HEAD || hg id -i --debug | tr -d '+'))
 
 elif [ "$CI" = "true" ] && [ "$SEMAPHORE" = "true" ];
 then
