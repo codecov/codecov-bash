@@ -24,6 +24,7 @@ files=""
 gcov_ignore=""
 ft_gcov="1"
 ft_coveragepy="1"
+ft_fix_empty="1"
 _git_root=$(git rev-parse --show-toplevel || hg root || echo $PWD)
 git_root="$_git_root"
 if [ "$git_root" = "$PWD" ];
@@ -53,7 +54,7 @@ Upload reports to Codecov
     -e ENV       Specify environment variables to be included with this build
                  ex. codecov -e VAR,VAR2
                  (or) set environment variable CODECOV_ENV=VAR,VAR2
-    -X feature   Disable functionalities, accepting: 'gcov', 'coveragepy', 'nocolor'
+    -X feature   Toggle functionalities, accepting: 'gcov', 'coveragepy', 'nocolor', 'fix_empty'
 
     -- Override CI Environment Variables --
        These variables are automatically detected by popular CI providers
@@ -179,6 +180,9 @@ then
         elif [ "$OPTARG" = "coveragepy" ];
         then
           ft_coveragepy="0"
+        elif [ "$OPTARG" = "fix_empty" ];
+        then
+          ft_fix_empty="0"
         elif [ "$OPTARG" = "nocolor" ];
         then
           b=""
@@ -637,6 +641,21 @@ $report
     say "  $r->$x File not found at $file"
   fi
 done
+
+if [ "$ft_fix_empty" = "1" ];
+then
+  if [ "$(find "$git_root" -name '*.go' -or -name '*.php' -or -name '*.kt')" != "" ];
+  then
+    say "$e==>$x Fixing report lines"
+    upload="$upload
+# path=fix_empty
+$(cd "$git_root" && grep -nR '^/\*$' **/*.kt)
+$(cd "$git_root" && grep -nR '^[[:space:]]*$' **/*.go)
+$(cd "$git_root" && grep -nR '^[[:space:]]*{[[:space:]]*$' **/*.php)
+$(cd "$git_root" && grep -nR '^[[:space:]]*}[[:space:]]*$' **/*.php)
+<<<<<< EOF"
+  fi
+fi
 
 # trim whitespace from query
 query=$(echo "package=bash-$VERSION&$query$token" | tr -d ' ')
