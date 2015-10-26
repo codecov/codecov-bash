@@ -648,10 +648,10 @@ then
     say "$e==>$x Fixing report lines"
     upload="$upload
 # path=fix_empty
-$(cd "$git_root" && grep -nR '^/\*$' **/*.kt 2>/dev/null)
-$(cd "$git_root" && grep -nR '^[[:space:]]*$' **/*.go 2>/dev/null)
-$(cd "$git_root" && grep -nR '^[[:space:]]*{[[:space:]]*$' **/*.php 2>/dev/null)
-$(cd "$git_root" && grep -nR '^[[:space:]]*}[[:space:]]*$' **/*.php 2>/dev/null)
+$(find "$git_root" -name '*.kt' -exec grep -nR '^/\*$' {} \;)
+$(find "$git_root" -name '*.go' -exec grep -nR '^[[:space:]]*$' {} \;)
+$(find "$git_root" -name '*.php' -exec grep -nR '^[[:space:]]*{[[:space:]]*$' {} \;)
+$(find "$git_root" -name '*.php' -exec grep -nR '^[[:space:]]*}[[:space:]]*$' {} \;)
 <<<<<< EOF"
   fi
 fi
