@@ -647,13 +647,13 @@ then
   then
     say "$e==>$x Appending adjustments (http://bit.ly/1O4eBpt)"
     adjustments="# path=fixes
-$(find "$git_root" -type f -name '*.kt'  -exec grep -nIHR '^/\*' {} \;)
-$(find "$git_root" -type f -name '*.go'  -exec grep -nIHR '^[[:space:]]*$' {} \;)
-$(find "$git_root" -type f -name '*.go'  -exec grep -nIHR '^[[:space:]]*//.*' {} \;)
-$(find "$git_root" -type f -name '*.go'  -exec grep -nIHR '^[[:space:]]*/\*' {} \;)
-$(find "$git_root" -type f -name '*.go'  -exec grep -nIHR '^[[:space:]]*\*/' {} \;)
-$(find "$git_root" -type f -name '*.php' -exec grep -nIHR '^[[:space:]]*{[[:space:]]*$' {} \;)
-$(find "$git_root" -type f -name '*.php' -exec grep -nIHR '^[[:space:]]*}[[:space:]]*$' {} \;)"
+$(find "$git_root" -type f -name '*.kt'  -exec grep -nIH '^/\*' {} \;)
+$(find "$git_root" -type f -name '*.go'  -exec grep -nIH '^[[:space:]]*$' {} \;)
+$(find "$git_root" -type f -name '*.go'  -exec grep -nIH '^[[:space:]]*//.*' {} \;)
+$(find "$git_root" -type f -name '*.go'  -exec grep -nIH '^[[:space:]]*/\*' {} \;)
+$(find "$git_root" -type f -name '*.go'  -exec grep -nIH '^[[:space:]]*\*/' {} \;)
+$(find "$git_root" -type f -name '*.php' -exec grep -nIH '^[[:space:]]*{[[:space:]]*$' {} \;)
+$(find "$git_root" -type f -name '*.php' -exec grep -nIH '^[[:space:]]*}[[:space:]]*$' {} \;)"
     say "  ${e}-->${x} Found $(echo "$adjustments" | grep -c '^.') adjustments"
     upload="$upload
 $adjustments
