@@ -24,7 +24,7 @@ files=""
 gcov_ignore=""
 ft_gcov="1"
 ft_coveragepy="1"
-ft_fix_empty="1"
+ft_fix="1"
 _git_root=$(git rev-parse --show-toplevel || hg root || echo $PWD)
 git_root="$_git_root"
 if [ "$git_root" = "$PWD" ];
@@ -54,7 +54,7 @@ Upload reports to Codecov
     -e ENV       Specify environment variables to be included with this build
                  ex. codecov -e VAR,VAR2
                  (or) set environment variable CODECOV_ENV=VAR,VAR2
-    -X feature   Toggle functionalities, accepting: 'gcov', 'coveragepy', 'nocolor', 'fix_empty'
+    -X feature   Toggle functionalities, accepting: 'gcov', 'coveragepy', 'nocolor', 'fix'
 
     -- Override CI Environment Variables --
        These variables are automatically detected by popular CI providers
@@ -180,9 +180,9 @@ then
         elif [ "$OPTARG" = "coveragepy" ];
         then
           ft_coveragepy="0"
-        elif [ "$OPTARG" = "fix_empty" ];
+        elif [ "$OPTARG" = "fix" ];
         then
-          ft_fix_empty="0"
+          ft_fix="0"
         elif [ "$OPTARG" = "nocolor" ];
         then
           b=""
@@ -641,17 +641,22 @@ $report
   fi
 done
 
-if [ "$ft_fix_empty" = "1" ];
+if [ "$ft_fix" = "1" ];
 then
   if [ "$(find "$git_root" -name '*.go' -or -name '*.php' -or -name '*.kt')" != "" ];
   then
-    say "$e==>$x Fixing report lines"
+    say "$e==>$x Appending adjustments (http://bit.ly/1O4eBpt)"
+    adjustments="# path=fixes
+$(find "$git_root" -type f -name '*.kt'  -exec grep -nIHR '^/\*' {} \;)
+$(find "$git_root" -type f -name '*.go'  -exec grep -nIHR '^[[:space:]]*$' {} \;)
+$(find "$git_root" -type f -name '*.go'  -exec grep -nIHR '^[[:space:]]*//.*' {} \;)
+$(find "$git_root" -type f -name '*.go'  -exec grep -nIHR '^[[:space:]]*/\*' {} \;)
+$(find "$git_root" -type f -name '*.go'  -exec grep -nIHR '^[[:space:]]*\*/' {} \;)
+$(find "$git_root" -type f -name '*.php' -exec grep -nIHR '^[[:space:]]*{[[:space:]]*$' {} \;)
+$(find "$git_root" -type f -name '*.php' -exec grep -nIHR '^[[:space:]]*}[[:space:]]*$' {} \;)"
+    say "  ${e}-->${x} Found $(echo "$adjustments" | grep -c '^.') adjustments"
     upload="$upload
-# path=fix_empty
-$(find "$git_root" -name '*.kt' -exec grep -nHR '^/\*$' {} \;)
-$(find "$git_root" -name '*.go' -exec grep -nHR '^[[:space:]]*$' {} \;)
-$(find "$git_root" -name '*.php' -exec grep -nHR '^[[:space:]]*{[[:space:]]*$' {} \;)
-$(find "$git_root" -name '*.php' -exec grep -nHR '^[[:space:]]*}[[:space:]]*$' {} \;)
+$adjustments
 <<<<<< EOF"
   fi
 fi
