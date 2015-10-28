@@ -643,17 +643,17 @@ done
 
 if [ "$ft_fix" = "1" ];
 then
-  if [ "$(find "$git_root" -name '*.go' -or -name '*.php' -or -name '*.kt')" != "" ];
+  if [ "$(find "$git_root" -name '*.go' -or -name '*.php' -or -name '*.kt' -or -name '*.m')" != "" ];
   then
     say "$e==>$x Appending adjustments (http://bit.ly/1O4eBpt)"
     adjustments="# path=fixes
-$(find "$git_root" -type f -name '*.kt'  -exec grep -nIH '^/\*' {} \;)
-$(find "$git_root" -type f -name '*.go'  -exec grep -nIH '^[[:space:]]*$' {} \;)
-$(find "$git_root" -type f -name '*.go'  -exec grep -nIH '^[[:space:]]*//.*' {} \;)
-$(find "$git_root" -type f -name '*.go'  -exec grep -nIH '^[[:space:]]*/\*' {} \;)
-$(find "$git_root" -type f -name '*.go'  -exec grep -nIH '^[[:space:]]*\*/' {} \;)
-$(find "$git_root" -type f -name '*.php' -exec grep -nIH '^[[:space:]]*{[[:space:]]*$' {} \;)
-$(find "$git_root" -type f -name '*.php' -exec grep -nIH '^[[:space:]]*}[[:space:]]*$' {} \;)"
+$(find "$git_root" -type f -name '*.kt' -exec grep -nIH '^/\*' {} \;)
+$(find "$git_root" -type f -name '*.go' -exec grep -nIH '^[[:space:]]*$' {} \;)
+$(find "$git_root" -type f -name '*.go' -exec grep -nIH '^[[:space:]]*//.*' {} \;)
+$(find "$git_root" -type f -name '*.go' -exec grep -nIH '^[[:space:]]*/\*' {} \;)
+$(find "$git_root" -type f -name '*.go' -exec grep -nIH '^[[:space:]]*\*/' {} \;)
+$(find "$git_root" -type f -name '*.go' -or -name '*.php' -or -name '*.m'  -exec grep -nIH '^[[:space:]]*}' {} \;)
+$(find "$git_root" -type f -name '*.php' -exec grep -nIH '^[[:space:]]*{' {} \;)"
     say "  ${e}-->${x} Found $(echo "$adjustments" | grep -c '^.') adjustments"
     upload="$upload
 $adjustments
