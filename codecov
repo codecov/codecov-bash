@@ -21,6 +21,7 @@ slug_o=""
 dump="0"
 derivedDataPath=""
 files=""
+cacert="$CODECOV_CA_BUNDLE"
 gcov_ignore=""
 ft_gcov="1"
 ft_coveragepy="1"
@@ -82,6 +83,8 @@ Upload reports to Codecov
                  (or) set environment variable CODECOV_URL=https://my-hosted-codecov.com
     -r           owner/repo slug used instead of the private repo token in Enterprise
                  (or) set environment variable CODECOV_SLUG=:owner/:repo
+    -S           File path to your cacert.pem file used to verify ssl with Codecov Enterprise (optional)
+                 Detected in environment variable: CODECOV_CA_BUNDLE
 
 Contribute and source at https://github.com/codecov/codecov-bash
 EOF
@@ -122,7 +125,7 @@ swiftcov() {
 
 if [ $# != 0 ];
 then
-  while getopts "svdhu:t:f:r:e:g:p:X:x:a:b:C:B:P:D:" o
+  while getopts "svdhu:t:f:r:e:g:p:X:x:a:b:C:B:P:D:S:" o
   do
     case "$o" in
       "v")
@@ -145,6 +148,9 @@ then
         ;;
       "P")
         pr_o="$OPTARG"
+        ;;
+      "S")
+        cacert="$OPTARG"
         ;;
       "b")
         build_o="$OPTARG"
@@ -677,7 +683,13 @@ else
 
     say "${e}==>${x} Uploading reports"
     say "    Pinging Codecov"
-    res=$(curl -sX POST "$url/upload/v3?$query")
+
+    if [ "$cacert" != "" ];
+    then
+      res=$(curl -sX POST "$url/upload/v3?$query" --cacert "$cacert")
+    else
+      res=$(curl -sX POST "$url/upload/v3?$query")
+    fi
     status=$(echo "$res" | head -1 | grep 'HTTP ' | cut -d' ' -f2)
     if [ "$status" = "" ];
     then
@@ -702,7 +714,12 @@ else
     elif [ "$status" = "405" ];
     then
       say "  Uploading to Codecov"
-      res=$(echo "$upload" | curl -sX POST --data-binary @- "$url/upload/v2?$query" -H 'Accept: text/plain')
+      if [ "$cacert" != "" ];
+      then
+        res=$(echo "$upload" | curl -sX POST --cacert "$cacert" --data-binary @- "$url/upload/v2?$query" -H 'Accept: text/plain')
+      else
+        res=$(echo "$upload" | curl -sX POST --data-binary @- "$url/upload/v2?$query" -H 'Accept: text/plain')
+      fi
       status=$(echo "$res" | head -1 | cut -d' ' -f2)
     fi
 
