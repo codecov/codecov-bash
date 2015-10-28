@@ -459,8 +459,7 @@ else
     if [ -d ~/Library/Developer/Xcode/DerivedData ];
     then
       say "  Found gcda in ~/Library/Developer/Xcode/DerivedData"
-      _directory=$(find ~/Library/Developer/Xcode/DerivedData -type f -name '*.gcno' -exec dirname {} \; | head -1)
-      find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' -exec gcov -pbcu -o "$_directory" {} +
+      find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' -exec gcov -pbcu {} +
 
       profdata=$(find ~/Library/Developer/Xcode/DerivedData -name 'Coverage.profdata' | head -1)
       if [ -f "$profdata" ];
@@ -482,11 +481,9 @@ else
       fi
     fi
 
-    say "  ${e}->${x} Running gcov"
-
     # all other gcov
-    _directory=$(find $proj_root -type f -name '*.gcno' -exec dirname {} \; | head -1)
-    bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec gcov -pbcu -o '$_directory' {} +" || true
+    say "  ${e}->${x} Running gcov"
+    bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec gcov -pbcu $gcovargs {} +" || true
 
   else
     say "${r}**>${x} gcov disable"
