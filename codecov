@@ -461,7 +461,7 @@ else
       say "  Found gcda in ~/Library/Developer/Xcode/DerivedData"
       find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' -exec gcov -pbcu {} +
 
-      profdata=$(find ~/Library/Developer/Xcode/DerivedData -name 'Coverage.profdata' | head -1)
+      profdata=$(find ~/Library/Developer/Xcode/DerivedData -name '*.profdata' | head -1)
       if [ -f "$profdata" ];
       then
         swiftcov "$profdata"
@@ -472,7 +472,7 @@ else
 
     if [ "$derivedDataPath" != "" ];
     then
-      profdata=$(find "$derivedDataPath" -name 'Coverage.profdata' | head -1)
+      profdata=$(find "$derivedDataPath" -name '*.profdata' | head -1)
       if [ -f "$profdata" ];
       then
         swiftcov "$profdata"
