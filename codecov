@@ -413,6 +413,7 @@ then
   branch="$GIT_BRANCH"
 
 elif [ "$branch" = "" ];
+then
   branch=$(git rev-parse --abbrev-ref HEAD || hg branch)
   if [ "$branch" = "HEAD" ]; then branch=""; fi
 fi
@@ -422,6 +423,7 @@ then
   commit="$GIT_COMMIT"
 
 elif [ "$commit" = "" ];
+then
   commit=$(git rev-parse HEAD || hg id -i --debug | tr -d '+')
 fi
 
