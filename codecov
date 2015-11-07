@@ -19,6 +19,8 @@ commit_o=""
 branch_o=""
 slug_o=""
 dump="0"
+branch=""
+commit=""
 derivedDataPath=""
 files=""
 cacert="$CODECOV_CA_BUNDLE"
@@ -403,24 +405,24 @@ then
   slug=$(echo "$CI_BUILD_REPO" | cut -d'/' -f4-5 | sed -e 's/.git//')
   commit="$CI_BUILD_REF"
 
-else
-  # find branch, commit, repo from git command
-  say "$e==>$x No CI detected, using git/mercurial for branch and commit sha."
-  if [ "$GIT_BRANCH" != "" ];
-  then
-    branch="$GIT_BRANCH"
-  else
-    branch=$(git rev-parse --abbrev-ref HEAD || hg branch)
-    if [ "$branch" = "HEAD" ]; then branch=""; fi
-  fi
+fi
 
-  if [ "$GIT_COMMIT" != "" ];
-  then
-    commit="$GIT_COMMIT"
-  else
-    commit=$(git rev-parse HEAD || hg id -i --debug | tr -d '+')
-  fi
+# find branch, commit, repo from git command
+if [ "$GIT_BRANCH" != "" ];
+then
+  branch="$GIT_BRANCH"
 
+elif [ "$branch" = "" ];
+  branch=$(git rev-parse --abbrev-ref HEAD || hg branch)
+  if [ "$branch" = "HEAD" ]; then branch=""; fi
+fi
+
+if [ "$GIT_COMMIT" != "" ];
+then
+  commit="$GIT_COMMIT"
+
+elif [ "$commit" = "" ];
+  commit=$(git rev-parse HEAD || hg id -i --debug | tr -d '+')
 fi
 
 query="branch=$([ "$branch_o" = "" ] && echo "$branch" || echo "$branch_o")\
@@ -483,7 +485,7 @@ else
 
     # all other gcov
     say "  ${e}->${x} Running gcov"
-    bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec gcov -pbcu $gcovargs {} +" || true
+    bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec gcov -pb $gcovargs {} +" || true
 
   else
     say "${r}**>${x} gcov disable"
