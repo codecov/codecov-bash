@@ -656,6 +656,8 @@ then
   then
     say "$e==>$x Appending adjustments (http://bit.ly/1O4eBpt)"
     adjustments="# path=fixes
+$(find "$git_root" -type f -name '*.cpp' -exec grep -nIH '^}' {} \;)
+$(find "$git_root" -type f -name '*.kt' -exec wc -l {} \; | while read l; do echo "EOF: $l"; done )
 $(find "$git_root" -type f -name '*.kt' -exec grep -nIH '^/\*' {} \;)
 $(find "$git_root" -type f -name '*.go' -exec grep -nIH '^[[:space:]]*$' {} \;)
 $(find "$git_root" -type f -name '*.go' -exec grep -nIH '^[[:space:]]*//.*' {} \;)
