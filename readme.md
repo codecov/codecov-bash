@@ -1,6 +1,6 @@
 Codecov Global Uploader
 =======================
-> Upload reports to Codecov for almost every supported languages.
+> Upload reports to Codecov for almost every supported language.
 
 [![Deployed Version](https://codecov.io/bash?badge=y)](https://codecov.io/bash?redirect=y)
 
@@ -19,7 +19,7 @@ bash <(curl -s https://codecov.io/bash)
 
 
 ### Usage
-> Below are most commonly used settings. [Click here](https://github.com/codecov/codecov-bash/blob/master/codecov#L30-L52) to see full list of commands.
+> Below are most commonly used settings. [Click here](https://github.com/codecov/codecov-bash/blob/master/codecov#L30-L52) to see the full list of commands.
 
 | Argument |   Environment   |                                                                    Description                                                                     |
 | -------- | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -48,7 +48,7 @@ after_success:
 
 
 ### Prevent build failures
-If Codecov fails to upload reports you can ensure the CI build does not fail by adding a catch all:
+If Codecov fails to upload reports, you can ensure the CI build does not fail by adding a catch-all:
 
 ```
 bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
