@@ -546,7 +546,7 @@ fi
 
 # Append Reports
 say "==> Reading reports"
-for file in $files
+echo "$files" | while IFS='' read -r file;
 do
   # escape file paths
   file=$(echo "$file" | sed -e 's/ /\\ /')
