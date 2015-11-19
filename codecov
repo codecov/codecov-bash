@@ -546,7 +546,7 @@ fi
 
 # Append Reports
 say "==> Reading reports"
-echo "$files" | while IFS='' read -r file;
+while IFS='' read -r file;
 do
   # escape file paths
   file=$(echo "$file" | sed -e 's/ /\\ /')
@@ -563,7 +563,7 @@ $report
   else
     say "    -> File not found at $file"
   fi
-done
+done <<< "$(echo -e "$files")"
 
 # trim whitespace from query
 query=$(echo "package=bash-$VERSION&$query$token" | tr -d ' ')
