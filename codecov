@@ -116,7 +116,7 @@ swiftcov() {
         if [ "$res" != "" ];
         then
           _proj=$(echo "$_proj" | sed -e 's/[[:space:]]//g')
-          echo "$res" > "$_proj.$_type.coverage.txt"
+          echo "$res" >> "$_proj.$_type.coverage.txt"
         else
           say "    No coverage data created for $1"
         fi
@@ -660,7 +660,7 @@ $(find "$git_root" -type f -name '*.go' -exec grep -nIH '^[[:space:]]*$' {} \;)
 $(find "$git_root" -type f -name '*.go' -exec grep -nIH '^[[:space:]]*//.*' {} \;)
 $(find "$git_root" -type f -name '*.go' -exec grep -nIH '^[[:space:]]*/\*' {} \;)
 $(find "$git_root" -type f -name '*.go' -exec grep -nIH '^[[:space:]]*\*/' {} \;)
-$(find "$git_root" -type f -name '*.go' -or -name '*.php' -or -name '*.m'  -exec grep -nIH '^[[:space:]]*}' {} \;)
+$(find "$git_root" -type f -name '*.go' -or -name '*.php' -or -name '*.m' -or -name '*.swift' -exec grep -nIH '^[[:space:]]*}' {} \;)
 $(find "$git_root" -type f -name '*.php' -exec grep -nIH '^[[:space:]]*{' {} \;)"
     say "  ${e}-->${x} Found $(echo "$adjustments" | grep -c '^.') adjustments"
     upload="$upload
