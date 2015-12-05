@@ -102,7 +102,6 @@ urlencode() {
 
 swiftcov() {
   _dir=$(dirname "$1")
-  say "    Found Coverage.profdata in $_dir"
   for _type in app framework xctest
   do
     find "$_dir" -name "*.$_type" | while read f
@@ -111,7 +110,7 @@ swiftcov() {
       _proj=${_proj%."$_type"}
       if [ "${_proj%%_*}" != "Pods" ];
       then
-        say "    Building reports via (xcrun llvm-cov show -instr-profile $1 $f/$_proj > $_proj.$_type.coverage.txt)"
+        say "    $g+$x Building reports for $_proj $_type"
         res=$(xcrun llvm-cov show -instr-profile "$1" "$f/$_proj" || echo "")
         if [ "$res" != "" ];
         then
