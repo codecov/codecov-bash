@@ -115,7 +115,7 @@ swiftcov() {
         if [ "$res" != "" ];
         then
           _proj=$(echo "$_proj" | sed -e 's/[[:space:]]//g')
-          echo "$res" >> "$_proj.$_type.coverage.txt"
+          echo "$res\n" >> "$_proj.$_type.coverage.txt"
         else
           say "    No coverage data created for $1"
         fi
