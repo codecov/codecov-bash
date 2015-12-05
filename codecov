@@ -466,24 +466,20 @@ else
       say "  Found gcda in ~/Library/Developer/Xcode/DerivedData"
       find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' -exec gcov -pbcu {} +
 
-      profdata=$(find ~/Library/Developer/Xcode/DerivedData -name '*.profdata' | head -1)
-      if [ -f "$profdata" ];
-      then
+      # xcode 7 profdata
+      while IFS='' read -r profdata;
+      do
         swiftcov "$profdata"
-      else
-        say "  Swift: no coverage data found. Learn more at: https://github.com/codecov/example-swift"
-      fi
+      done <<< "$(find ~/Library/Developer/Xcode/DerivedData -name '*.profdata')"
+
     fi
 
     if [ "$derivedDataPath" != "" ];
     then
-      profdata=$(find "$derivedDataPath" -name '*.profdata' | head -1)
-      if [ -f "$profdata" ];
-      then
+      while IFS='' read -r profdata;
+      do
         swiftcov "$profdata"
-      else
-        say "  Swift: no coverage data found in $derivedDataPath. Learn more at: ${b}https://github.com/codecov/example-swift${x}"
-      fi
+      done <<< "$(find "$derivedDataPath" -name '*.profdata')"
     fi
 
     # all other gcov
