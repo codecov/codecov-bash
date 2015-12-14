@@ -456,36 +456,32 @@ then
 
 else
 
+  # osx gcov
+  if [ -d ~/Library/Developer/Xcode/DerivedData ];
+  then
+    say "  Found gcda in ~/Library/Developer/Xcode/DerivedData"
+    find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' -exec gcov -pbcu {} +
+    # xcode 7 profdata
+    while IFS='' read -r profdata;
+    do
+      swiftcov "$profdata"
+    done <<< "$(find ~/Library/Developer/Xcode/DerivedData -name '*.profdata')"
+  fi
+
+  if [ "$derivedDataPath" != "" ];
+  then
+    while IFS='' read -r profdata;
+    do
+      swiftcov "$profdata"
+    done <<< "$(find "$derivedDataPath" -name '*.profdata')"
+  fi
+
   if [ "$ft_gcov" = "1" ];
   then
     say "$e==>$x Trying gcov (disable via -X gcov)"
-
-    # osx gcov
-    if [ -d ~/Library/Developer/Xcode/DerivedData ];
-    then
-      say "  Found gcda in ~/Library/Developer/Xcode/DerivedData"
-      find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' -exec gcov -pbcu {} +
-
-      # xcode 7 profdata
-      while IFS='' read -r profdata;
-      do
-        swiftcov "$profdata"
-      done <<< "$(find ~/Library/Developer/Xcode/DerivedData -name '*.profdata')"
-
-    fi
-
-    if [ "$derivedDataPath" != "" ];
-    then
-      while IFS='' read -r profdata;
-      do
-        swiftcov "$profdata"
-      done <<< "$(find "$derivedDataPath" -name '*.profdata')"
-    fi
-
     # all other gcov
     say "  ${e}->${x} Running gcov"
     bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe -pb $gcovargs {} +" || true
-
   else
     say "${r}**>${x} gcov disable"
   fi
