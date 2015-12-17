@@ -21,7 +21,7 @@ slug_o=""
 dump="0"
 branch=""
 commit=""
-derivedDataPath=""
+derivedDataPath="~/Library/Developer/Xcode/DerivedData"
 files=""
 cacert="$CODECOV_CA_BUNDLE"
 gcov_ignore=""
@@ -71,7 +71,8 @@ Upload reports to Codecov
     -d           Dont upload and dump to stdin
 
     -- xcode --
-    -D           Custom derivedDataPath for Coverage.profdata compiling
+    -D           Custom derivedDataPath for Coverage.profdata and gcov processing
+                 Default '~/Library/Developer/Xcode/DerivedData'
 
     -- gcov --
     -g GLOB      Paths to ignore during gcov gathering
@@ -456,22 +457,9 @@ then
 
 else
 
-  if [ "$derivedDataPath" = "" ];
+  if [ -d "$derivedDataPath" ];
   then
-    # search for osx coverage data
-    if [ -d ~/Library/Developer/Xcode/DerivedData ];
-    then
-      # xcode via gcov
-      say "  Found gcda in ~/Library/Developer/Xcode/DerivedData"
-      find ~/Library/Developer/Xcode/DerivedData -name '*.gcda' -exec gcov -pbcu {} +
-
-      # xcode via profdata
-      while IFS='' read -r profdata;
-      do
-        swiftcov "$profdata"
-      done <<< "$(find ~/Library/Developer/Xcode/DerivedData -name '*.profdata')"
-    fi
-  else
+    # xcode via profdata
     while IFS='' read -r profdata;
     do
       swiftcov "$profdata"
@@ -480,6 +468,12 @@ else
 
   if [ "$ft_gcov" = "1" ];
   then
+    # search for osx coverage data
+    if [ -d "$derivedDataPath" ];
+    then
+      find "$derivedDataPath" -name '*.gcda' -exec gcov -pbcu {} +
+    fi
+
     say "$e==>$x Trying gcov (disable via -X gcov)"
     # all other gcov
     say "  ${e}->${x} Running gcov"
