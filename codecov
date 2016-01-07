@@ -6,7 +6,7 @@ VERSION="tbd"
 
 url="https://codecov.io"
 verbose="0"
-env=""
+env="$CODECOV_ENV"
 token=""
 pr_o=""
 pr=""
@@ -16,6 +16,8 @@ service=""
 build_o=""
 commit_o=""
 search_in=""
+tag_o=""
+tag=""
 branch_o=""
 slug_o=""
 dump="0"
@@ -62,6 +64,8 @@ Upload reports to Codecov
                  (or) set environment variable CODECOV_ENV=VAR,VAR2
     -X feature   Toggle functionalities, accepting: 'gcov', 'coveragepy', 'nocolor', 'fix'
     -R root dir  Used when not in git/hg project to identify project root directory
+    -F flag      Flag this upload to with one or more titles
+                 ex. -F unittests -F docker
 
     -- Override CI Environment Variables --
        These variables are automatically detected by popular CI providers
@@ -69,6 +73,7 @@ Upload reports to Codecov
     -C sha       Specify the commit sha
     -P pr        Specify the pull request number
     -b build     Specify the build number
+    -T tag       Specify the git tag
 
     -- Debugging --
     -v           Verbose Mode
@@ -139,7 +144,7 @@ swiftcov() {
 
 if [ $# != 0 ];
 then
-  while getopts "svdhu:t:f:r:e:g:p:X:x:s:a:b:C:B:P:D:S:R:J:" o
+  while getopts "svdhu:t:f:r:e:g:p:s:T:X:x:a:b:C:B:P:D:S:R:J:F:" o
   do
     case "$o" in
       "v")
@@ -152,6 +157,9 @@ then
         else
           search_in="$search_in $OPTARG"
         fi
+        ;;
+      "T")
+        tag_o="$OPTARG"
         ;;
       "d")
         dump="1"
@@ -194,6 +202,14 @@ then
         else
           files="$files
 $OPTARG"
+        fi
+        ;;
+      "F")
+        if [ "$flags" = "" ];
+        then
+          flags="$OPTARG"
+        else
+          flags="$flags,$OPTARG"
         fi
         ;;
       "J")
@@ -239,12 +255,7 @@ $OPTARG"
         gcov_arg=$OPTARG
         ;;
       "e")
-        if [ "$env" = "" ];
-        then
-          env="$OPTARG"
-        else
-          env="$env,$OPTARG"
-        fi
+        env="$env,$OPTARG"
         ;;
     esac
   done
@@ -305,6 +316,7 @@ then
   pr="$TRAVIS_PULL_REQUEST"
   job="$TRAVIS_JOB_ID"
   slug="$TRAVIS_REPO_SLUG"
+  tag="$TRAVIS_TAG"
 
 elif [ "$CI" = "true" ] && [ "$CI_NAME" = "codeship" ];
 then
@@ -348,6 +360,7 @@ then
   pr="$PULL_REQUEST_NUMBER"
   slug="$SEMAPHORE_REPO_SLUG"
   commit="$REVISION"
+  env="$env,$SEMAPHORE_TRIGGER_SOURCE"
 
 elif [ "$CI" = "true" ] && [ "$BUILDKITE" = "true" ];
 then
@@ -409,8 +422,10 @@ then
   service="snap"
   branch=$([ "$SNAP_BRANCH" != "" ] && echo "$SNAP_BRANCH" || echo "$SNAP_UPSTREAM_BRANCH")
   build="$SNAP_PIPELINE_COUNTER"
+  job="$SNAP_STAGE_NAME"
   pr="$SNAP_PULL_REQUEST_NUMBER"
   commit=$([ "$SNAP_COMMIT" != "" ] && echo "$SNAP_COMMIT" || echo "$SNAP_UPSTREAM_COMMIT")
+  env="$env,DISPLAY"
 
 elif [ "$SHIPPABLE" = "true" ];
 then
@@ -468,12 +483,16 @@ else
   commit="$commit_o"
 fi
 
+yaml=$(find "$proj_root" -name 'codecov.yml' -or -name '.codecov.yml' | head -1)
 query="branch=$([ "$branch_o" = "" ] && echo "$branch" || echo "$branch_o")\
        &commit=$commit\
        &build=$([ "$build_o" = "" ] && echo "$build" || echo "$build_o")\
        &build_url=$build_url\
+       &tag=$([ "$tag_o" = "" ] && echo "$tag" || echo "$tag_o")\
        &slug=$([ "$slug_o" = "" ] && echo "$slug" || echo "$slug_o")\
+       &yaml=$(urlencode "$yaml")
        &service=$service\
+       &flags=$flags\
        &pr=$([ "$pr_o" = "" ] && echo "$pr" || echo "$pr_o")\
        &job=$job"
 
@@ -666,29 +685,19 @@ upload="$network
 <<<<<< network"
 
 # Append Environment Variables
-if [ "$env" != "" ] || [ "$CODECOV_ENV" != "" ];
+if [ "$env" != "" ];
 then
   inc_env=""
   say "$e==>$x Appending build variables"
-  if [ "$CODECOV_ENV" != "" ];
-  then
-    for e in $(echo "$CODECOV_ENV" | tr ',' ' ')
-    do
+  for e in $(echo "$env" | tr ',' ' ')
+  do
+    if [ "$e" != "" ];
+    then
       say "  $g+$x $e"
       inc_env="$inc_env$e=$(eval echo "\$$e")
 "
-    done
-  fi
-
-  if [ "$env" != "" ];
-  then
-    for e in $(echo "$env" | tr ',' ' ')
-    do
-      say "  $g+$x $e"
-      inc_env="$inc_env$e=$(eval echo "\$$e")
-"
-    done
-  fi
+    fi
+  done
 
   upload="$inc_env<<<<<< ENV
 $upload"
@@ -725,6 +734,7 @@ then
 $(find "$git_root" -type f -name '*.cpp'   -exec grep -nIH '^}' {} \;)
 $(find "$git_root" -type f -name '*.kt'    -exec wc -l {} \; | while read l; do echo "EOF: $l"; done)
 $(find "$git_root" -type f -name '*.kt'    -exec grep -nIH '^/\*' {} \;)
+$(find "$git_root" -type f -name '*.jsx'   -exec grep -nIH '^[[:space:]]*$' {} \;)
 $(find "$git_root" -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*$' {} \;)
 $(find "$git_root" -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*//.*' {} \;)
 $(find "$git_root" -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*/\*' {} \;)
