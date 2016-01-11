@@ -327,7 +327,7 @@ then
   # https://buildkite.com/docs/guides/environment-variables
   service="buildkite"
   branch="$BUILDKITE_BRANCH"
-  build="$BUILDKITE_BUILD_NUMBER"
+  build="$BUILDKITE_BUILD_NUMBER.$BUILDKITE_JOB_ID"
   build_url=$(urlencode "$BUILDKITE_BUILD_URL")
   slug="$BUILDKITE_PROJECT_SLUG"
   commit="$BUILDKITE_COMMIT"
