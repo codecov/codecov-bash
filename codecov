@@ -652,8 +652,11 @@ $(find "$git_root" -type f -name '*.go' -exec grep -nIH '^[[:space:]]*$' {} \;)
 $(find "$git_root" -type f -name '*.go' -exec grep -nIH '^[[:space:]]*//.*' {} \;)
 $(find "$git_root" -type f -name '*.go' -exec grep -nIH '^[[:space:]]*/\*' {} \;)
 $(find "$git_root" -type f -name '*.go' -exec grep -nIH '^[[:space:]]*\*/' {} \;)
-$(find "$git_root" -type f -name '*.go' -or -name '*.php' -or -name '*.m' -or -name '*.swift' -exec grep -nIH '^[[:space:]]*}$' {} \;)
-$(find "$git_root" -type f -name '*.php' -exec grep -nIH '^[[:space:]]*{' {} \;)"
+$(find "$git_root" -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*}$' {} \;)
+$(find "$git_root" -type f -name '*.m'     -exec grep -nIH '^[[:space:]]*}$' {} \;)
+$(find "$git_root" -type f -name '*.swift' -exec grep -nIH '^[[:space:]]*}$' {} \;)
+$(find "$git_root" -type f -name '*.php'   -exec grep -nIH '^[[:space:]]*}$' {} \;)
+$(find "$git_root" -type f -name '*.php'   -exec grep -nIH '^[[:space:]]*{' {} \;)"
     say "  ${e}-->${x} Found $(echo "$adjustments" | grep -c '^.') adjustments"
     upload="$upload
 $adjustments
