@@ -112,15 +112,25 @@ swiftcov() {
       if [ "${_proj%%_*}" != "Pods" ];
       then
         say "    $g+$x Building reports for $_proj $_type"
-        res=$(xcrun llvm-cov show -instr-profile "$1" "$f/$_proj" || echo "")
-        if [ "$res" != "" ];
-        then
-          _proj=$(echo "$_proj" | sed -e 's/[[:space:]]//g')
-          echo "$res
-" >> "$_proj.$_type.coverage.txt"
-        else
-          say "    No coverage data created for $1"
-        fi
+        _proj_name=$(echo "$_proj" | sed -e 's/[[:space:]]//g')
+
+        # remove source from files
+        while IFS='' read -r line;
+        do
+          # remove all spaces
+          line=$(echo "$line" | tr -d '[[:space:]]')
+          if [ -z "$line" ]; then : # [skip] empty line
+          elif [[ "$line" == '|'* ]]; then : # [skip] irrelvent data
+          elif [[ "$line" == '-'* ]]; then : # [skip] irrelvent data
+          elif [[ "$line" == '/'* ]]; then
+              # file name
+              echo "$line"
+          else
+              # coverage data
+              echo ${line%|*}
+          fi
+        done <<< $(xcrun llvm-cov show -instr-profile "$1" "$f/$_proj" || echo "") >> "$_proj_name.$_type.coverage.txt"
+
       fi
     done
   done
