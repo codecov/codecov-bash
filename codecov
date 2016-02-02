@@ -669,9 +669,9 @@ $adjustments
   fi
 fi
 
+say "$e(query)$x package=bash-$VERSION&$query"
 # trim whitespace from query
 query=$(echo "package=bash-$VERSION&$query$token" | tr -d ' ')
-say "$e(query)$x $query"
 
 if [ "$dump" != "0" ];
 then
