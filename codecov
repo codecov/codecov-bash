@@ -697,7 +697,7 @@ else
       say "    Uploading to S3"
       s3=$(echo "$upload" | \
            curl -isX PUT --data-binary @- \
-                -H 'Content-Type: plain/text' -H 'x-amz-acl: public-read' \
+                -H 'Content-Type: text/plain' -H 'x-amz-acl: public-read' \
                 "$(echo "$res" | sed -n 2p)")
       status=$(echo "$s3" | grep 'HTTP/1.1 ' | tail -1 | cut -d' ' -f2)
       if [ "${status:0:1}" = "2" ];
