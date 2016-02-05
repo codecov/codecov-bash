@@ -404,12 +404,11 @@ then
 elif [ "$CI_SERVER_NAME" = "GitLab CI" ];
 then
   say "$e==>$x GitLab CI detected."
-  # http://doc.gitlab.com/ci/examples/README.html#environmental-variables
-  # https://gitlab.com/gitlab-org/gitlab-ci-runner/blob/master/lib/build.rb#L96
+  # http://doc.gitlab.com/ce/ci/variables/README.html
   service="gitlab"
   branch="$CI_BUILD_REF_NAME"
   build="$CI_BUILD_ID"
-  slug=$(echo "$CI_BUILD_REPO" | cut -d'/' -f4-5 | sed -e 's/.git//')
+  slug=$(echo "$CI_BUILD_REPO" | cut -d'/' -f4-5 | sed -e 's/\.git//')
   commit="$CI_BUILD_REF"
 
 fi
