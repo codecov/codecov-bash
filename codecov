@@ -28,7 +28,7 @@ gcov_ignore=""
 ft_gcov="1"
 ft_coveragepy="1"
 ft_fix="1"
-_git_root=$(git rev-parse --show-toplevel || hg root || echo $PWD)
+_git_root=$(git rev-parse --show-toplevel 2>/dev/null || hg root 2>/dev/null || echo $PWD)
 git_root="$_git_root"
 if [ "$git_root" = "$PWD" ];
 then
@@ -58,6 +58,7 @@ Upload reports to Codecov
                  ex. codecov -e VAR,VAR2
                  (or) set environment variable CODECOV_ENV=VAR,VAR2
     -X feature   Toggle functionalities, accepting: 'gcov', 'coveragepy', 'nocolor', 'fix'
+    -F root dir  Used when not in git/hg project to identify project root directory
 
     -- Override CI Environment Variables --
        These variables are automatically detected by popular CI providers
@@ -133,7 +134,7 @@ swiftcov() {
 
 if [ $# != 0 ];
 then
-  while getopts "svdhu:t:f:r:e:g:p:X:x:a:b:C:B:P:D:S:" o
+  while getopts "svdhu:t:f:r:e:g:p:X:x:a:b:C:B:P:D:S:F:" o
   do
     case "$o" in
       "v")
@@ -159,6 +160,9 @@ then
         ;;
       "S")
         cacert="$OPTARG"
+        ;;
+      "F")
+        git_root="$OPTARG"
         ;;
       "b")
         build_o="$OPTARG"
@@ -260,7 +264,6 @@ then
   slug_o="$CODECOV_SLUG"
 fi
 
-
 if [ "$JENKINS_URL" != "" ];
 then
   say "$e==>$x Jenkins CI detected."
@@ -314,7 +317,7 @@ then
   build="$BITRISE_BUILD_NUMBER"
   build_url=$(urlencode "$BITRISE_BUILD_URL")
   pr="$BITRISE_PULL_REQUEST"
-  commit=$([ "$BITRISE_GIT_COMMIT" != "" ] && echo "$BITRISE_GIT_COMMIT" || echo $(git rev-parse HEAD || hg id -i --debug | tr -d '+'))
+  commit=$([ "$BITRISE_GIT_COMMIT" != "" ] && echo "$BITRISE_GIT_COMMIT" || echo $(git rev-parse HEAD 2>/dev/null || hg id -i --debug 2>/dev/null | tr -d '+'))
 
 elif [ "$CI" = "true" ] && [ "$SEMAPHORE" = "true" ];
 then
@@ -346,7 +349,7 @@ then
   branch="$DRONE_BRANCH"
   build="$DRONE_BUILD_NUMBER"
   build_url=$(urlencode "$DRONE_BUILD_URL")
-  commit=$(git rev-parse HEAD || hg id -i --debug | tr -d '+')
+  commit=$(git rev-parse HEAD 2>/dev/null || hg id -i --debug 2>/dev/null | tr -d '+')
 
 elif [ "$CI" = "True" ] && [ "$APPVEYOR" = "True" ];
 then
@@ -411,6 +414,8 @@ then
   slug=$(echo "$CI_BUILD_REPO" | cut -d'/' -f4-5 | sed -e 's/\.git//')
   commit="$CI_BUILD_REF"
 
+else
+  say "${r}**>${x} Unable to detect CI provider"
 fi
 
 # find branch, commit, repo from git command
@@ -420,7 +425,7 @@ then
 
 elif [ "$branch" = "" ];
 then
-  branch=$(git rev-parse --abbrev-ref HEAD || hg branch)
+  branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || hg branch 2>/dev/null || echo "")
   if [ "$branch" = "HEAD" ]; then branch=""; fi
 fi
 
@@ -430,7 +435,7 @@ then
 
 elif [ "$commit" = "" ];
 then
-  commit=$(git rev-parse HEAD || hg id -i --debug | tr -d '+')
+  commit=$(git rev-parse HEAD 2>/dev/null || hg id -i --debug 2>/dev/null | tr -d '+' || echo "")
 fi
 
 query="branch=$([ "$branch_o" = "" ] && echo "$branch" || echo "$branch_o")\
@@ -444,7 +449,7 @@ query="branch=$([ "$branch_o" = "" ] && echo "$branch" || echo "$branch_o")\
 
 # detect bower comoponents location
 bower_components="bower_components"
-bower_rc=$(find "$git_root" -name .bowerrc)
+bower_rc=$(cd "$git_root" && cat .bowerrc 2>/dev/null || echo "")
 if [ "$bower_rc" != "" ];
 then
   bower_components=$(cat "$bower_rc" | tr -d '\n' | grep '"directory"' | cut -d'"' -f4 | sed -e 's/\/$//')
@@ -591,7 +596,34 @@ then
 fi
 
 say "$e==>$x Detecting git/mercurial file structure"
-upload="$(cd "$git_root" && git ls-files || hg locate)
+network=$(cd "$git_root" && git ls-files 2>/dev/null || hg locate 2>/dev/null || echo "")
+if [ "$network" = "" ];
+then
+  network=$(find "$git_root" -type f \
+            -not -path '*/virtualenv/*' \
+            -not -path '*/.virtualenv/*' \
+            -not -path '*/virtualenvs/*' \
+            -not -path '*/.virtualenvs/*' \
+            -not -path '*/.env/*' \
+            -not -path '*/.envs/*' \
+            -not -path '*/env/*' \
+            -not -path '*/envs/*' \
+            -not -path '*/.venv/*' \
+            -not -path '*/.venvs/*' \
+            -not -path '*/venv/*' \
+            -not -path '*/venvs/*' \
+            -not -path '*/build/lib/*' \
+            -not -path '*/.git/*' \
+            -not -path '*/.egg-info/*' \
+            -not -path '*/shunit2-2.1.6/*' \
+            -not -path '*/vendor/*' \
+            -not -path '*/js/generated/coverage/*' \
+            -not -path '*/__pycache__/*' \
+            -not -path '*/node_modules/*' \
+            -not -path "*/$bower_components/*")
+fi
+
+upload="$network
 <<<<<< network"
 
 # Append Environment Variables
@@ -636,7 +668,7 @@ do
     say "  $g+$x $file ${e}bytes=${#report}${x}"
     # append to to upload
     upload="$upload
-# path=$(echo "$file" | sed "s|^$_git_root/||")
+# path=$(echo "$file" | sed "s|^$git_root/||")
 $report
 <<<<<< EOF"
   else
@@ -650,13 +682,13 @@ then
   then
     say "$e==>$x Appending adjustments (http://bit.ly/1O4eBpt)"
     adjustments="# path=fixes
-$(find "$git_root" -type f -name '*.cpp' -exec grep -nIH '^}' {} \;)
-$(find "$git_root" -type f -name '*.kt' -exec wc -l {} \; | while read l; do echo "EOF: $l"; done)
-$(find "$git_root" -type f -name '*.kt' -exec grep -nIH '^/\*' {} \;)
-$(find "$git_root" -type f -name '*.go' -exec grep -nIH '^[[:space:]]*$' {} \;)
-$(find "$git_root" -type f -name '*.go' -exec grep -nIH '^[[:space:]]*//.*' {} \;)
-$(find "$git_root" -type f -name '*.go' -exec grep -nIH '^[[:space:]]*/\*' {} \;)
-$(find "$git_root" -type f -name '*.go' -exec grep -nIH '^[[:space:]]*\*/' {} \;)
+$(find "$git_root" -type f -name '*.cpp'   -exec grep -nIH '^}' {} \;)
+$(find "$git_root" -type f -name '*.kt'    -exec wc -l {} \; | while read l; do echo "EOF: $l"; done)
+$(find "$git_root" -type f -name '*.kt'    -exec grep -nIH '^/\*' {} \;)
+$(find "$git_root" -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*$' {} \;)
+$(find "$git_root" -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*//.*' {} \;)
+$(find "$git_root" -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*/\*' {} \;)
+$(find "$git_root" -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*\*/' {} \;)
 $(find "$git_root" -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*}$' {} \;)
 $(find "$git_root" -type f -name '*.m'     -exec grep -nIH '^[[:space:]]*}$' {} \;)
 $(find "$git_root" -type f -name '*.swift' -exec grep -nIH '^[[:space:]]*}$' {} \;)
@@ -670,8 +702,8 @@ $adjustments
 fi
 
 # trim whitespace from query
+say "$e(query)$x $(echo "$query" | tr -d ' ')"
 query=$(echo "package=bash-$VERSION&$query$token" | tr -d ' ')
-say "$e(query)$x $query"
 
 if [ "$dump" != "0" ];
 then
