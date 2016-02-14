@@ -58,7 +58,7 @@ Upload reports to Codecov
                  ex. codecov -e VAR,VAR2
                  (or) set environment variable CODECOV_ENV=VAR,VAR2
     -X feature   Toggle functionalities, accepting: 'gcov', 'coveragepy', 'nocolor', 'fix'
-    -F root dir  Used when not in git/hg project to identify project root directory
+    -R root dir  Used when not in git/hg project to identify project root directory
 
     -- Override CI Environment Variables --
        These variables are automatically detected by popular CI providers
@@ -134,7 +134,7 @@ swiftcov() {
 
 if [ $# != 0 ];
 then
-  while getopts "svdhu:t:f:r:e:g:p:X:x:a:b:C:B:P:D:S:F:" o
+  while getopts "svdhu:t:f:r:e:g:p:X:x:a:b:C:B:P:D:S:R:" o
   do
     case "$o" in
       "v")
@@ -161,7 +161,7 @@ then
       "S")
         cacert="$OPTARG"
         ;;
-      "F")
+      "R")
         git_root="$OPTARG"
         ;;
       "b")
