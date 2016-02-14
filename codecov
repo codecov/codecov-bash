@@ -661,18 +661,21 @@ while IFS='' read -r file;
 do
   # escape file paths
   file=$(echo "$file" | sed -e 's/ /\\ /')
-  # read the coverage file
-  if [ -f "$file" ];
+  if [ "$file" != "" ];
   then
-    report=$(cat "$file")
-    say "  $g+$x $file ${e}bytes=${#report}${x}"
-    # append to to upload
-    upload="$upload
-# path=$(echo "$file" | sed "s|^$git_root/||")
-$report
-<<<<<< EOF"
-  else
-    say "  $r->$x File not found at $file"
+    # read the coverage file
+    if [ -f "$file" ];
+    then
+      report=$(cat "$file")
+      say "  $g+$x $file ${e}bytes=${#report}${x}"
+      # append to to upload
+      upload="$upload
+  # path=$(echo "$file" | sed "s|^$git_root/||")
+  $report
+  <<<<<< EOF"
+    else
+      say "  $r->$x File not found at $file"
+    fi
   fi
 done <<< "$(echo -e "$files")"
 
@@ -730,7 +733,7 @@ else
       say "    Uploading to S3"
       s3=$(echo "$upload" | \
            curl -isX PUT --data-binary @- \
-                -H 'Content-Type: text/plain' -H 'x-amz-acl: public-read' \
+                -H 'Content-Type: plain/text' -H 'x-amz-acl: public-read' \
                 "$(echo "$res" | sed -n 2p)")
       status=$(echo "$s3" | grep 'HTTP/1.1 ' | tail -1 | cut -d' ' -f2)
       if [ "${status:0:1}" = "2" ];
