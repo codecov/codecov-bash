@@ -515,6 +515,7 @@ else
                     -not -name '*.js' \
                     -not -name '*.cpp' \
                     -not -name 'coverage.jade' \
+                    -not -name 'coverage.db' \
                     -not -name 'include.lst' \
                     -not -name 'inputFiles.lst' \
                     -not -name 'createdFiles.lst' \
