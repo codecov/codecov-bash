@@ -21,7 +21,7 @@ slug_o=""
 dump="0"
 branch=""
 commit=""
-ddp="~/Library/Developer/Xcode/DerivedData"
+ddp="$(echo ~)/Library/Developer/Xcode/DerivedData"
 files=""
 cacert="$CODECOV_CA_BUNDLE"
 gcov_ignore=""
@@ -466,8 +466,6 @@ then
 
 else
 
-  ls "~/Library/Developer/Xcode/DerivedData"
-  test -d "~/Library/Developer/Xcode/DerivedData"
   if [ -d "$ddp" ];
   then
     say "  ${e}->${x} Swift in $ddp"
