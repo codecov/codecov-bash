@@ -466,33 +466,25 @@ then
 
 else
 
-  echo "Folder is: $ddp"
-  if [ -f "$ddp" ];
-  then
-    echo 'its a file'
-  fi
+  ls "~/Library/Developer/Xcode/DerivedData"
+  test -d "~/Library/Developer/Xcode/DerivedData"
   if [ -d "$ddp" ];
   then
-    echo 'its a folder'
-  fi
-
-  if [ -d "~/Library/Developer/Xcode/DerivedData" ];
-  then
-    say "  ${e}->${x} Swift in ~/Library/Developer/Xcode/DerivedData"
+    say "  ${e}->${x} Swift in $ddp"
     # xcode via profdata
     while IFS='' read -r profdata;
     do
       swiftcov "$profdata"
-    done <<< "$(find "~/Library/Developer/Xcode/DerivedData" -name '*.profdata')"
+    done <<< "$(find "$ddp" -name '*.profdata')"
   fi
 
   if [ "$ft_gcov" = "1" ];
   then
     # search for osx coverage data
-    if [ -d "~/Library/Developer/Xcode/DerivedData" ];
+    if [ -d "$ddp" ];
     then
-      say "  ${e}->${x} Obj-C in ~/Library/Developer/Xcode/DerivedData"
-      find "~/Library/Developer/Xcode/DerivedData" -name '*.gcda' -exec gcov -pbcu {} + || true
+      say "  ${e}->${x} Obj-C in $ddp"
+      find "$ddp" -name '*.gcda' -exec gcov -pbcu {} + || true
     fi
 
     say "$e==>$x Trying gcov (disable via -X gcov)"
