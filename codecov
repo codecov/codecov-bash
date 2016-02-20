@@ -478,6 +478,7 @@ else
 
   if [ "$ft_gcov" = "1" ];
   then
+    say "$e==>$x Running gcov (disable via -X gcov)"
     # search for osx coverage data
     if [ -d "$ddp" ];
     then
@@ -485,9 +486,8 @@ else
       find "$ddp" -name '*.gcda' -exec gcov -pbcu {} + || true
     fi
 
-    say "$e==>$x Trying gcov (disable via -X gcov)"
     # all other gcov
-    say "  ${e}->${x} Running gcov"
+    say "  ${e}->${x} $gcov_exe in $proj_root"
     bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe -pb $gcovargs {} +" || true
   else
     say "${r}**>${x} gcov disable"
