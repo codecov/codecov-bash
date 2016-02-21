@@ -121,9 +121,9 @@ swiftcov() {
           elif [[ "$line" == '|'* ]]; then : # [skip] irrelvent data
           elif [[ "$line" == '-'* ]]; then : # [skip] irrelvent data
           elif [[ "$line" == '/'* ]]; then # file name
-            echo "$line"
+            echo "$line\n"
           else # coverage data: remove source from file
-            echo "${line%|*}"
+            echo "${line%|*}\n"
           fi
         done <<< $(xcrun llvm-cov show -instr-profile "$1" "$f/$_proj" || echo "") >> "$_proj_name.$_type.coverage.txt"
 
