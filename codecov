@@ -115,15 +115,15 @@ swiftcov() {
         say "    $g+$x Building reports for $_proj $_type"
 
         _proj_name=$(echo "$_proj" | sed -e 's/[[:space:]]//g')
-        while IFS='' read -r line;
+        while read -r line;
         do
           if [ -z "$line" ]; then : # [skip] empty line
-          elif [[ "$line" == ' '*'|'* ]]; then : # [skip] irrelvent data
-          elif [[ "$line" == ' '*'-'* ]]; then : # [skip] irrelvent data
+          elif [[ "$line" == '|'* ]]; then : # [skip] irrelvent data
+          elif [[ "$line" == '-'* ]]; then : # [skip] irrelvent data
           elif [[ "$line" == '/'* ]]; then # file name
-            echo "$line\n"
+            echo "$line"
           else # coverage data: remove source from file
-            echo "${line%|*}\n"
+            echo "${line%|*}"
           fi
         done <<< $(xcrun llvm-cov show -instr-profile "$1" "$f/$_proj" || echo "") >> "$_proj_name.$_type.coverage.txt"
 
@@ -470,7 +470,7 @@ else
   then
     say "  ${e}->${x} Swift in $ddp"
     # xcode via profdata
-    while IFS='' read -r profdata;
+    while read -r profdata;
     do
       swiftcov "$profdata"
     done <<< "$(find "$ddp" -name '*.profdata')"
