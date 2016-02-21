@@ -121,9 +121,9 @@ swiftcov() {
           elif [[ "$line" == ' '*'|'* ]]; then : # [skip] irrelvent data
           elif [[ "$line" == ' '*'-'* ]]; then : # [skip] irrelvent data
           elif [[ "$line" == '/'* ]]; then # file name
-            echo "$line"
+            echo "$line\n"
           else # coverage data: remove source from file
-            echo ${line%|*}
+            echo "${line%|*}\n"
           fi
         done <<< $(xcrun llvm-cov show -instr-profile "$1" "$f/$_proj" || echo "") >> "$_proj_name.$_type.coverage.txt"
 
@@ -672,9 +672,9 @@ do
       say "  $g+$x $file ${e}bytes=${#report}${x}"
       # append to to upload
       upload="$upload
-  # path=$(echo "$file" | sed "s|^$git_root/||")
-  $report
-  <<<<<< EOF"
+# path=$(echo "$file" | sed "s|^$git_root/||")
+$report
+<<<<<< EOF"
     else
       say "  $r->$x File not found at $file"
     fi
