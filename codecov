@@ -108,12 +108,11 @@ swiftcov() {
   do
     find "$_dir" -name "*.$_type" | while read f
     do
-      _proj=${f##*/}
-      _proj=${_proj%."$_type"}
-      if [ "${_proj%%_*}" != "Pods" ];
+      if [[ "$f" != *"/Pods/"* ]];
       then
+        _proj=${f##*/}
+        _proj=${_proj%."$_type"}
         say "    $g+$x Building reports for $_proj $_type"
-
         _proj_name=$(echo "$_proj" | sed -e 's/[[:space:]]//g')
         while IFS="$(printf '\n\t ')" read -r line;
         do
