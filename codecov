@@ -124,8 +124,8 @@ swiftcov() {
           else # coverage data: remove source from file
             echo "${line%|*}"
           fi
-        done < <(xcrun llvm-cov show -instr-profile "$1" "$f/$_proj" || echo "") >> "$_proj_name.$_type.coverage.txt"
-
+        done < <(xcrun llvm-cov show -instr-profile "$1" "$f/$_proj") >> "$_proj_name.$_type.coverage.txt" \
+             || echo "    ${r}**>${x} llvm-cov failed to produce results for $f/$_proj"
       fi
     done
   done
