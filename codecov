@@ -185,6 +185,7 @@ then
           files="$files
 $OPTARG"
         fi
+        ;;
       "P")
         if [ "$xp" = "" ];
         then
