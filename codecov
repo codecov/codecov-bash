@@ -75,9 +75,9 @@ Upload reports to Codecov
     -- xcode --
     -D           Custom Derived Data Path for Coverage.profdata and gcov processing
                  Default '~/Library/Developer/Xcode/DerivedData'
-    -P           Specify packages to build coverage.
+    -J           Specify packages to build coverage.
                  This *significantly* reduces time to build coverage reports.
-                 Ex. -P 'MyAppName*'
+                 Ex. -J 'MyAppName*'
 
     -- gcov --
     -g GLOB      Paths to ignore during gcov gathering
@@ -134,7 +134,7 @@ swiftcov() {
 
 if [ $# != 0 ];
 then
-  while getopts "svdhu:t:f:r:e:g:p:X:x:a:b:C:B:P:D:S:R:P:" o
+  while getopts "svdhu:t:f:r:e:g:p:X:x:a:b:C:B:P:D:S:R:J:" o
   do
     case "$o" in
       "v")
@@ -186,7 +186,7 @@ then
 $OPTARG"
         fi
         ;;
-      "P")
+      "J")
         if [ "$xp" = "" ];
         then
           xp="$OPTARG"
@@ -482,7 +482,7 @@ else
     if [ "$xp" = "" ];
     then
       profdatas=$(find "$ddp" -name '*.profdata')
-      say "  ${e}->${x} Speed up xcode processing by using use -P 'AppName*'"
+      say "  ${e}->${x} Speed up xcode processing by using use -J 'AppName*'"
     else
       profdatas=$(find "$ddp" -name '*.profdata' | grep "$xp")
     fi
