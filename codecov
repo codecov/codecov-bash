@@ -505,7 +505,7 @@ else
 
     # all other gcov
     say "  ${e}->${x} $gcov_exe in $proj_root"
-    bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe -pb $gcovargs {} +" || true
+    bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe -pb $gcov_arg {} +" || true
   else
     say "${r}**>${x} gcov disable"
   fi
