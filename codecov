@@ -114,20 +114,23 @@ swiftcov() {
     do
       _proj=${f##*/}
       _proj=${_proj%."$_type"}
-      say "    $g+$x Building reports for $_proj $_type"
-      _proj_name=$(echo "$_proj" | sed -e 's/[[:space:]]//g')
-      while IFS="$(printf '\n\t ')" read -r line;
-      do
-        if [ -z "$line" ]; then : # [skip] empty line
-        elif [[ "$line" == '|'* ]]; then : # [skip] irrelvent data
-        elif [[ "$line" == '-'* ]]; then : # [skip] irrelvent data
-        elif [[ "$line" == '/'* ]]; then # file name
-          echo "$line"
-        else # coverage data: remove source from file
-          echo "${line%|*}"
-        fi
-      done < <(xcrun llvm-cov show -instr-profile "$1" "$f/$_proj") >> "$_proj_name.$_type.coverage.txt" \
-           || echo "    ${r}**>${x} llvm-cov failed to produce results for $f/$_proj"
+      if [[ "$_proj" =~ $2 ]];
+      then
+        say "    $g+$x Building reports for $_proj $_type"
+        _proj_name=$(echo "$_proj" | sed -e 's/[[:space:]]//g')
+        while IFS="$(printf '\n\t ')" read -r line;
+        do
+          if [ -z "$line" ]; then : # [skip] empty line
+          elif [[ "$line" == '|'* ]]; then : # [skip] irrelvent data
+          elif [[ "$line" == '-'* ]]; then : # [skip] irrelvent data
+          elif [[ "$line" == '/'* ]]; then # file name
+            echo "$line"
+          else # coverage data: remove source from file
+            echo "${line%|*}"
+          fi
+        done < <(xcrun llvm-cov show -instr-profile "$1" "$f/$_proj") >> "$_proj_name.$_type.coverage.txt" \
+             || echo "    ${r}**>${x} llvm-cov failed to produce results for $f/$_proj"
+      fi
     done
   done
 }
@@ -189,9 +192,9 @@ $OPTARG"
       "J")
         if [ "$xp" = "" ];
         then
-          xp="$OPTARG"
+          xp="($OPTARG)"
         else
-          xp="$xp\|$OPTARG"
+          xp="$xp|($OPTARG)"
         fi
         ;;
       "p")
@@ -481,16 +484,14 @@ else
     # xcode via profdata
     if [ "$xp" = "" ];
     then
-      profdatas=$(find "$ddp" -name '*.profdata')
       say "  ${e}->${x} Speed up xcode processing by using use -J 'AppName*'"
-    else
-      profdatas=$(find "$ddp" -name '*.profdata' | grep "$xp")
+      xp="*"
     fi
 
     while read -r profdata;
     do
-      swiftcov "$profdata"
-    done <<< "$(echo -e "$profdatas")"
+      swiftcov "$profdata" "$xp"
+    done <<< "$(find "$ddp" -name '*.profdata')"
   fi
 
   if [ "$ft_gcov" = "1" ];
