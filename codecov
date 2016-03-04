@@ -22,6 +22,7 @@ dump="0"
 branch=""
 commit=""
 ddp="$(echo ~)/Library/Developer/Xcode/DerivedData"
+xp=""
 files=""
 cacert="$CODECOV_CA_BUNDLE"
 gcov_ignore=""
@@ -74,6 +75,9 @@ Upload reports to Codecov
     -- xcode --
     -D           Custom Derived Data Path for Coverage.profdata and gcov processing
                  Default '~/Library/Developer/Xcode/DerivedData'
+    -P           Specify packages to build coverage.
+                 This *significantly* reduces time to build coverage reports.
+                 Ex. -P 'MyAppName*'
 
     -- gcov --
     -g GLOB      Paths to ignore during gcov gathering
@@ -108,32 +112,29 @@ swiftcov() {
   do
     find "$_dir" -name "*.$_type" | while read f
     do
-      if [[ "$f" != *"/Pods/"* ]];
-      then
-        _proj=${f##*/}
-        _proj=${_proj%."$_type"}
-        say "    $g+$x Building reports for $_proj $_type"
-        _proj_name=$(echo "$_proj" | sed -e 's/[[:space:]]//g')
-        while IFS="$(printf '\n\t ')" read -r line;
-        do
-          if [ -z "$line" ]; then : # [skip] empty line
-          elif [[ "$line" == '|'* ]]; then : # [skip] irrelvent data
-          elif [[ "$line" == '-'* ]]; then : # [skip] irrelvent data
-          elif [[ "$line" == '/'* ]]; then # file name
-            echo "$line"
-          else # coverage data: remove source from file
-            echo "${line%|*}"
-          fi
-        done < <(xcrun llvm-cov show -instr-profile "$1" "$f/$_proj") >> "$_proj_name.$_type.coverage.txt" \
-             || echo "    ${r}**>${x} llvm-cov failed to produce results for $f/$_proj"
-      fi
+      _proj=${f##*/}
+      _proj=${_proj%."$_type"}
+      say "    $g+$x Building reports for $_proj $_type"
+      _proj_name=$(echo "$_proj" | sed -e 's/[[:space:]]//g')
+      while IFS="$(printf '\n\t ')" read -r line;
+      do
+        if [ -z "$line" ]; then : # [skip] empty line
+        elif [[ "$line" == '|'* ]]; then : # [skip] irrelvent data
+        elif [[ "$line" == '-'* ]]; then : # [skip] irrelvent data
+        elif [[ "$line" == '/'* ]]; then # file name
+          echo "$line"
+        else # coverage data: remove source from file
+          echo "${line%|*}"
+        fi
+      done < <(xcrun llvm-cov show -instr-profile "$1" "$f/$_proj") >> "$_proj_name.$_type.coverage.txt" \
+           || echo "    ${r}**>${x} llvm-cov failed to produce results for $f/$_proj"
     done
   done
 }
 
 if [ $# != 0 ];
 then
-  while getopts "svdhu:t:f:r:e:g:p:X:x:a:b:C:B:P:D:S:R:" o
+  while getopts "svdhu:t:f:r:e:g:p:X:x:a:b:C:B:P:D:S:R:P:" o
   do
     case "$o" in
       "v")
@@ -183,6 +184,13 @@ then
         else
           files="$files
 $OPTARG"
+        fi
+      "P")
+        if [ "$xp" = "" ];
+        then
+          xp="$OPTARG"
+        else
+          xp="$xp\|$OPTARG"
         fi
         ;;
       "p")
@@ -468,11 +476,20 @@ else
   if [ -d "$ddp" ];
   then
     say "  ${e}->${x} Swift in $ddp"
+
     # xcode via profdata
+    if [ "$xp" = "" ];
+    then
+      profdatas=$(find "$ddp" -name '*.profdata')
+      say "  ${e}->${x} Speed up xcode processing by using use -P 'AppName*'"
+    else
+      profdatas=$(find "$ddp" -name '*.profdata' | grep "$xp")
+    fi
+
     while read -r profdata;
     do
       swiftcov "$profdata"
-    done <<< "$(find "$ddp" -name '*.profdata')"
+    done <<< "$(echo -e "$profdatas")"
   fi
 
   if [ "$ft_gcov" = "1" ];
