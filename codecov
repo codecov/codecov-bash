@@ -114,7 +114,7 @@ swiftcov() {
     do
       _proj=${f##*/}
       _proj=${_proj%."$_type"}
-      if [[ "$_proj" =~ $2 ]];
+      if [ "$2" = "*" ] || [[ "$_proj" =~ $2 ]];
       then
         say "    $g+$x Building reports for $_proj $_type"
         _proj_name=$(echo "$_proj" | sed -e 's/[[:space:]]//g')
@@ -485,7 +485,6 @@ else
     if [ "$xp" = "" ];
     then
       say "  ${e}->${x} Speed up xcode processing by using use -J 'AppName*'"
-      xp="*"
     fi
 
     while read -r profdata;
