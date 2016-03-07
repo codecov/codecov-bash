@@ -77,7 +77,7 @@ Upload reports to Codecov
                  Default '~/Library/Developer/Xcode/DerivedData'
     -J           Specify packages to build coverage.
                  This *significantly* reduces time to build coverage reports.
-                 Ex. -J 'MyAppName*'
+                 Ex. -J 'MyAppName'
 
     -- gcov --
     -g GLOB      Paths to ignore during gcov gathering
@@ -194,7 +194,7 @@ $OPTARG"
         then
           xp="($OPTARG)"
         else
-          xp="$xp|($OPTARG)"
+          xp="$xp\|($OPTARG)"
         fi
         ;;
       "p")
@@ -484,7 +484,7 @@ else
     # xcode via profdata
     if [ "$xp" = "" ];
     then
-      say "  ${e}->${x} Speed up xcode processing by using use -J 'AppName*'"
+      say "  ${e}->${x} Speed up xcode processing by using use -J 'AppName'"
     fi
 
     while read -r profdata;
