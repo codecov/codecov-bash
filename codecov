@@ -192,9 +192,9 @@ $OPTARG"
       "J")
         if [ "$xp" = "" ];
         then
-          xp="($OPTARG)"
+          xp="$OPTARG"
         else
-          xp="$xp\|($OPTARG)"
+          xp="$xp\|$OPTARG"
         fi
         ;;
       "p")
