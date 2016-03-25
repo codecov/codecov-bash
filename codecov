@@ -679,7 +679,7 @@ say "$e==>$x Reading reports"
 while IFS='' read -r file;
 do
   # escape file paths
-  file=$(echo "$file" | sed -e 's/ /\\ /')
+  file=$(echo "$file" | sed -e 's/ /\\ /g')
   if [ "$file" != "" ];
   then
     # read the coverage file
