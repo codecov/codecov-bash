@@ -571,6 +571,7 @@ else
                     -not -name 'Coverage.profdata' \
                     -not -name 'phpunit-code-coverage.xml' \
                     -not -name 'coverage.serialized' \
+                    -not -name '*codecov.yml' \
                     -not -name '*.pyc' \
                     -not -name '*.cfg' \
                     -not -name '*.egg' \
