@@ -556,6 +556,8 @@ else
                      -or -name 'jacoco*.xml' \
                      -or -name 'clover.xml' \
                      -or -name 'report.xml' \
+                     -or -name '*.codecov.*' \
+                     -or -name 'codecov.*' \
                      -or -name 'cobertura.xml' \
                      -or -name 'luacov.report.out' \
                      -or -name 'lcov.info' \
