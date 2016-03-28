@@ -42,13 +42,6 @@ proj_root="$git_root"
 gcov_exe="gcov"
 gcov_arg=""
 
-if [ "$CODECOV_TOKEN" != "" ];
-then
-  token="$CODECOV_TOKEN"
-else
-  token=""
-fi
-
 b="\033[0;36m"
 g="\033[0;32m"
 r="\033[0;31m"
@@ -117,9 +110,11 @@ say() {
   printf "$1\n" || echo "$1"
 }
 
+
 urlencode() {
   echo "$1" | curl -Gso /dev/null -w %{url_effective} --data-urlencode @- "" | cut -c 3- | sed -e 's/%0A//'
 }
+
 
 swiftcov() {
   _dir=$(dirname "$1")
@@ -149,6 +144,25 @@ swiftcov() {
     done
   done
 }
+
+
+# Credits to: https://gist.github.com/pkuczynski/8665367
+parse_yaml() {
+   local prefix=$2
+   local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
+   sed -ne "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" \
+        -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p" $1 |
+   awk -F$fs '{
+      indent = length($1)/2;
+      vname[indent] = $2;
+      for (i in vname) {if (i > indent) {delete vname[i]}}
+      if (length($3) > 0) {
+         vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
+         printf("%s%s%s=\"%s\"\n", "'$prefix'",vn, $2, $3);
+      }
+   }'
+}
+
 
 if [ $# != 0 ];
 then
@@ -279,21 +293,6 @@ say "
                                 $VERSION
 
 "
-
-if [ "$CODECOV_URL" != "" ];
-then
-  say "${e}-->${x} url set from env"
-  url=$(echo "$CODECOV_URL" | sed -e 's/\/$//')
-fi
-
-say "$e(url)$x $url"
-say "$e(root)$x $git_root"
-
-if [ "$CODECOV_SLUG" != "" ];
-then
-  say "${e}-->${x} slug set from env"
-  slug_o="$CODECOV_SLUG"
-fi
 
 if [ "$JENKINS_URL" != "" ];
 then
@@ -455,6 +454,8 @@ else
   say "${r}**>${x} Unable to detect CI provider"
 fi
 
+say "$e(root)$x $git_root"
+
 # find branch, commit, repo from git command
 if [ "$GIT_BRANCH" != "" ];
 then
@@ -485,7 +486,51 @@ else
   commit="$commit_o"
 fi
 
+if [ "$CODECOV_TOKEN" != "" ] && [ "$token" = "" ];
+then
+  say "${e}-->${x} token set from env"
+  token="$CODECOV_TOKEN"
+fi
+
+if [ "$CODECOV_URL" != "" ] && [ "$url" = "" ];
+then
+  say "${e}-->${x} url set from env"
+  url=$(echo "$CODECOV_URL" | sed -e 's/\/$//')
+fi
+
+if [ "$CODECOV_SLUG" != "" ];
+then
+  say "${e}-->${x} slug set from env"
+  slug_o="$CODECOV_SLUG"
+fi
+
+
 yaml=$(find "$proj_root" -name 'codecov.yml' -or -name '.codecov.yml' | head -1 | sed -e 's/^\.\///')
+
+if [ "$yaml" != "" ];
+then
+  eval $(parse_yaml "$yaml" "yml_")
+
+  if [ "$yml_codecov_token" != "" ] && [ "$token" = "" ];
+  then
+    say "${e}-->${x} token set from yaml"
+    token="$yml_codecov_token"
+  fi
+
+  if [ "$yml_codecov_url" != "" ] && [ "$url" = "" ];
+  then
+    say "${e}-->${x} url set from yaml"
+    url="$yml_codecov_url"
+  fi
+
+  if [ "$yml_codecov_slug" != "" ] && [ "$slug_o" = "" ];
+  then
+    say "${e}-->${x} slug set from yaml"
+    slug_o="$yml_codecov_slug"
+  fi
+
+fi
+
 query="branch=$([ "$branch_o" = "" ] && echo "$branch" || echo "$branch_o")\
        &commit=$commit\
        &build=$([ "$build_o" = "" ] && echo "$build" || echo "$build_o")\
@@ -757,6 +802,7 @@ $adjustments
 fi
 
 # trim whitespace from query
+say "$e(url)$x $url"
 say "$e(query)$x $(echo "$query" | tr -d ' ')"
 query=$(echo "package=bash-$VERSION&token=$token&$query" | tr -d ' ')
 
