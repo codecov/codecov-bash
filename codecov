@@ -616,6 +616,8 @@ else
                     -not -path '*/node_modules/*' \
                     -not -path '*/conftest_*.c.gcov')
 
+  say "    Found $(echo "$files" | wc -l | tr -d '[[:space:]]') reports."
+
   # Python coveragepy generation
   if [ "$ft_coveragepy" = "1" ];
   then
