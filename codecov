@@ -715,21 +715,18 @@ fi
 say "$e==>$x Reading reports"
 while IFS='' read -r file;
 do
-  if [ "$file" != "" ];
+  # read the coverage file
+  if [ -f "$file" ];
   then
-    # read the coverage file
-    if [ -f "$file" ];
-    then
-      report=$(cat "$file")
-      say "  $g+$x $file ${e}bytes=${#report}${x}"
-      # append to to upload
-      upload="$upload
+    report=$(cat "$file")
+    say "  $g+$x $file ${e}bytes=${#report}${x}"
+    # append to to upload
+    upload="$upload
 # path=$(echo "$file" | sed "s|^$git_root/||")
 $report
 <<<<<< EOF"
-    else
-      say "  $r->$x File not found at $file"
-    fi
+  else
+    say "  $r->$x File not found at $file"
   fi
 done <<< "$(echo -e "$files")"
 
