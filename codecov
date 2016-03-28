@@ -7,7 +7,6 @@ VERSION="tbd"
 url="https://codecov.io"
 verbose="0"
 env="$CODECOV_ENV"
-token=""
 pr_o=""
 pr=""
 job=""
@@ -38,9 +37,17 @@ if [ "$git_root" = "$PWD" ];
 then
   git_root="."
 fi
+
 proj_root="$git_root"
 gcov_exe="gcov"
 gcov_arg=""
+
+if [ "$CODECOV_TOKEN" != "" ];
+then
+  token="$CODECOV_TOKEN"
+else
+  token=""
+fi
 
 b="\033[0;36m"
 g="\033[0;32m"
@@ -194,7 +201,7 @@ then
         url=$(echo "$OPTARG" | sed -e 's/\/$//')
         ;;
       "t")
-        token="&token=$OPTARG"
+        token="$OPTARG"
         ;;
       "f")
         if [ "$files" = "" ];
@@ -281,12 +288,6 @@ fi
 
 say "$e(url)$x $url"
 say "$e(root)$x $git_root"
-
-if [ "$CODECOV_TOKEN" != "" ];
-then
-  say "${e}-->${x} token set from env"
-  token="&token=$CODECOV_TOKEN"
-fi
 
 if [ "$CODECOV_SLUG" != "" ];
 then
@@ -757,7 +758,7 @@ fi
 
 # trim whitespace from query
 say "$e(query)$x $(echo "$query" | tr -d ' ')"
-query=$(echo "package=bash-$VERSION&$query$token" | tr -d ' ')
+query=$(echo "package=bash-$VERSION&token=$token&$query" | tr -d ' ')
 
 if [ "$dump" != "0" ];
 then
