@@ -485,14 +485,14 @@ else
   commit="$commit_o"
 fi
 
-yaml=$(find "$proj_root" -name 'codecov.yml' -or -name '.codecov.yml' | head -1)
+yaml=$(find "$proj_root" -name 'codecov.yml' -or -name '.codecov.yml' | head -1 | sed -e 's/^\.\///')
 query="branch=$([ "$branch_o" = "" ] && echo "$branch" || echo "$branch_o")\
        &commit=$commit\
        &build=$([ "$build_o" = "" ] && echo "$build" || echo "$build_o")\
        &build_url=$build_url\
        &tag=$([ "$tag_o" = "" ] && echo "$tag" || echo "$tag_o")\
        &slug=$([ "$slug_o" = "" ] && echo "$slug" || echo "$slug_o")\
-       &yaml=$(urlencode "$yaml")
+       &yaml=$(urlencode "$yaml")\
        &service=$service\
        &flags=$flags\
        &pr=$([ "$pr_o" = "" ] && echo "$pr" || echo "$pr_o")\
