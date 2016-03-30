@@ -440,17 +440,27 @@ then
   if [ "$branch" = "HEAD" ]; then branch=""; fi
 fi
 
-if [ "$GIT_COMMIT" != "" ];
+if [ "$commit_o" = "" ];
 then
-  commit="$GIT_COMMIT"
-
-elif [ "$commit" = "" ];
-then
-  commit=$(git rev-parse HEAD 2>/dev/null || hg id -i --debug 2>/dev/null | tr -d '+' || echo "")
+  # merge commit -> actual commit
+  mc=$(git log -1 --pretty=%B 2>/dev/null || true)
+  if [[ "$mc" = "Merge "*" into "* ]];
+  then
+    # Merge xxx into yyy
+    commit=$(echo "$mc" | cut -d' ' -f2)
+  elif [ "$GIT_COMMIT" != "" ];
+  then
+    commit="$GIT_COMMIT"
+  elif [ "$commit" = "" ];
+  then
+    commit=$(git rev-parse HEAD 2>/dev/null || hg id -i --debug 2>/dev/null | tr -d '+' || echo "")
+  fi
+else
+  commit="$commit_o"
 fi
 
 query="branch=$([ "$branch_o" = "" ] && echo "$branch" || echo "$branch_o")\
-       &commit=$([ "$commit_o" = "" ] && echo "$commit" || echo "$commit_o")\
+       &commit=$commit\
        &build=$([ "$build_o" = "" ] && echo "$build" || echo "$build_o")\
        &build_url=$build_url\
        &slug=$([ "$slug_o" = "" ] && echo "$slug" || echo "$slug_o")\
