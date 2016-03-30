@@ -6,7 +6,6 @@ VERSION="tbd"
 
 url="https://codecov.io"
 verbose="0"
-silent="0"
 env=""
 token=""
 pr_o=""
@@ -16,6 +15,7 @@ build_url=""
 service=""
 build_o=""
 commit_o=""
+search_in=""
 branch_o=""
 slug_o=""
 dump="0"
@@ -53,6 +53,8 @@ Upload reports to Codecov
     -h           Display this help and exit
     -f COVERAGE  Reference a specific file only to upload
                  When not specified commonly known coverage files will found
+    -s DIR       Directory to search for coverage reports.
+                 Already searches project root and artifact folders.
     -t TOKEN     Set the private repository token
                  (or) set environment variable CODECOV_TOKEN=:uuid
     -e ENV       Specify environment variables to be included with this build
@@ -137,14 +139,19 @@ swiftcov() {
 
 if [ $# != 0 ];
 then
-  while getopts "svdhu:t:f:r:e:g:p:X:x:a:b:C:B:P:D:S:R:J:" o
+  while getopts "svdhu:t:f:r:e:g:p:X:x:s:a:b:C:B:P:D:S:R:J:" o
   do
     case "$o" in
       "v")
         verbose="1"
         ;;
       "s")
-        silent="1"
+        if [ "$search_in" = "" ];
+        then
+          search_in="$OPTARG"
+        else
+          search_in="$search_in $OPTARG"
+        fi
         ;;
       "d")
         dump="1"
@@ -319,6 +326,7 @@ then
   slug="$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
   pr="$CIRCLE_PR_NUMBER"
   commit="$CIRCLE_SHA1"
+  search_in="$search_in $CIRCLE_ARTIFACTS"
 
 elif [ "$CI" = "true" ] && [ "$BITRISE_IO" = "true" ];
 then
@@ -337,6 +345,7 @@ then
   service="semaphore"
   branch="$BRANCH_NAME"
   build="$SEMAPHORE_BUILD_NUMBER.$SEMAPHORE_CURRENT_THREAD"
+  pr="$PULL_REQUEST_NUMBER"
   slug="$SEMAPHORE_REPO_SLUG"
   commit="$REVISION"
 
@@ -521,7 +530,8 @@ else
   fi
 
   say "$e==>$x Searching for coverage reports"
-  files=$(find "$git_root" -type f \( -name '*coverage.*' \
+  search_in="$search_in $git_root"
+  files=$(find $search_in -type f \( -name '*coverage.*' \
                      -or -name 'nosetests.xml' \
                      -or -name 'jacoco*.xml' \
                      -or -name 'clover.xml' \
