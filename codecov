@@ -316,6 +316,16 @@ then
   build_url=$(urlencode "$CI_BUILD_URL")
   commit="$CI_COMMIT_ID"
 
+elif [ "$TEAMCITY_VERSION" != "" ];
+then
+  say "$e==>$x TeamCity CI detected."
+  # https://confluence.jetbrains.com/plugins/servlet/mobile#content/view/74847298
+  service="teamcity"
+  # branch="$teamcity.build.branch"
+  build="$BUILD_NUMBER"
+  # build_url=$(urlencode "${teamcity.build.serverURL}viewLog.html?buildId=${teamcity.build.id}")
+  commit="$BUILD_VCS_NUMBER"
+
 elif [ "$CI" = "true" ] && [ "$CIRCLECI" = "true" ];
 then
   say "$e==>$x Circle CI detected."
@@ -538,6 +548,7 @@ else
                      -or -name 'report.xml' \
                      -or -name 'cobertura.xml' \
                      -or -name 'luacov.report.out' \
+                     -or -name 'coverage-final.json' \
                      -or -name 'lcov.info' \
                      -or -name '*.lcov' \
                      -or -name 'gcov.info' \
