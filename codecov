@@ -752,6 +752,7 @@ $adjustments
   fi
 fi
 
+say "$e(query)$x package=bash-$VERSION&$query"
 # trim whitespace from query
 say "$e(query)$x $(echo "$query" | tr -d ' ')"
 query=$(echo "package=bash-$VERSION&$query$token" | tr -d ' ')
