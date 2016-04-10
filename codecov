@@ -736,15 +736,15 @@ then
 $(find "$git_root" -type f -name '*.cpp'   -exec grep -nIH '^}' {} \;)
 $(find "$git_root" -type f -name '*.kt'    -exec wc -l {} \; | while read l; do echo "EOF: $l"; done)
 $(find "$git_root" -type f -name '*.kt'    -exec grep -nIH '^/\*' {} \;)
-$(find "$git_root" -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*$' {} \;)
-$(find "$git_root" -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*//.*' {} \;)
-$(find "$git_root" -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*/\*' {} \;)
-$(find "$git_root" -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*\*/' {} \;)
-$(find "$git_root" -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*}$' {} \;)
+$(find "$git_root" -not -path '*/vendor/*' -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*$' {} \;)
+$(find "$git_root" -not -path '*/vendor/*' -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*//.*' {} \;)
+$(find "$git_root" -not -path '*/vendor/*' -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*/\*' {} \;)
+$(find "$git_root" -not -path '*/vendor/*' -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*\*/' {} \;)
+$(find "$git_root" -not -path '*/vendor/*' -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*}$' {} \;)
 $(find "$git_root" -type f -name '*.m'     -exec grep -nIH '^[[:space:]]*}$' {} \;)
 $(find "$git_root" -type f -name '*.swift' -exec grep -nIH '^[[:space:]]*}$' {} \;)
-$(find "$git_root" -type f -name '*.php'   -exec grep -nIH '^[[:space:]]*}$' {} \;)
-$(find "$git_root" -type f -name '*.php'   -exec grep -nIH '^[[:space:]]*{' {} \;)"
+$(find "$git_root" -not -path '*/vendor/*' -type f -name '*.php'   -exec grep -nIH '^[[:space:]]*}$' {} \;)
+$(find "$git_root" -not -path '*/vendor/*' -type f -name '*.php'   -exec grep -nIH '^[[:space:]]*{' {} \;)"
     say "  ${e}-->${x} Found $(echo "$adjustments" | grep -c '^.') adjustments"
     upload="$upload
 $adjustments
