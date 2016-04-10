@@ -808,7 +808,7 @@ query=$(echo "package=bash-$VERSION&token=$token&$query" | tr -d ' ')
 
 if [ "$dump" != "0" ];
 then
-  echo "$url/upload/v2?$query"
+  echo "$url/upload/v4?$query"
   echo "$upload"
 else
   i="0"
@@ -821,9 +821,9 @@ else
 
     if [ "$cacert" != "" ];
     then
-      res=$(curl -sX POST "$url/upload/v3?$query" --cacert "$cacert")
+      res=$(curl -sX POST "$url/upload/v4?$query" --cacert "$cacert")
     else
-      res=$(curl -sX POST "$url/upload/v3?$query")
+      res=$(curl -sX POST "$url/upload/v4?$query")
     fi
     status=$(echo "$res" | head -1 | grep 'HTTP ' | cut -d' ' -f2)
     if [ "$status" = "" ];
@@ -831,7 +831,9 @@ else
       say "    Uploading to S3"
       s3=$(echo "$upload" | \
            curl -isX PUT --data-binary @- \
-                -H 'Content-Type: plain/text' -H 'x-amz-acl: public-read' \
+                -H 'Content-Type: text/plain' \
+                -H 'x-amz-acl: public-read' \
+                -H 'x-amz-storage-class: REDUCED_REDUNDANCY' \
                 "$(echo "$res" | sed -n 2p)")
       status=$(echo "$s3" | grep 'HTTP/1.1 ' | tail -1 | cut -d' ' -f2)
       if [ "${status:0:1}" = "2" ];
