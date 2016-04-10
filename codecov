@@ -6,8 +6,7 @@ VERSION="tbd"
 
 url="https://codecov.io"
 verbose="0"
-env=""
-token=""
+env="$CODECOV_ENV"
 pr_o=""
 pr=""
 job=""
@@ -16,6 +15,9 @@ service=""
 build_o=""
 commit_o=""
 search_in=""
+tag_o=""
+tag=""
+flags=""
 branch_o=""
 slug_o=""
 dump="0"
@@ -35,6 +37,7 @@ if [ "$git_root" = "$PWD" ];
 then
   git_root="."
 fi
+
 proj_root="$git_root"
 gcov_exe="gcov"
 gcov_arg=""
@@ -62,6 +65,8 @@ Upload reports to Codecov
                  (or) set environment variable CODECOV_ENV=VAR,VAR2
     -X feature   Toggle functionalities, accepting: 'gcov', 'coveragepy', 'nocolor', 'fix'
     -R root dir  Used when not in git/hg project to identify project root directory
+    -F flag      Flag this upload to with one or more titles
+                 ex. -F unittests -F docker
 
     -- Override CI Environment Variables --
        These variables are automatically detected by popular CI providers
@@ -69,6 +74,7 @@ Upload reports to Codecov
     -C sha       Specify the commit sha
     -P pr        Specify the pull request number
     -b build     Specify the build number
+    -T tag       Specify the git tag
 
     -- Debugging --
     -v           Verbose Mode
@@ -104,9 +110,11 @@ say() {
   printf "$1\n" || echo "$1"
 }
 
+
 urlencode() {
   echo "$1" | curl -Gso /dev/null -w %{url_effective} --data-urlencode @- "" | cut -c 3- | sed -e 's/%0A//'
 }
+
 
 swiftcov() {
   _dir=$(dirname "$1")
@@ -137,9 +145,28 @@ swiftcov() {
   done
 }
 
+
+# Credits to: https://gist.github.com/pkuczynski/8665367
+parse_yaml() {
+   local prefix=$2
+   local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
+   sed -ne "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" \
+        -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p" $1 |
+   awk -F$fs '{
+      indent = length($1)/2;
+      vname[indent] = $2;
+      for (i in vname) {if (i > indent) {delete vname[i]}}
+      if (length($3) > 0) {
+         vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
+         printf("%s%s%s=\"%s\"\n", "'$prefix'",vn, $2, $3);
+      }
+   }'
+}
+
+
 if [ $# != 0 ];
 then
-  while getopts "svdhu:t:f:r:e:g:p:X:x:s:a:b:C:B:P:D:S:R:J:" o
+  while getopts "svdhu:t:f:r:e:g:p:s:T:X:x:a:b:C:B:P:D:S:R:J:F:" o
   do
     case "$o" in
       "v")
@@ -152,6 +179,9 @@ then
         else
           search_in="$search_in $OPTARG"
         fi
+        ;;
+      "T")
+        tag_o="$OPTARG"
         ;;
       "d")
         dump="1"
@@ -185,7 +215,7 @@ then
         url=$(echo "$OPTARG" | sed -e 's/\/$//')
         ;;
       "t")
-        token="&token=$OPTARG"
+        token="$OPTARG"
         ;;
       "f")
         if [ "$files" = "" ];
@@ -194,6 +224,14 @@ then
         else
           files="$files
 $OPTARG"
+        fi
+        ;;
+      "F")
+        if [ "$flags" = "" ];
+        then
+          flags="$OPTARG"
+        else
+          flags="$flags,$OPTARG"
         fi
         ;;
       "J")
@@ -239,12 +277,7 @@ $OPTARG"
         gcov_arg=$OPTARG
         ;;
       "e")
-        if [ "$env" = "" ];
-        then
-          env="$OPTARG"
-        else
-          env="$env,$OPTARG"
-        fi
+        env="$env,$OPTARG"
         ;;
     esac
   done
@@ -260,27 +293,6 @@ say "
                                 $VERSION
 
 "
-
-if [ "$CODECOV_URL" != "" ];
-then
-  say "${e}-->${x} url set from env"
-  url=$(echo "$CODECOV_URL" | sed -e 's/\/$//')
-fi
-
-say "$e(url)$x $url"
-say "$e(root)$x $git_root"
-
-if [ "$CODECOV_TOKEN" != "" ];
-then
-  say "${e}-->${x} token set from env"
-  token="&token=$CODECOV_TOKEN"
-fi
-
-if [ "$CODECOV_SLUG" != "" ];
-then
-  say "${e}-->${x} slug set from env"
-  slug_o="$CODECOV_SLUG"
-fi
 
 if [ "$JENKINS_URL" != "" ];
 then
@@ -305,6 +317,7 @@ then
   pr="$TRAVIS_PULL_REQUEST"
   job="$TRAVIS_JOB_ID"
   slug="$TRAVIS_REPO_SLUG"
+  tag="$TRAVIS_TAG"
 
 elif [ "$CI" = "true" ] && [ "$CI_NAME" = "codeship" ];
 then
@@ -358,6 +371,7 @@ then
   pr="$PULL_REQUEST_NUMBER"
   slug="$SEMAPHORE_REPO_SLUG"
   commit="$REVISION"
+  env="$env,$SEMAPHORE_TRIGGER_SOURCE"
 
 elif [ "$CI" = "true" ] && [ "$BUILDKITE" = "true" ];
 then
@@ -419,8 +433,10 @@ then
   service="snap"
   branch=$([ "$SNAP_BRANCH" != "" ] && echo "$SNAP_BRANCH" || echo "$SNAP_UPSTREAM_BRANCH")
   build="$SNAP_PIPELINE_COUNTER"
+  job="$SNAP_STAGE_NAME"
   pr="$SNAP_PULL_REQUEST_NUMBER"
   commit=$([ "$SNAP_COMMIT" != "" ] && echo "$SNAP_COMMIT" || echo "$SNAP_UPSTREAM_COMMIT")
+  env="$env,DISPLAY"
 
 elif [ "$SHIPPABLE" = "true" ];
 then
@@ -447,6 +463,8 @@ then
 else
   say "${r}**>${x} Unable to detect CI provider"
 fi
+
+say "$e(root)$x $git_root"
 
 # find branch, commit, repo from git command
 if [ "$GIT_BRANCH" != "" ];
@@ -478,12 +496,60 @@ else
   commit="$commit_o"
 fi
 
+if [ "$CODECOV_TOKEN" != "" ] && [ "$token" = "" ];
+then
+  say "${e}-->${x} token set from env"
+  token="$CODECOV_TOKEN"
+fi
+
+if [ "$CODECOV_URL" != "" ] && [ "$url" = "" ];
+then
+  say "${e}-->${x} url set from env"
+  url=$(echo "$CODECOV_URL" | sed -e 's/\/$//')
+fi
+
+if [ "$CODECOV_SLUG" != "" ];
+then
+  say "${e}-->${x} slug set from env"
+  slug_o="$CODECOV_SLUG"
+fi
+
+
+yaml=$(find "$proj_root" -name 'codecov.yml' -or -name '.codecov.yml' | head -1 | sed -e 's/^\.\///')
+
+if [ "$yaml" != "" ];
+then
+  eval $(parse_yaml "$yaml" "yml_")
+
+  if [ "$yml_codecov_token" != "" ] && [ "$token" = "" ];
+  then
+    say "${e}-->${x} token set from yaml"
+    token="$yml_codecov_token"
+  fi
+
+  if [ "$yml_codecov_url" != "" ] && [ "$url" = "" ];
+  then
+    say "${e}-->${x} url set from yaml"
+    url="$yml_codecov_url"
+  fi
+
+  if [ "$yml_codecov_slug" != "" ] && [ "$slug_o" = "" ];
+  then
+    say "${e}-->${x} slug set from yaml"
+    slug_o="$yml_codecov_slug"
+  fi
+
+fi
+
 query="branch=$([ "$branch_o" = "" ] && echo "$branch" || echo "$branch_o")\
        &commit=$commit\
        &build=$([ "$build_o" = "" ] && echo "$build" || echo "$build_o")\
        &build_url=$build_url\
+       &tag=$([ "$tag_o" = "" ] && echo "$tag" || echo "$tag_o")\
        &slug=$([ "$slug_o" = "" ] && echo "$slug" || echo "$slug_o")\
+       &yaml=$(urlencode "$yaml")\
        &service=$service\
+       &flags=$flags\
        &pr=$([ "$pr_o" = "" ] && echo "$pr" || echo "$pr_o")\
        &job=$job"
 
@@ -546,6 +612,8 @@ else
                      -or -name 'jacoco*.xml' \
                      -or -name 'clover.xml' \
                      -or -name 'report.xml' \
+                     -or -name '*.codecov.*' \
+                     -or -name 'codecov.*' \
                      -or -name 'cobertura.xml' \
                      -or -name 'luacov.report.out' \
                      -or -name 'coverage-final.json' \
@@ -562,11 +630,13 @@ else
                     -not -name 'Coverage.profdata' \
                     -not -name 'phpunit-code-coverage.xml' \
                     -not -name 'coverage.serialized' \
+                    -not -name '*codecov.yml' \
                     -not -name '*.pyc' \
                     -not -name '*.cfg' \
                     -not -name '*.egg' \
                     -not -name '*.whl' \
                     -not -name '*.html' \
+                    -not -name '*.erb' \
                     -not -name '*.js' \
                     -not -name '*.cpp' \
                     -not -name 'coverage.jade' \
@@ -601,6 +671,8 @@ else
                     -not -path "*/$bower_components/*" \
                     -not -path '*/node_modules/*' \
                     -not -path '*/conftest_*.c.gcov')
+
+  say "    Found $(echo "$files" | wc -l | tr -d '[[:space:]]') reports."
 
   # Python coveragepy generation
   if [ "$ft_coveragepy" = "1" ];
@@ -677,29 +749,19 @@ upload="$network
 <<<<<< network"
 
 # Append Environment Variables
-if [ "$env" != "" ] || [ "$CODECOV_ENV" != "" ];
+if [ "$env" != "" ];
 then
   inc_env=""
   say "$e==>$x Appending build variables"
-  if [ "$CODECOV_ENV" != "" ];
-  then
-    for e in $(echo "$CODECOV_ENV" | tr ',' ' ')
-    do
+  for e in $(echo "$env" | tr ',' ' ')
+  do
+    if [ "$e" != "" ];
+    then
       say "  $g+$x $e"
       inc_env="$inc_env$e=$(eval echo "\$$e")
 "
-    done
-  fi
-
-  if [ "$env" != "" ];
-  then
-    for e in $(echo "$env" | tr ',' ' ')
-    do
-      say "  $g+$x $e"
-      inc_env="$inc_env$e=$(eval echo "\$$e")
-"
-    done
-  fi
+    fi
+  done
 
   upload="$inc_env<<<<<< ENV
 $upload"
@@ -709,21 +771,18 @@ fi
 say "$e==>$x Reading reports"
 while IFS='' read -r file;
 do
-  if [ "$file" != "" ];
+  # read the coverage file
+  if [ -f "$file" ];
   then
-    # read the coverage file
-    if [ -f "$file" ];
-    then
-      report=$(cat "$file")
-      say "  $g+$x $file ${e}bytes=${#report}${x}"
-      # append to to upload
-      upload="$upload
+    report=$(cat "$file")
+    say "  $g+$x $file ${e}bytes=${#report}${x}"
+    # append to to upload
+    upload="$upload
 # path=$(echo "$file" | sed "s|^$git_root/||")
 $report
 <<<<<< EOF"
-    else
-      say "  $r->$x File not found at $file"
-    fi
+  else
+    say "  $r->$x File not found at $file"
   fi
 done <<< "$(echo -e "$files")"
 
@@ -736,6 +795,7 @@ then
 $(find "$git_root" -type f -name '*.cpp'   -exec grep -nIH '^}' {} \;)
 $(find "$git_root" -type f -name '*.kt'    -exec wc -l {} \; | while read l; do echo "EOF: $l"; done)
 $(find "$git_root" -type f -name '*.kt'    -exec grep -nIH '^/\*' {} \;)
+$(find "$git_root" -type f -name '*.jsx'   -exec grep -nIH '^[[:space:]]*$' {} \;)
 $(find "$git_root" -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*$' {} \;)
 $(find "$git_root" -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*//.*' {} \;)
 $(find "$git_root" -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*/\*' {} \;)
@@ -753,12 +813,13 @@ $adjustments
 fi
 
 # trim whitespace from query
+say "$e(url)$x $url"
 say "$e(query)$x $(echo "$query" | tr -d ' ')"
-query=$(echo "package=bash-$VERSION&$query$token" | tr -d ' ')
+query=$(echo "package=bash-$VERSION&token=$token&$query" | tr -d ' ')
 
 if [ "$dump" != "0" ];
 then
-  echo "$url/upload/v2?$query"
+  echo "$url/upload/v4?$query"
   echo "$upload"
 else
   i="0"
@@ -771,9 +832,9 @@ else
 
     if [ "$cacert" != "" ];
     then
-      res=$(curl -sX POST "$url/upload/v3?$query" --cacert "$cacert")
+      res=$(curl -sX POST "$url/upload/v4?$query" --cacert "$cacert")
     else
-      res=$(curl -sX POST "$url/upload/v3?$query")
+      res=$(curl -sX POST "$url/upload/v4?$query")
     fi
     status=$(echo "$res" | head -1 | grep 'HTTP ' | cut -d' ' -f2)
     if [ "$status" = "" ];
@@ -781,7 +842,9 @@ else
       say "    Uploading to S3"
       s3=$(echo "$upload" | \
            curl -isX PUT --data-binary @- \
-                -H 'Content-Type: plain/text' -H 'x-amz-acl: public-read' \
+                -H 'Content-Type: text/plain' \
+                -H 'x-amz-acl: public-read' \
+                -H 'x-amz-storage-class: REDUCED_REDUNDANCY' \
                 "$(echo "$res" | sed -n 2p)")
       status=$(echo "$s3" | grep 'HTTP/1.1 ' | tail -1 | cut -d' ' -f2)
       if [ "${status:0:1}" = "2" ];
