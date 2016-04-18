@@ -569,7 +569,7 @@ else
                     -not -path '*/.egg-info*' \
                     -not -path "*/$bower_components/*" \
                     -not -path '*/node_modules/*' \
-                    -not -path '*/conftest_*.c.gcov')
+                    -not -path '*/conftest_*.c.gcov' 2>/dev/null)
 
   # Python coveragepy generation
   if [ "$ft_coveragepy" = "1" ];
