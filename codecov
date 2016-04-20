@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -e +o pipefail
 
 VERSION="tbd"
 
@@ -67,6 +67,7 @@ Upload reports to Codecov
     -R root dir  Used when not in git/hg project to identify project root directory
     -F flag      Flag this upload to with one or more titles
                  ex. -F unittests -F docker
+    -K           Remove color from the output
 
     -- Override CI Environment Variables --
        These variables are automatically detected by popular CI providers
@@ -75,10 +76,6 @@ Upload reports to Codecov
     -P pr        Specify the pull request number
     -b build     Specify the build number
     -T tag       Specify the git tag
-
-    -- Debugging --
-    -v           Verbose Mode
-    -d           Dont upload and dump to stdin
 
     -- xcode --
     -D           Custom Derived Data Path for Coverage.profdata and gcov processing
@@ -101,6 +98,10 @@ Upload reports to Codecov
                  (or) set environment variable CODECOV_SLUG=:owner/:repo
     -S           File path to your cacert.pem file used to verify ssl with Codecov Enterprise (optional)
                  Detected in environment variable: CODECOV_CA_BUNDLE
+
+    -- Debugging --
+    -v           Verbose Mode
+    -d           Dont upload and dump to stdin
 
 Contribute and source at https://github.com/codecov/codecov-bash
 EOF
@@ -166,11 +167,18 @@ parse_yaml() {
 
 if [ $# != 0 ];
 then
-  while getopts "svdhu:t:f:r:e:g:p:s:T:X:x:a:b:C:B:P:D:S:R:J:F:" o
+  while getopts "svdhu:t:f:r:e:g:p:s:T:X:x:a:b:C:B:P:D:S:R:J:F:K:" o
   do
     case "$o" in
       "v")
         verbose="1"
+        ;;
+      "K")
+        b=""
+        g=""
+        r=""
+        e=""
+        x=""
         ;;
       "s")
         if [ "$search_in" = "" ];
@@ -670,7 +678,7 @@ else
                     -not -path '*/.egg-info*' \
                     -not -path "*/$bower_components/*" \
                     -not -path '*/node_modules/*' \
-                    -not -path '*/conftest_*.c.gcov')
+                    -not -path '*/conftest_*.c.gcov' 2>/dev/null)
 
   say "    Found $(echo "$files" | wc -l | tr -d '[[:space:]]') reports."
 
