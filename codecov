@@ -60,6 +60,7 @@ Upload reports to Codecov
                  (or) set environment variable CODECOV_ENV=VAR,VAR2
     -X feature   Toggle functionalities, accepting: 'gcov', 'coveragepy', 'nocolor', 'fix'
     -R root dir  Used when not in git/hg project to identify project root directory
+    -K           Remove color from the output
 
     -- Override CI Environment Variables --
        These variables are automatically detected by popular CI providers
@@ -67,10 +68,6 @@ Upload reports to Codecov
     -C sha       Specify the commit sha
     -P pr        Specify the pull request number
     -b build     Specify the build number
-
-    -- Debugging --
-    -v           Verbose Mode
-    -d           Dont upload and dump to stdin
 
     -- xcode --
     -D           Custom Derived Data Path for Coverage.profdata and gcov processing
@@ -93,6 +90,10 @@ Upload reports to Codecov
                  (or) set environment variable CODECOV_SLUG=:owner/:repo
     -S           File path to your cacert.pem file used to verify ssl with Codecov Enterprise (optional)
                  Detected in environment variable: CODECOV_CA_BUNDLE
+
+    -- Debugging --
+    -v           Verbose Mode
+    -d           Dont upload and dump to stdin
 
 Contribute and source at https://github.com/codecov/codecov-bash
 EOF
@@ -137,11 +138,18 @@ swiftcov() {
 
 if [ $# != 0 ];
 then
-  while getopts "svdhu:t:f:r:e:g:p:X:x:a:b:C:B:P:D:S:R:J:" o
+  while getopts "svdhu:t:f:r:e:g:p:X:x:a:b:C:B:P:D:S:R:J:K:" o
   do
     case "$o" in
       "v")
         verbose="1"
+        ;;
+      "K")
+        b=""
+        g=""
+        r=""
+        e=""
+        x=""
         ;;
       "s")
         silent="1"
