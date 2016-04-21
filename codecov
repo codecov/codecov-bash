@@ -655,6 +655,7 @@ else
                     -not -name 'coverage.html' \
                     -not -name 'scoverage.measurements.*' \
                     -not -name 'test_*_coverage.txt' \
+                    -not -name '*.cmake' \
                     -not -path '*/vendor/*' \
                     -not -path '*/htmlcov/*' \
                     -not -path '*/home/cainus/*' \
