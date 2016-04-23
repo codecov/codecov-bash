@@ -420,9 +420,9 @@ then
   # http://www.appveyor.com/docs/environment-variables
   service="appveyor"
   branch="$APPVEYOR_REPO_BRANCH"
-  build="$APPVEYOR_JOB_ID"
+  build=$(urlencode "$APPVEYOR_JOB_ID")
   pr="$APPVEYOR_PULL_REQUEST_NUMBER"
-  job="$APPVEYOR_ACCOUNT_NAME/$APPVEYOR_PROJECT_SLUG/$APPVEYOR_BUILD_VERSION"
+  job="$APPVEYOR_ACCOUNT_NAME%2F$APPVEYOR_PROJECT_SLUG%2F$APPVEYOR_BUILD_VERSION"
   slug="$APPVEYOR_REPO_NAME"
   commit="$APPVEYOR_REPO_COMMIT"
 
@@ -565,7 +565,7 @@ query="branch=$([ "$branch_o" = "" ] && echo "$branch" || echo "$branch_o")\
        &build=$([ "$build_o" = "" ] && echo "$build" || echo "$build_o")\
        &build_url=$build_url\
        &tag=$([ "$tag_o" = "" ] && echo "$tag" || echo "$tag_o")\
-       &slug=$([ "$slug_o" = "" ] && echo "$slug" || echo "$slug_o")\
+       &slug=$([ "$slug_o" = "" ] && urlencode "$slug" || urlencode "$slug_o")\
        &yaml=$(urlencode "$yaml")\
        &service=$service\
        &flags=$flags\
