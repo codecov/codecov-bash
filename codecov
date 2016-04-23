@@ -576,7 +576,7 @@ bower_components="bower_components"
 bower_rc=$(cd "$git_root" && cat .bowerrc 2>/dev/null || echo "")
 if [ "$bower_rc" != "" ];
 then
-  bower_components=$(cat "$bower_rc" | tr -d '\n' | grep '"directory"' | cut -d'"' -f4 | sed -e 's/\/$//')
+  bower_components=$(echo "$bower_rc" | tr -d '\n' | grep '"directory"' | cut -d'"' -f4 | sed -e 's/\/$//')
   if [ "$bower_components" = "" ];
   then
     bower_components="bower_components"
