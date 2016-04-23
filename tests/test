@@ -43,7 +43,7 @@ function test_help () {
 function test_url_opt () {
     reset
     res=$(./codecov -d -u http://example.com | grep "http://example.com/")
-    diff <(echo "http://example.com/upload/v2?package=bash-tbd&token=&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=&yaml=&service=&flags=&pr=&job=") <(echo "$res")
+    diff <(echo "http://example.com/upload/v4?package=bash-tbd&token=&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=&yaml=&service=&flags=&pr=&job=") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
@@ -51,21 +51,21 @@ function test_url_env () {
     reset
     export CODECOV_URL="http://other.com"
     res=$(./codecov -d | grep "http://other.com/")
-    diff <(echo "http://other.com/upload/v2?package=bash-tbd&token=&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=&yaml=&service=&flags=&pr=&job=") <(echo "$res")
+    diff <(echo "http://other.com/upload/v4?package=bash-tbd&token=&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=&yaml=&service=&flags=&pr=&job=") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
 function test_flags_opt () {
     reset
     res=$(./codecov -d -F f1 -F f2 | grep "http://other.com/")
-    diff <(echo "https://codecov.io/upload/v2?package=bash-tbd&token=&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=&yaml=&service=&flags=f1,f2&pr=&job=") <(echo "$res")
+    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=&yaml=&service=&flags=f1,f2&pr=&job=") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
 function test_build_arg () {
     reset
     res=$(./codecov -d -b 1.6 | grep "https://codecov.io/")
-    diff <(echo "https://codecov.io/upload/v2?package=bash-tbd&branch=$_BRANCH&commit=$_SHA&build=1.6&build_url=&slug=&service=&pr=&job=") <(echo "$res")
+    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&branch=$_BRANCH&commit=$_SHA&build=1.6&build_url=&slug=&service=&pr=&job=") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
@@ -132,14 +132,14 @@ function test_env_env () {
 function test_slug_opt () {
     reset
     res=$(./codecov -dr myowner/myrepo | grep "https://codecov.io/")
-    diff <(echo "https://codecov.io/upload/v2?package=bash-tbd&token=&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=myowner/myrepo&yaml=&service=&flags=&pr=&job=") <(echo "$res")
+    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=myowner/myrepo&yaml=&service=&flags=&pr=&job=") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
 function test_slug_env () {
     reset
     export CODECOV_SLUG="myowner/myrepo"
-    assertURL "https://codecov.io/upload/v2?package=bash-tbd&token=&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=myowner/myrepo&yaml=&service=&flags=&pr=&job="
+    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=myowner/myrepo&yaml=&service=&flags=&pr=&job="
 }
 
 function test_gcov () {
@@ -157,7 +157,7 @@ function test_token_opt () {
     reset
     token="38cd42da-4df4-4760-a998-4ebeca536904"
     res=$(./codecov -d -t "$token" | grep "https://codecov.io/")
-    diff <(echo "https://codecov.io/upload/v2?package=bash-tbd&token=$token&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=myowner/myrepo&yaml=&service=&flags=&pr=&job=") <(echo "$res")
+    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=$token&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=myowner/myrepo&yaml=&service=&flags=&pr=&job=") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
@@ -165,7 +165,7 @@ function test_token_env () {
     reset
     export CODECOV_TOKEN="38cd42da-4df4-4760-a998-4ebeca536904"
     res=$(./codecov -d | grep "https://codecov.io/")
-    diff <(echo "https://codecov.io/upload/v2?package=bash-tbd&token=$token&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=myowner/myrepo&yaml=&service=&flags=&pr=&job=") <(echo "$res")
+    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=$token&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=myowner/myrepo&yaml=&service=&flags=&pr=&job=") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
@@ -300,7 +300,7 @@ function test_drone (){
     export DRONE_BRANCH="develop"
     export DRONE_BUILD_NUMBER="7.5"
     export DRONE_BUILD_URL="http://drone"
-    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=4539f9949d056a1df212c59e3f52081536b030f1&build=7.5&build_url=http%3A%2F%2Fdrone&tag=&slug=&yaml=&service=drone.io&flags=&pr=&job="
+    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=$_SHA&build=7.5&build_url=http%3A%2F%2Fdrone&tag=&slug=&yaml=&service=drone.io&flags=&pr=&job="
 }
 
 function test_appveyor (){
