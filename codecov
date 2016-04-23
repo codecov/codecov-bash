@@ -813,7 +813,7 @@ then
 $(find "$git_root" -type f -name '*.cpp'   -exec grep -nIH '^}' {} \;)
 $(find "$git_root" -type f -name '*.kt'    -exec wc -l {} \; | while read l; do echo "EOF: $l"; done)
 $(find "$git_root" -type f -name '*.kt'    -exec grep -nIH '^/\*' {} \;)
-$(find "$git_root" -type f -name '*.h' -or name '*.cpp' -exec grep -nIH '// LCOV_EXCL_' {} \;)
+$(find "$git_root" -type f -name '*.h' -or name '*.cpp' -or name '*.cxx' -or name '*.c' -or name '*.hpp' -exec grep -nIH '// LCOV_EXCL_' {} \;)
 $(find "$git_root" -not -path '*/vendor/*' -type f -name '*.go' -exec grep -nIH '^[[:space:]]*$' {} \;)
 $(find "$git_root" -not -path '*/vendor/*' -type f -name '*.go' -exec grep -nIH '^[[:space:]]*//.*' {} \;)
 $(find "$git_root" -not -path '*/vendor/*' -type f -name '*.go' -exec grep -nIH '^[[:space:]]*/\*' {} \;)
