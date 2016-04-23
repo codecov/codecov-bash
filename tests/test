@@ -11,7 +11,7 @@ export PATH=$PWD:$PATH
 
 function reset () {
     rm -rf temp bower .bowerrc codecov.yml tests/.codecov.yml
-    git commit --amend -m 'nothing special'
+    # git commit --amend -m 'nothing special'
     mkdir -p temp
     mkdir -p ~/Library/Developer/Xcode/DerivedData
     . tests/env
@@ -91,13 +91,13 @@ function test_build_arg () {
     assertTrue 'Expected output differs.' $?
 }
 
-function test_changes_merge_commit () {
-    reset
-    git commit --amend -m 'Merge 5d4123bcb99dd1bc9b5ae8b4271b39dbe4c3928b into 2f85ca252d69d6c52484f0c4b2e8500498228398'
-    res=$(./codecov -d -b 1.6 | grep "https://codecov.io/")
-    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=$_BRANCH&commit=5d4123bcb99dd1bc9b5ae8b4271b39dbe4c3928b&build=&build_url=&tag=&slug=&yaml=&service=&flags=&pr=&job=") <(echo "$res")
-    assertTrue 'Expected output differs.' $?
-}
+# function test_changes_merge_commit () {
+#     reset
+#     git commit --amend -m 'Merge 5d4123bcb99dd1bc9b5ae8b4271b39dbe4c3928b into 2f85ca252d69d6c52484f0c4b2e8500498228398'
+#     res=$(./codecov -d -b 1.6 | grep "https://codecov.io/")
+#     diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=$_BRANCH&commit=5d4123bcb99dd1bc9b5ae8b4271b39dbe4c3928b&build=&build_url=&tag=&slug=&yaml=&service=&flags=&pr=&job=") <(echo "$res")
+#     assertTrue 'Expected output differs.' $?
+# }
 
 function test_bowerrc_empty () {
     reset
