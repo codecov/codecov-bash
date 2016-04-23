@@ -5,6 +5,7 @@ set -e +o pipefail
 VERSION="tbd"
 
 url="https://codecov.io"
+url_o=""
 verbose="0"
 env="$CODECOV_ENV"
 pr_o=""
@@ -227,7 +228,7 @@ then
         exit 0;
         ;;
       "u")
-        url=$(echo "$OPTARG" | sed -e 's/\/$//')
+        url_o=$(echo "$OPTARG" | sed -e 's/\/$//')
         ;;
       "t")
         token="$OPTARG"
@@ -520,10 +521,10 @@ then
   token="$CODECOV_TOKEN"
 fi
 
-if [ "$CODECOV_URL" != "" ] && [ "$url" = "" ];
+if [ "$CODECOV_URL" != "" ] && [ "$url_o" = "" ];
 then
   say "${e}-->${x} url set from env"
-  url=$(echo "$CODECOV_URL" | sed -e 's/\/$//')
+  url_o=$(echo "$CODECOV_URL" | sed -e 's/\/$//')
 fi
 
 if [ "$CODECOV_SLUG" != "" ];
@@ -545,10 +546,10 @@ then
     token="$yml_codecov_token"
   fi
 
-  if [ "$yml_codecov_url" != "" ] && [ "$url" = "" ];
+  if [ "$yml_codecov_url" != "" ] && [ "$url_o" = "" ];
   then
     say "${e}-->${x} url set from yaml"
-    url="$yml_codecov_url"
+    url_o="$yml_codecov_url"
   fi
 
   if [ "$yml_codecov_slug" != "" ] && [ "$slug_o" = "" ];
@@ -830,6 +831,10 @@ $adjustments
   fi
 fi
 
+if [ "$url_o" != "" ];
+then
+  url="$url_o"
+fi
 # trim whitespace from query
 say "$e(url)$x $url"
 say "$e(query)$x $(echo "$query" | tr -d ' ')"

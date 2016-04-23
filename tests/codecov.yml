@@ -1,0 +1,5 @@
+codecov:
+  url: http://other.com
+  token: abc123
+  slug: owner/repo
+

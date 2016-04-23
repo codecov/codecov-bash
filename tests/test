@@ -49,16 +49,37 @@ function test_url_opt () {
 
 function test_url_env () {
     reset
-    export CODECOV_URL="http://other.com"
-    res=$(./codecov -d | grep "http://other.com/")
+    res=$(CODECOV_URL="http://other.com" ./codecov -d | grep "http://other.com/")
     diff <(echo "http://other.com/upload/v4?package=bash-tbd&token=&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=&yaml=&service=&flags=&pr=&job=") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
 function test_flags_opt () {
     reset
-    res=$(./codecov -d -F f1 -F f2 | grep "http://other.com/")
+    res=$(./codecov -d -F f1 -F f2 | grep "https://codecov.io/")
     diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=&yaml=&service=&flags=f1,f2&pr=&job=") <(echo "$res")
+    assertTrue 'Expected output differs.' $?
+}
+
+function test_yaml_location () {
+    reset
+    echo 'codecov:
+  url: http://other.com
+  token: abc123
+  slug: owner/repo
+' > codecov.yml
+    res=$(./codecov -d | grep "http://other.com/")
+    diff <(echo "http://other.com/upload/v4?package=bash-tbd&token=abc123&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=owner%2Frepo&yaml=codecov.yml&service=&flags=&pr=&job=") <(echo "$res")
+    assertTrue 'Expected output differs.' $?
+}
+
+function test_yaml_location () {
+    reset
+    echo 'codecov:
+  token: uuid
+' > tests/codecov.yml
+    res=$(./codecov -d | grep "https://codecov.io")
+    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=uuid&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=&yaml=tests%2Fcodecov.yml&service=&flags=&pr=&job=") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
@@ -105,26 +126,20 @@ function test_bowerrc_2 () {
 function test_env_opt () {
     reset
 
-    export BUILD_ID="apples"
-    res="$(./codecov -de BUILD_ID)"
+    res="$(BUILD_ID="apples" ./codecov -de BUILD_ID)"
     assertContains "$res" 'BUILD_ID=apples'
 
-    export COMMIT="abc"
-    res="$(./codecov -de BUILD_ID,COMMIT)"
+    res="$(COMMIT="abc" ./codecov -de BUILD_ID,COMMIT)"
     assertContains "$res" 'BUILD_ID=apples'
     assertContains "$res" 'COMMIT=abc'
 }
 
 function test_env_env () {
     reset
-    export CODECOV_ENV="BUILD_ID"
-    export BUILD_ID="apples"
-    res="$(./codecov -d)"
+    res="$(CODECOV_ENV="BUILD_ID" BUILD_ID="apples" ./codecov -d)"
     assertContains "$res" 'BUILD_ID=apples'
 
-    export CODECOV_ENV="BUILD_ID,COMMIT"
-    export COMMIT="abc"
-    res="$(./codecov -d)"
+    res="$(CODECOV_ENV="BUILD_ID,COMMIT" COMMIT="abc" ./codecov -d)"
     assertContains "$res" 'BUILD_ID=apples'
     assertContains "$res" 'COMMIT=abc'
 }
@@ -157,15 +172,14 @@ function test_token_opt () {
     reset
     token="38cd42da-4df4-4760-a998-4ebeca536904"
     res=$(./codecov -d -t "$token" | grep "https://codecov.io/")
-    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=$token&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=myowner/myrepo&yaml=&service=&flags=&pr=&job=") <(echo "$res")
+    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=$token&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=&yaml=&service=&flags=&pr=&job=") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
 function test_token_env () {
     reset
-    export CODECOV_TOKEN="38cd42da-4df4-4760-a998-4ebeca536904"
-    res=$(./codecov -d | grep "https://codecov.io/")
-    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=$token&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=myowner/myrepo&yaml=&service=&flags=&pr=&job=") <(echo "$res")
+    res=$(CODECOV_TOKEN="38cd42da-4df4-4760-a998-4ebeca536904" ./codecov -d | grep "https://codecov.io/")
+    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=$token&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=&yaml=&service=&flags=&pr=&job=") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
