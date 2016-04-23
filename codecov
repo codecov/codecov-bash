@@ -31,6 +31,7 @@ gcov_ignore=""
 ft_gcov="1"
 ft_coveragepy="1"
 ft_fix="1"
+ft_rm_xcode_src="1"
 _git_root=$(git rev-parse --show-toplevel 2>/dev/null || hg root 2>/dev/null || echo $PWD)
 git_root="$_git_root"
 if [ "$git_root" = "$PWD" ];
@@ -63,7 +64,7 @@ Upload reports to Codecov
     -e ENV       Specify environment variables to be included with this build
                  ex. codecov -e VAR,VAR2
                  (or) set environment variable CODECOV_ENV=VAR,VAR2
-    -X feature   Toggle functionalities, accepting: 'gcov', 'coveragepy', 'nocolor', 'fix'
+    -X feature   Toggle functionalities, accepting: 'gcov', 'coveragepy', 'nocolor', 'fix', 'rm-xcode-src'
     -R root dir  Used when not in git/hg project to identify project root directory
     -F flag      Flag this upload to with one or more titles
                  ex. -F unittests -F docker
@@ -129,18 +130,24 @@ swiftcov() {
       then
         say "    $g+$x Building reports for $_proj $_type"
         _proj_name=$(echo "$_proj" | sed -e 's/[[:space:]]//g')
-        while IFS="$(printf '\n\t ')" read -r line;
-        do
-          if [ -z "$line" ]; then : # [skip] empty line
-          elif [[ "$line" == '|'* ]]; then : # [skip] irrelvent data
-          elif [[ "$line" == '-'* ]]; then : # [skip] irrelvent data
-          elif [[ "$line" == '/'* ]]; then # file name
-            echo "$line"
-          else # coverage data: remove source from file
-            echo "${line%|*}"
-          fi
-        done < <(xcrun llvm-cov show -instr-profile "$1" "$f/$_proj") >> "$_proj_name.$_type.coverage.txt" \
-             || echo "    ${r}**>${x} llvm-cov failed to produce results for $f/$_proj"
+        if [ "$3" == "1" ];
+        then
+          while IFS="$(printf '\n\t ')" read -r line;
+          do
+            if [ -z "$line" ]; then : # [skip] empty line
+            elif [[ "$line" == '|'* ]]; then : # [skip] irrelvent data
+            elif [[ "$line" == '-'* ]]; then : # [skip] irrelvent data
+            elif [[ "$line" == '/'* ]]; then # file name
+              echo "$line"
+            else # coverage data: remove source from file
+              echo "${line%|*}"
+            fi
+          done < <(xcrun llvm-cov show -instr-profile "$1" "$f/$_proj") >> "$_proj_name.$_type.coverage.txt" \
+               || echo "    ${r}**>${x} llvm-cov failed to produce results for $f/$_proj"
+        else
+          xcrun llvm-cov show -instr-profile "$1" "$f/$_proj" > "$_proj_name.$_type.coverage.txt" \
+           || echo "    ${r}**>${x} llvm-cov failed to produce results for $f/$_proj"
+        fi
       fi
     done
   done
@@ -263,6 +270,9 @@ $OPTARG"
         elif [ "$OPTARG" = "coveragepy" ];
         then
           ft_coveragepy="0"
+        elif [ "$OPTARG" = "rm-xcode-src" ];
+        then
+          ft_rm_xcode_src="0"
         elif [ "$OPTARG" = "fix" ];
         then
           ft_fix="0"
@@ -592,7 +602,7 @@ else
 
     while read -r profdata;
     do
-      swiftcov "$profdata" "$xp"
+      swiftcov "$profdata" "$xp" "$ft_rm_xcode_src"
     done <<< "$(find "$ddp" -name '*.profdata')"
   fi
 
