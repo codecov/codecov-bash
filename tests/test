@@ -10,7 +10,7 @@ fi
 export PATH=$PWD:$PATH
 
 function reset () {
-    rm -rf temp bower .bowerrc
+    rm -rf temp bower .bowerrc codecov.yml tests/.codecov.yml
     mkdir -p temp
     mkdir -p ~/Library/Developer/Xcode/DerivedData
     . tests/env
@@ -73,20 +73,20 @@ function test_yaml_location () {
     assertTrue 'Expected output differs.' $?
 }
 
-function test_yaml_location () {
+function test_yaml_location_2 () {
     reset
     echo 'codecov:
   token: uuid
-' > tests/codecov.yml
-    res=$(./codecov -d | grep "https://codecov.io")
-    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=uuid&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=&yaml=tests%2Fcodecov.yml&service=&flags=&pr=&job=") <(echo "$res")
+' > tests/.codecov.yml
+    res=$(./codecov -d | grep "https://codecov.io/")
+    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=uuid&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=&yaml=tests%2F.codecov.yml&service=&flags=&pr=&job=") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
 function test_build_arg () {
     reset
     res=$(./codecov -d -b 1.6 | grep "https://codecov.io/")
-    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&branch=$_BRANCH&commit=$_SHA&build=1.6&build_url=&slug=&service=&pr=&job=") <(echo "$res")
+    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=$_BRANCH&commit=$_SHA&build=1.6&build_url=&slug=&service=&pr=&job=") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
