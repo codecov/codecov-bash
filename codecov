@@ -736,12 +736,7 @@ then
   exit 1;
 fi
 
-say "$e==>$x Detecting git/mercurial file structure"
-network=$(cd "$git_root" && git ls-files 2>/dev/null || hg locate 2>/dev/null || echo "")
-if [ "$network" = "" ];
-then
-  network=$(find "$git_root" -type f \
-            -not -path '*/virtualenv/*' \
+skip_dirs="(-not -path '*/virtualenv/*' \
             -not -path '*/.virtualenv/*' \
             -not -path '*/virtualenvs/*' \
             -not -path '*/.virtualenvs/*' \
@@ -761,7 +756,13 @@ then
             -not -path '*/js/generated/coverage/*' \
             -not -path '*/__pycache__/*' \
             -not -path '*/node_modules/*' \
-            -not -path "*/$bower_components/*")
+            -not -path \"*/$bower_components/*\")"
+
+say "$e==>$x Detecting git/mercurial file structure"
+network=$(cd "$git_root" && git ls-files 2>/dev/null || hg locate 2>/dev/null || echo "")
+if [ "$network" = "" ];
+then
+  network=$(find "$git_root" -type f $skip_dirs)
 fi
 
 upload="$network
@@ -811,19 +812,19 @@ then
   then
     say "$e==>$x Appending adjustments (http://bit.ly/1O4eBpt)"
     adjustments="# path=fixes
-$(find "$git_root" -type f -name '*.cpp'   -exec grep -nIH '^}' {} \;)
-$(find "$git_root" -type f -name '*.kt'    -exec wc -l {} \; | while read l; do echo "EOF: $l"; done)
-$(find "$git_root" -type f -name '*.kt'    -exec grep -nIH '^/\*' {} \;)
-$(find "$git_root" -type f -name '*.h' -or name '*.cpp' -or name '*.cxx' -or name '*.c' -or name '*.hpp' -exec grep -nIH '// LCOV_EXCL_' {} \;)
-$(find "$git_root" -not -path '*/vendor/*' -type f -name '*.go' -exec grep -nIH '^[[:space:]]*$' {} \;)
-$(find "$git_root" -not -path '*/vendor/*' -type f -name '*.go' -exec grep -nIH '^[[:space:]]*//.*' {} \;)
-$(find "$git_root" -not -path '*/vendor/*' -type f -name '*.go' -exec grep -nIH '^[[:space:]]*/\*' {} \;)
-$(find "$git_root" -not -path '*/vendor/*' -type f -name '*.go' -exec grep -nIH '^[[:space:]]*\*/' {} \;)
-$(find "$git_root" -not -path '*/vendor/*' -type f -name '*.go' -exec grep -nIH '^[[:space:]]*}$' {} \;)
-$(find "$git_root" -type f -name '*.m'     -exec grep -nIH '^[[:space:]]*}$' {} \;)
-$(find "$git_root" -type f -name '*.swift' -exec grep -nIH '^[[:space:]]*}$' {} \;)
-$(find "$git_root" -not -path '*/vendor/*' -type f -name '*.php'   -exec grep -nIH '^[[:space:]]*}$' {} \;)
-$(find "$git_root" -not -path '*/vendor/*' -type f -name '*.php'   -exec grep -nIH '^[[:space:]]*{' {} \;)"
+$(find "$git_root" $skip_dirs -type f -name '*.cpp'   -exec grep -nIH '^}' {} \;)
+$(find "$git_root" $skip_dirs -type f -name '*.kt'    -exec wc -l {} \; | while read l; do echo "EOF: $l"; done)
+$(find "$git_root" $skip_dirs -type f -name '*.kt'    -exec grep -nIH '^/\*' {} \;)
+$(find "$git_root" $skip_dirs -type f \( -name '*.h' -or name '*.cpp' -or name '*.cxx' -or name '*.c' -or name '*.hpp' \) -exec grep -nIH '// LCOV_EXCL_' {} \;)
+$(find "$git_root" $skip_dirs -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*$' {} \;)
+$(find "$git_root" $skip_dirs -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*//.*' {} \;)
+$(find "$git_root" $skip_dirs -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*/\*' {} \;)
+$(find "$git_root" $skip_dirs -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*\*/' {} \;)
+$(find "$git_root" $skip_dirs -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*}$' {} \;)
+$(find "$git_root" $skip_dirs -type f -name '*.m'     -exec grep -nIH '^[[:space:]]*}$' {} \;)
+$(find "$git_root" $skip_dirs -type f -name '*.swift' -exec grep -nIH '^[[:space:]]*}$' {} \;)
+$(find "$git_root" $skip_dirs -type f -name '*.php'   -exec grep -nIH '^[[:space:]]*}$' {} \;)
+$(find "$git_root" $skip_dirs -type f -name '*.php'   -exec grep -nIH '^[[:space:]]*{' {} \;)"
     say "  ${e}-->${x} Found $(echo "$adjustments" | grep -c '^.') adjustments"
     upload="$upload
 $adjustments
