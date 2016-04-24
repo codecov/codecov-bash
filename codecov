@@ -834,8 +834,8 @@ $(find "$git_root" -type f -not -path '*/Pods/*' -name '*.swift' -exec grep -nIH
     if [[ $(echo "$network" | grep '.php$') != '' ]];
     then
       adjustments="$adjustments
-$(find "$git_root" -type f -name -not -path '*/vendor/*' '*.php' -exec grep -nIH '^[[:space:]]*}$' {} \;)
-$(find "$git_root" -type f -name -not -path '*/vendor/*' '*.php' -exec grep -nIH '^[[:space:]]*{' {} \;)"
+$(find "$git_root" -type f -not -path '*/vendor/*' -name '*.php' -exec grep -nIH '^[[:space:]]*}$' {} \;)
+$(find "$git_root" -type f -not -path '*/vendor/*' -name '*.php' -exec grep -nIH '^[[:space:]]*{' {} \;)"
     fi
     if [[ $(echo "$network" | grep '(.cpp|.h|.cxx|.c|.hpp)$') != '' ]];
     then
