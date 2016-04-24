@@ -736,33 +736,32 @@ then
   exit 1;
 fi
 
-skip_dirs="(-not -path '*/virtualenv/*' \
-            -not -path '*/.virtualenv/*' \
-            -not -path '*/virtualenvs/*' \
-            -not -path '*/.virtualenvs/*' \
-            -not -path '*/.env/*' \
-            -not -path '*/.envs/*' \
-            -not -path '*/env/*' \
-            -not -path '*/envs/*' \
-            -not -path '*/.venv/*' \
-            -not -path '*/.venvs/*' \
-            -not -path '*/venv/*' \
-            -not -path '*/venvs/*' \
-            -not -path '*/build/lib/*' \
-            -not -path '*/.git/*' \
-            -not -path '*/.egg-info/*' \
-            -not -path '*/shunit2-2.1.6/*' \
-            -not -path '*/vendor/*' \
-            -not -path '*/js/generated/coverage/*' \
-            -not -path '*/__pycache__/*' \
-            -not -path '*/node_modules/*' \
-            -not -path \"*/$bower_components/*\")"
-
 say "$e==>$x Detecting git/mercurial file structure"
 network=$(cd "$git_root" && git ls-files 2>/dev/null || hg locate 2>/dev/null || echo "")
 if [ "$network" = "" ];
 then
-  network=$(find "$git_root" -type f $skip_dirs)
+  network=$(find "$git_root" -type f \
+                 -not -path '*/virtualenv/*' \
+                 -not -path '*/.virtualenv/*' \
+                 -not -path '*/virtualenvs/*' \
+                 -not -path '*/.virtualenvs/*' \
+                 -not -path '*/.env/*' \
+                 -not -path '*/.envs/*' \
+                 -not -path '*/env/*' \
+                 -not -path '*/envs/*' \
+                 -not -path '*/.venv/*' \
+                 -not -path '*/.venvs/*' \
+                 -not -path '*/venv/*' \
+                 -not -path '*/venvs/*' \
+                 -not -path '*/build/lib/*' \
+                 -not -path '*/.git/*' \
+                 -not -path '*/.egg-info/*' \
+                 -not -path '*/shunit2-2.1.6/*' \
+                 -not -path '*/vendor/*' \
+                 -not -path '*/js/generated/coverage/*' \
+                 -not -path '*/__pycache__/*' \
+                 -not -path '*/node_modules/*' \
+                 -not -path "*/$bower_components/*")
 fi
 
 upload="$network
@@ -811,24 +810,55 @@ then
   if [ "$(find "$git_root" -name '*.go' -or -name '*.php' -or -name '*.kt' -or -name '*.swift' -or -name '*.m')" != "" ];
   then
     say "$e==>$x Appending adjustments (http://bit.ly/1O4eBpt)"
-    adjustments="# path=fixes
-$(find "$git_root" $skip_dirs -type f -name '*.cpp'   -exec grep -nIH '^}' {} \;)
-$(find "$git_root" $skip_dirs -type f -name '*.kt'    -exec wc -l {} \; | while read l; do echo "EOF: $l"; done)
-$(find "$git_root" $skip_dirs -type f -name '*.kt'    -exec grep -nIH '^/\*' {} \;)
-$(find "$git_root" $skip_dirs -type f \( -name '*.h' -or name '*.cpp' -or name '*.cxx' -or name '*.c' -or name '*.hpp' \) -exec grep -nIH '// LCOV_EXCL_' {} \;)
-$(find "$git_root" $skip_dirs -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*$' {} \;)
-$(find "$git_root" $skip_dirs -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*//.*' {} \;)
-$(find "$git_root" $skip_dirs -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*/\*' {} \;)
-$(find "$git_root" $skip_dirs -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*\*/' {} \;)
-$(find "$git_root" $skip_dirs -type f -name '*.go'    -exec grep -nIH '^[[:space:]]*}$' {} \;)
-$(find "$git_root" $skip_dirs -type f -name '*.m'     -exec grep -nIH '^[[:space:]]*}$' {} \;)
-$(find "$git_root" $skip_dirs -type f -name '*.swift' -exec grep -nIH '^[[:space:]]*}$' {} \;)
-$(find "$git_root" $skip_dirs -type f -name '*.php'   -exec grep -nIH '^[[:space:]]*}$' {} \;)
-$(find "$git_root" $skip_dirs -type f -name '*.php'   -exec grep -nIH '^[[:space:]]*{' {} \;)"
-    say "  ${e}-->${x} Found $(echo "$adjustments" | grep -c '^.') adjustments"
-    upload="$upload
+    adjustments=""
+    if [[ $(echo "$network" | grep '.kt$') != '' ]];
+    then
+      adjustments="$adjustments
+$(find "$git_root" -type f -name '*.kt' -exec wc -l {} \; | while read l; do echo "EOF: $l"; done)
+$(find "$git_root" -type f -name '*.kt' -exec grep -nIH '^/\*' {} \;)"
+    fi
+    if [[ $(echo "$network" | grep '.go$') != '' ]];
+    then
+      adjustments="$adjustments
+$(find "$git_root" -type f -not -path '*/vendor/*' -name '*.go' -exec grep -nIH '^[[:space:]]*$' {} \;)
+$(find "$git_root" -type f -not -path '*/vendor/*' -name '*.go' -exec grep -nIH '^[[:space:]]*//.*' {} \;)
+$(find "$git_root" -type f -not -path '*/vendor/*' -name '*.go' -exec grep -nIH '^[[:space:]]*/\*' {} \;)
+$(find "$git_root" -type f -not -path '*/vendor/*' -name '*.go' -exec grep -nIH '^[[:space:]]*\*/' {} \;)
+$(find "$git_root" -type f -not -path '*/vendor/*' -name '*.go' -exec grep -nIH '^[[:space:]]*}$' {} \;)"
+    fi
+    if [[ $(echo "$network" | grep '.swift$') != '' ]];
+    then
+      adjustments="$adjustments
+$(find "$git_root" -type f -not -path '*/Pods/*' -name '*.swift' -exec grep -nIH '^[[:space:]]*}$' {} \;)"
+    fi
+    if [[ $(echo "$network" | grep '.php$') != '' ]];
+    then
+      adjustments="$adjustments
+$(find "$git_root" -type f -name -not -path '*/vendor/*' '*.php' -exec grep -nIH '^[[:space:]]*}$' {} \;)
+$(find "$git_root" -type f -name -not -path '*/vendor/*' '*.php' -exec grep -nIH '^[[:space:]]*{' {} \;)"
+    fi
+    if [[ $(echo "$network" | grep '(.cpp|.h|.cxx|.c|.hpp)$') != '' ]];
+    then
+      adjustments="$adjustments
+$(find "$git_root" -type f \( -name '*.h' -or -name '*.cpp' -or -name '*.cxx' -or -name '*.c' -or -name '*.hpp' \) -exec grep -nIH '^}' {} \;)
+$(find "$git_root" -type f \( -name '*.h' -or -name '*.cpp' -or -name '*.cxx' -or -name '*.c' -or -name '*.hpp' \) -exec grep -nIH '// LCOV_EXCL_' {} \;)"
+    fi
+    if [[ $(echo "$network" | grep '.m$') != '' ]];
+    then
+      adjustments="$adjustments
+$(find "$git_root" -type f -name '*.m' -exec grep -nIH '^[[:space:]]*}$' {} \;)"
+    fi
+    found=$(echo "$adjustments" | wc -l | tr -d ' ')
+    if [ "$found" != "1" ];
+    then
+      say "  ${e}-->${x} Found $found adjustments"
+      upload="$upload
+# path=fixes
 $adjustments
 <<<<<< EOF"
+    else
+      say "  ${e}-->${x} Found 0 adjustments"
+    fi
   fi
 fi
 
