@@ -894,13 +894,14 @@ else
     status=$(echo "$res" | head -1 | grep 'HTTP ' | cut -d' ' -f2)
     if [ "$status" = "" ];
     then
-      say "    Uploading to S3"
+      s3target=$(echo "$res" | sed -n 2p)
+      say "    Uploading to $(echo "$s3target" | cut -c1-32)"
       s3=$(echo "$upload" | \
            curl -isX PUT --data-binary @- \
                 -H 'Content-Type: text/plain' \
                 -H 'x-amz-acl: public-read' \
                 -H 'x-amz-storage-class: REDUCED_REDUNDANCY' \
-                "$(echo "$res" | sed -n 2p)")
+                "$s3target")
       status=$(echo "$s3" | grep 'HTTP/1.1 ' | tail -1 | cut -d' ' -f2)
       if [ "${status:0:1}" = "2" ];
       then
