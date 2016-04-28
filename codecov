@@ -504,6 +504,7 @@ then
   if [[ "$mc" =~ ^Merge[[:space:]][a-z0-9]{40}[[:space:]]into[[:space:]][a-z0-9]{40}$ ]];
   then
     # Merge xxx into yyy
+    say "    Fixing merge commit sha"
     commit=$(echo "$mc" | cut -d' ' -f2)
   elif [ "$GIT_COMMIT" != "" ];
   then
@@ -882,12 +883,12 @@ else
   say "    Pinging Codecov"
 
   res=$(curl -sX $cacert POST "$url/upload/v4?$query" -H 'Accept: text/plain' || true)
-  status=$(echo "$res" | head -1 | cut -d' ' -f2)
-  if [ "$status" = "200" ];
+  # a good replay is "https://codecov.io" + "\n" + "https://codecov.s3.amazonaws.com/..."
+  status=$(echo "$res" | head -1 | grep 'HTTP ' | cut -d' ' -f2)
+  if [ "$status" = "" ];
   then
-    # 200 Ok
     s3target=$(echo "$res" | sed -n 2p)
-    say "    Uploading to S3 $(echo "$s3target" | cut -c1-32)"
+    say "    -> to S3 $(echo "$s3target" | cut -c1-32)"
     s3=$(echo "$upload" | \
          curl -fisX PUT --data-binary @- \
               -H 'Content-Type: text/plain' \
@@ -908,15 +909,15 @@ else
       exit 0
   fi
 
-  say "    Uploading to Codecov"
+  say "    -> to Codecov"
   i="0"
   while [ $i -lt 4 ]
   do
     i=$[$i+1]
 
-    res=$(echo "$upload" | curl -sX $cacert POST --data-binary @- "$url/upload/v2?$query" -H 'Accept: text/plain' || true)
-    status=$(echo "$res" | head -1 | cut -d' ' -f2)
-    if [ "$status" = "200" ];
+    res=$(echo "$upload" | curl -sX POST $cacert --data-binary @- "$url/upload/v2?$query" -H 'Accept: text/plain')
+    echo "status $status"
+    if [ "$status" = "" ];
     then
       say "    View reports at ${b}${res}${x}"
       exit 0
@@ -927,7 +928,7 @@ else
       sleep 10
 
     else
-      say "${g}${res}${x}"
+      say "    ${g}${res}${x}"
       exit 0
     fi
 
