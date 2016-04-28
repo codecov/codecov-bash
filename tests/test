@@ -228,7 +228,7 @@ function test_travis () {
     export TRAVIS_JOB_ID="33116958"
     export TRAVIS_PULL_REQUEST="false"
     export TRAVIS_JOB_NUMBER="4.1"
-    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=master&commit=c739768fcac68144a3a6d82305b9c4106934d31a&build=4.1&build_url=&tag=&slug=codecov/ci-repo&yaml=&service=travis-org&flags=&pr=false&job=33116958"
+    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=master&commit=c739768fcac68144a3a6d82305b9c4106934d31a&build=4.1&build_url=&tag=&slug=codecov/ci-repo&yaml=&service=travis&flags=&pr=false&job=33116958"
 }
 
 function test_jenkins (){

@@ -14,6 +14,7 @@ job=""
 build_url=""
 service=""
 build_o=""
+token=""
 commit_o=""
 search_in=""
 tag_o=""
@@ -329,7 +330,7 @@ elif [ "$CI" = "true" ] && [ "$TRAVIS" = "true" ];
 then
   say "$e==>$x Travis CI detected."
   # http://docs.travis-ci.com/user/ci-environment/#Environment-variables
-  service="travis-org"
+  service="travis"
   branch="$TRAVIS_BRANCH"
   commit="$TRAVIS_COMMIT"
   build="$TRAVIS_JOB_NUMBER"
