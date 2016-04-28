@@ -216,7 +216,7 @@ then
         pr_o="$OPTARG"
         ;;
       "S")
-        cacert="$OPTARG"
+        cacert="--cacert \"$OPTARG\""
         ;;
       "R")
         git_root="$OPTARG"
@@ -877,70 +877,57 @@ then
   echo "$url/upload/v4?$query"
   echo "$upload"
 else
+
+  say "${e}==>${x} Uploading reports"
+  say "    Pinging Codecov"
+
+  res=$(curl -sX $cacert POST "$url/upload/v4?$query" -H 'Accept: text/plain' || true)
+  status=$(echo "$res" | head -1 | cut -d' ' -f2)
+  if [ "$status" = "200" ];
+  then
+    # 200 Ok
+    s3target=$(echo "$res" | sed -n 2p)
+    say "    Uploading to S3 $(echo "$s3target" | cut -c1-32)"
+    s3=$(echo "$upload" | \
+         curl -fisX PUT --data-binary @- \
+              -H 'Content-Type: text/plain' \
+              -H 'x-amz-acl: public-read' \
+              -H 'x-amz-storage-class: REDUCED_REDUNDANCY' \
+              "$s3target" || true)
+    if [ "$s3" != "" ];
+    then
+      say "    View reports at ${b}$(echo "$res" | sed -n 1p)${x}"
+      exit 0
+    else
+      say "    ${r}Failed to upload to s3${n}"
+    fi
+  elif [ "$status" = "400" ];
+  then
+      # 400 Error
+      say "${g}${res}${x}"
+      exit 0
+  fi
+
+  say "    Uploading to Codecov"
   i="0"
   while [ $i -lt 4 ]
   do
     i=$[$i+1]
 
-    say "${e}==>${x} Uploading reports"
-    say "    Pinging Codecov"
-
-    if [ "$cacert" != "" ];
-    then
-      res=$(curl -sX POST "$url/upload/v4?$query" --cacert "$cacert")
-    else
-      res=$(curl -sX POST "$url/upload/v4?$query")
-    fi
-    status=$(echo "$res" | head -1 | grep 'HTTP ' | cut -d' ' -f2)
-    if [ "$status" = "" ];
-    then
-      s3target=$(echo "$res" | sed -n 2p)
-      say "    Uploading to $(echo "$s3target" | cut -c1-32)"
-      s3=$(echo "$upload" | \
-           curl -isX PUT --data-binary @- \
-                -H 'Content-Type: text/plain' \
-                -H 'x-amz-acl: public-read' \
-                -H 'x-amz-storage-class: REDUCED_REDUNDANCY' \
-                "$s3target")
-      status=$(echo "$s3" | grep 'HTTP/1.1 ' | tail -1 | cut -d' ' -f2)
-      if [ "${status:0:1}" = "2" ];
-      then
-        say ""
-        say "Reports queued to ${b}$(echo "$res" | sed -n 1p)${x}"
-      else
-        say "  ${r}Failed to upload to s3${n}"
-        say "${e}>>>${n}"
-        echo "$s3"
-        say "${e}<<<${n}"
-      fi
-      exit 0
-
-    elif [ "$status" = "405" ];
-    then
-      say "  Uploading to Codecov"
-      if [ "$cacert" != "" ];
-      then
-        res=$(echo "$upload" | curl -sX POST --cacert "$cacert" --data-binary @- "$url/upload/v2?$query" -H 'Accept: text/plain')
-      else
-        res=$(echo "$upload" | curl -sX POST --data-binary @- "$url/upload/v2?$query" -H 'Accept: text/plain')
-      fi
-      status=$(echo "$res" | head -1 | cut -d' ' -f2)
-    fi
-
+    res=$(echo "$upload" | curl -sX $cacert POST --data-binary @- "$url/upload/v2?$query" -H 'Accept: text/plain' || true)
+    status=$(echo "$res" | head -1 | cut -d' ' -f2)
     if [ "$status" = "200" ];
     then
-      say ""
-      say "${g}${res}${x}"
+      say "    View reports at ${b}${res}${x}"
       exit 0
 
     elif [ "${status:0:1}" = "5" ];
     then
-      say "${e}Sleeping for 15s and trying again.#{x}"
-      sleep 15
+      say "    ${e}Sleeping for 10s and trying again...#{x}"
+      sleep 10
 
     else
-      say ""
-      say "Reports queued to ${b}${res}${x}"
+      say "${g}${res}${x}"
       exit 0
     fi
 
