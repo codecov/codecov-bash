@@ -540,7 +540,7 @@ yaml=$(find "$proj_root" -name 'codecov.yml' -or -name '.codecov.yml' | head -1 
 
 if [ "$yaml" != "" ];
 then
-  eval $(parse_yaml "$yaml" "yml_")
+  eval $(parse_yaml "$yaml" "yml_" || true)
 
   if [ "$yml_codecov_token" != "" ] && [ "$token" = "" ];
   then
