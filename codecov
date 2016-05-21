@@ -648,6 +648,7 @@ else
                     -not -name '*.py' \
                     -not -name '*.class' \
                     -not -name '*.xcconfig' \
+                    -not -name '*.ec' \
                     -not -name 'Coverage.profdata' \
                     -not -name 'phpunit-code-coverage.xml' \
                     -not -name 'coverage.serialized' \
