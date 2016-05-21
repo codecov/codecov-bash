@@ -352,12 +352,29 @@ then
 elif [ "$TEAMCITY_VERSION" != "" ];
 then
   say "$e==>$x TeamCity CI detected."
+  # https://confluence.jetbrains.com/display/TCD8/Predefined+Build+Parameters
   # https://confluence.jetbrains.com/plugins/servlet/mobile#content/view/74847298
+  if [ "$TEAMCITY_BUILD_BRANCH" = '' ];
+  then
+    echo "    Teamcity does not automatically make build parameters available as environment variables."
+    echo "    Add the following environment parameters to the build configuration"
+    echo "    env.TEAMCITY_BUILD_BRANCH = %teamcity.build.branch%"
+    echo "    env.TEAMCITY_BUILD_ID = %teamcity.build.id%"
+    echo "    env.TEAMCITY_BUILD_URL = %teamcity.serverUrl%/viewLog.html?buildId=%teamcity.build.id%"
+    echo "    env.TEAMCITY_BUILD_COMMIT = %system.build.vcs.number%"
+    echo "    env.TEAMCITY_BUILD_REPOSITORY = %vcsroot.<YOUR TEAMCITY VCS NAME>.url%"
+  fi
   service="teamcity"
-  # branch="$teamcity.build.branch"
-  build="$BUILD_NUMBER"
-  # build_url=$(urlencode "${teamcity.build.serverURL}viewLog.html?buildId=${teamcity.build.id}")
-  commit="$BUILD_VCS_NUMBER"
+  branch="$TEAMCITY_BUILD_BRANCH"
+  build="$TEAMCITY_BUILD_ID"
+  build_url=$(urlencode "$TEAMCITY_BUILD_URL")
+  if [ "$TEAMCITY_BUILD_COMMIT" = "" ];
+  then
+    commit="$TEAMCITY_BUILD_COMMIT"
+  else
+    commit="$BUILD_VCS_NUMBER"
+  fi
+  slug=$(echo "$TEAMCITY_BUILD_REPOSITORY" | cut -d'/' -f4-5 | sed -e 's/\.git//')
 
 elif [ "$CI" = "true" ] && [ "$CIRCLECI" = "true" ];
 then
