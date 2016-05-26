@@ -78,3 +78,14 @@ bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverag
 
 > Using **Travis CI**? Uploader is compatable with `sudo: false` which can speed up your builds. :+1:
 
+### Caveats
+
+Bash does not respect multiple spaces with arguments
+
+```diff
+# FAILES because of double space here:
+#                                                      v
+- bash <(curl -s https://codecov.io/bash) -X coveragepy  -B master
++ bash <(curl -s https://codecov.io/bash) -X coveragepy -B master
+```
+
