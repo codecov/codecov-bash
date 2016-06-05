@@ -388,7 +388,7 @@ function test_shippable (){
     export SHIPPABLE="true"
     export BRANCH="develop"
     export BUILD_NUMBER="1.2"
-    export REPO_NAME="myowner/myrepo"
+    export REPO_FULL_NAME="myowner/myrepo"
     export BUILD_URL="http://shippable"
     export PULL_REQUEST="2"
     export COMMIT="180c0d097354fc1a451da8a3be5aba255f2ffd9f"

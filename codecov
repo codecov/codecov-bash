@@ -173,7 +173,6 @@ parse_yaml() {
    }'
 }
 
-
 if [ $# != 0 ];
 then
   while getopts "svdhu:t:f:r:e:g:p:s:T:X:x:a:b:C:B:P:D:S:R:J:F:K:" o
@@ -478,14 +477,27 @@ then
 elif [ "$SHIPPABLE" = "true" ];
 then
   say "$e==>$x Shippable CI detected."
-  # http://docs.shippable.com/en/latest/config.html#common-environment-variables
+  # http://docs.shippable.com/ci_configure/
   service="shippable"
   branch="$BRANCH"
   build="$BUILD_NUMBER"
   build_url=$(urlencode "$BUILD_URL")
   pr="$PULL_REQUEST"
-  slug="$REPO_NAME"
+  slug="$REPO_FULL_NAME"
   commit="$COMMIT"
+
+elif [ "$GREENHOUSE" = "true" ];
+then
+  say "$e==>$x Greenhouse CI detected."
+  # http://docs.greenhouseci.com/docs/environment-variables-files
+  service="greenhouse"
+  branch="$GREENHOUSE_BRANCH"
+  build="$GREENHOUSE_BUILD_NUMBER"
+  # build_url=$(urlencode "$")
+  pr="$GREENHOUSE_PULL_REQUEST"
+  slug="$"
+  commit="$"
+  search_in="$search_in $GREENHOUSE_EXPORT_DIR"
 
 elif [ "$CI_SERVER_NAME" = "GitLab CI" ];
 then
@@ -617,7 +629,8 @@ else
     # xcode via profdata
     if [ "$xp" = "" ];
     then
-      say "  ${e}->${x} Speed up xcode processing by using use -J 'AppName'"
+      xp=$(xcodebuild -showBuildSettings 2>/dev/null | grep -i "^\s*PRODUCT_NAME" | sed -e 's/.*= \(.*\)/\1/')
+      say "  ${e}->${x} Speed up XCode processing by adding ${e}-J '$xp'${x}"
     fi
 
     while read -r profdata;
@@ -655,6 +668,7 @@ else
                      -or -name 'cobertura.xml' \
                      -or -name 'luacov.report.out' \
                      -or -name 'coverage-final.json' \
+                     -or -name 'naxsi.info' \
                      -or -name 'lcov.info' \
                      -or -name '*.lcov' \
                      -or -name 'cover.out' \
