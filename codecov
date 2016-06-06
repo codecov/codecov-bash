@@ -325,7 +325,7 @@ then
   pr="$ghprbPullId"
   build_url=$(urlencode "$BUILD_URL")
 
-elif [ "$CI" = "true" ] && [ "$TRAVIS" = "true" ];
+elif [ "$CI" = "true" ] && [ "$TRAVIS" = "true" ] && [ "$SHIPPABLE" != "true" ];
 then
   say "$e==>$x Travis CI detected."
   # http://docs.travis-ci.com/user/ci-environment/#Environment-variables
