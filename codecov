@@ -493,10 +493,9 @@ then
   service="greenhouse"
   branch="$GREENHOUSE_BRANCH"
   build="$GREENHOUSE_BUILD_NUMBER"
-  # build_url=$(urlencode "$")
+  build_url=$(urlencode "$GREENHOUSE_BUILD_URL")
   pr="$GREENHOUSE_PULL_REQUEST"
-  slug="$"
-  commit="$"
+  commit="$GREENHOUSE_COMMIT"
   search_in="$search_in $GREENHOUSE_EXPORT_DIR"
 
 elif [ "$CI_SERVER_NAME" = "GitLab CI" ];
