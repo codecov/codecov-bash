@@ -817,12 +817,12 @@ if [ "$env" != "" ];
 then
   inc_env=""
   say "$e==>$x Appending build variables"
-  for e in $(echo "$env" | tr ',' ' ')
+  for varname in $(echo "$env" | tr ',' ' ')
   do
-    if [ "$e" != "" ];
+    if [ "$varname" != "" ];
     then
       say "  $g+$x $e"
-      inc_env="$inc_env$e=$(eval echo "\$$e")
+      inc_env="$inc_env$varname=$(eval echo "\$$varname")
 "
     fi
   done
