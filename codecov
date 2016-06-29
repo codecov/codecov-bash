@@ -792,7 +792,8 @@ fi
 if [ "$files" = "" ];
 then
   say "${r}**>${x} No coverage report found."
-  exit 1;
+  say "            Please visit https://github.com/codecov and search for your projects language to learn how to collect reports."
+  exit 0;
 fi
 
 say "$e==>$x Detecting git/mercurial file structure"
