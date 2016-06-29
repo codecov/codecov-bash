@@ -19,7 +19,7 @@ bash <(curl -s https://codecov.io/bash)
 
 
 ### Usage
-> Below are most commonly used settings. [Click here](https://github.com/codecov/codecov-bash/blob/master/codecov#L30-L52) to see the full list of commands.
+> Below are most commonly used settings. [View full list of commands](https://github.com/codecov/codecov-bash/blob/master/codecov#L52) to see the full list of commands.
 
 | Argument |   Environment   |                                                                    Description                                                                     |
 | -------- | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
