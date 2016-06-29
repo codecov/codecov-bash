@@ -746,9 +746,10 @@ else
                     -not -path '*/node_modules/*' \
                     -not -path '*/conftest_*.c.gcov' 2>/dev/null)
 
+  files=$(echo "$files" | wc -l | tr -d '[[:space:]]')
   if [ "$files" != '' ];
   then
-    say "    Found $(echo "$files" | wc -l | tr -d '[[:space:]]') reports."
+    say "  ${e}->${x} Found $files reports."
   fi
 
   # Python coveragepy generation
