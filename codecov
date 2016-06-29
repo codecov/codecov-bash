@@ -656,8 +656,8 @@ else
     say "${r}**>${x} gcov disable"
   fi
 
-  say "$e==>$x Searching for coverage reports"
-  search_in="$search_in $git_root"
+  search_in="$search_in $proj_root"
+  say "$e==>$x Searching for coverage reports under: $search_in"
   files=$(find $search_in -type f \( -name '*coverage.*' \
                      -or -name 'nosetests.xml' \
                      -or -name 'jacoco*.xml' \
@@ -703,6 +703,7 @@ else
                     -not -name 'coverage.html' \
                     -not -name 'scoverage.measurements.*' \
                     -not -name 'test_*_coverage.txt' \
+                    -not -name '*.cmake' \
                     -not -path '*/vendor/*' \
                     -not -path '*/htmlcov/*' \
                     -not -path '*/home/cainus/*' \
