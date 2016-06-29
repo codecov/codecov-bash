@@ -670,7 +670,11 @@ else
   fi
 
   search_in="$search_in $proj_root"
-  say "$e==>$x Searching for coverage reports under: $search_in"
+  say "$e==>$x Searching for coverage reports under:"
+  for _path in "$search_in"
+  do
+    say "    $_path"
+  done
   files=$(find $search_in -type f \( -name '*coverage.*' \
                      -or -name 'nosetests.xml' \
                      -or -name 'jacoco*.xml' \
