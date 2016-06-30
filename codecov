@@ -132,7 +132,7 @@ swiftcov() {
         say "    $g+$x Building reports for $_proj $_type"
         _proj_name=$(echo "$_proj" | sed -e 's/[[:space:]]//g')
         xcrun llvm-cov show -instr-profile "$1" "$f/$_proj" > "$_proj_name.$_type.coverage.txt" \
-         || echo "    ${r}**>${x} llvm-cov failed to produce results for $f/$_proj"
+         || say "    ${r}x>${x} llvm-cov failed to produce results for $f/$_proj"
       fi
     done
   done
@@ -489,7 +489,7 @@ then
   commit="$CI_BUILD_REF"
 
 else
-  say "${r}**>${x} Unable to detect CI provider"
+  say "${r}x>${x} Unable to detect CI provider"
 fi
 
 say "$e(root)$x $git_root"
@@ -603,14 +603,14 @@ else
 
   if [ -d "$ddp" ];
   then
-    say "  ${e}->${x} Swift in $ddp"
+    say "${e}==>${x} Swift in $ddp"
 
     # xcode via profdata
     if [ "$xp" = "" ];
     then
       # xp=$(xcodebuild -showBuildSettings 2>/dev/null | grep -i "^\s*PRODUCT_NAME" | sed -e 's/.*= \(.*\)/\1/')
-      # say "  ${e}->${x} Speed up XCode processing by adding ${e}-J '$xp'${x}"
-      say "  ${e}->${x} Speed up xcode processing by using use -J 'AppName'"
+      # say " ${e}->${x} Speed up XCode processing by adding ${e}-J '$xp'${x}"
+      say "    ${e}->${x} Speed up xcode processing by using use -J 'AppName'"
     fi
 
     while read -r profdata;
@@ -625,22 +625,22 @@ else
     # search for osx coverage data
     if [ -d "$ddp" ];
     then
-      say "  ${e}->${x} Obj-C in $ddp"
+      say "    ${e}->${x} Obj-C in $ddp"
       find "$ddp" -name '*.gcda' -exec gcov -pbcu {} + || true
     fi
 
     # all other gcov
-    say "  ${e}->${x} $gcov_exe in $proj_root"
+    say "    ${e}->${x} $gcov_exe in $proj_root"
     bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe -pb $gcov_arg {} +" || true
   else
-    say "${r}**>${x} gcov disable"
+    say "${e}==>${x} gcov disable"
   fi
 
   search_in="$search_in $proj_root"
   say "$e==>$x Searching for coverage reports under:"
   for _path in "$search_in"
   do
-    say "    $_path"
+    say "    ${g}+${x} $_path"
   done
   files=$(find $search_in -type f \( -name '*coverage.*' \
                      -or -name 'nosetests.xml' \
@@ -724,19 +724,19 @@ else
   then
     if which coverage >/dev/null 2>&1;
     then
-      say "$e==>$x Python coveragepy exists (disable via -X coveragepy)"
+      say "${e}==>${x} Python coveragepy exists (disable via -X coveragepy)"
 
       # find the .coverage
       if [ "$verbose" = "1" ];
       then
-        say "  ${e}->${x} Searching for .coverage file"
+        say "    ${e}->${x} Searching for .coverage file"
         find "$git_root" \( -name '.coverage' -or -name '.coverage.*' \) -not -path '.coveragerc'
       fi
       dotcoverage=$(find "$git_root" \( -name '.coverage' -or -name '.coverage.*' \) -not -path '.coveragerc' | head -1)
       cd "$(dirname "$dotcoverage")"
       if [ "$dotcoverage" != "" ];
       then
-        say "  ${e}->${x} Running coverage xml"
+        say "    ${e}->${x} Running coverage xml"
         if [ "$(coverage xml -i)" != "No data to report." ];
         then
           files="$files
@@ -748,22 +748,22 @@ coverage.xml"
         say "    ${r}No .coverage file found.${x}"
       fi
     else
-      say "${r}**>${x} Python coverage not found"
+      say "${e}==>${x} Python coveragepy not found"
     fi
   else
-    say "${r}**>${x} Python coverage disabled"
+    say "${e}==>${x} Python coveragepy disabled"
   fi
 fi
 
 # no files found
 if [ "$files" = "" ];
 then
-  say "${r}**>${x} No coverage report found."
-  say "            Please visit https://github.com/codecov and search for your projects language to learn how to collect reports."
+  say "${r}-->${x} No coverage report found."
+  say "    Please visit https://github.com/codecov and search for your projects language to learn how to collect reports."
   exit 0;
 fi
 
-say "$e==>$x Detecting git/mercurial file structure"
+say "${e}==>${x} Detecting git/mercurial file structure"
 network=$(cd "$git_root" && git ls-files 2>/dev/null || hg locate 2>/dev/null || echo "")
 if [ "$network" = "" ];
 then
@@ -803,12 +803,12 @@ upload="$network
 if [ "$env" != "" ];
 then
   inc_env=""
-  say "$e==>$x Appending build variables"
+  say "${e}==>${x} Appending build variables"
   for varname in $(echo "$env" | tr ',' ' ')
   do
     if [ "$varname" != "" ];
     then
-      say "  $g+$x $e"
+      say "    ${g}+${x} $e"
       inc_env="$inc_env$varname=$(eval echo "\$$varname")
 "
     fi
@@ -819,21 +819,21 @@ $upload"
 fi
 
 # Append Reports
-say "$e==>$x Reading reports"
+say "${e}==>${x} Reading reports"
 while IFS='' read -r file;
 do
   # read the coverage file
   if [ -f "$file" ];
   then
     report=$(cat "$file")
-    say "  $g+$x $file ${e}bytes=${#report}${x}"
+    say "    ${g}+${x} $file ${e}bytes=${#report}${x}"
     # append to to upload
     upload="$upload
 # path=$(echo "$file" | sed "s|^$git_root/||")
 $report
 <<<<<< EOF"
   else
-    say "  $r->$x File not found at $file"
+    say "    ${r}-${x} file not found at $file"
   fi
 done <<< "$(echo -e "$files")"
 
@@ -841,7 +841,7 @@ if [ "$ft_fix" = "1" ];
 then
   if [ "$(find "$git_root" -name '*.go' -or -name '*.php' -or -name '*.kt' -or -name '*.swift' -or -name '*.m')" != "" ];
   then
-    say "$e==>$x Appending adjustments (http://bit.ly/1O4eBpt)"
+    say "${e}==>${x} Appending adjustments (http://bit.ly/1O4eBpt)"
     adjustments=""
     if [[ $(echo "$network" | grep '.kt$') != '' ]];
     then
@@ -883,13 +883,13 @@ $(find "$git_root" -type f -name '*.m' -exec grep -nIH '^[[:space:]]*}$' {} \;)"
     found=$(echo "$adjustments" | wc -l | tr -d ' ')
     if [ "$found" != "1" ];
     then
-      say "  ${e}-->${x} Found $found adjustments"
+      say "    ${g}+${x} Found $found adjustments"
       upload="$upload
 # path=fixes
 $adjustments
 <<<<<< EOF"
     else
-      say "  ${e}-->${x} Found 0 adjustments"
+      say "    ${e}->${x} Found 0 adjustments"
     fi
   fi
 fi
@@ -899,26 +899,28 @@ then
   url="$url_o"
 fi
 # trim whitespace from query
-say "$e(url)$x $url"
-say "$e(query)$x $(echo "$query" | tr -d ' ')"
-query=$(echo "package=bash-$VERSION&token=$token&$query" | tr -d ' ')
 
 if [ "$dump" != "0" ];
 then
-  echo "$url/upload/v4?$query"
+  echo "$url/upload/v4?$(echo "package=bash-$VERSION&token=$token&$query" | tr -d ' ')"
   echo "$upload"
 else
 
   say "${e}==>${x} Uploading reports"
-  say "    Pinging Codecov"
+  say "    ${e}url:${x} $url"
+  say "    ${e}query:${x} $(echo "$query" | tr -d ' ')"
 
+  # now add token to query
+  query=$(echo "package=bash-$VERSION&token=$token&$query" | tr -d ' ')
+
+  say "    Pinging Codecov"
   res=$(curl -sX $cacert POST "$url/upload/v4?$query" -H 'Accept: text/plain' || true)
   # a good replay is "https://codecov.io" + "\n" + "https://codecov.s3.amazonaws.com/..."
   status=$(echo "$res" | head -1 | grep 'HTTP ' | cut -d' ' -f2)
   if [ "$status" = "" ];
   then
     s3target=$(echo "$res" | sed -n 2p)
-    say "    -> to S3 $(echo "$s3target" | cut -c1-32)"
+    say "    ${e}->${x} to S3 $(echo "$s3target" | cut -c1-32)"
     s3=$(echo "$upload" | \
          curl -fisX PUT --data-binary @- \
               -H 'Content-Type: text/plain' \
@@ -939,7 +941,7 @@ else
       exit 0
   fi
 
-  say "    -> to Codecov"
+  say "    ${e}->${x} to Codecov"
   i="0"
   while [ $i -lt 4 ]
   do
