@@ -630,7 +630,7 @@ else
     fi
 
     # all other gcov
-    say "    ${e}->${x} $gcov_exe in $proj_root"
+    say "    ${e}->${x} Running $gcov_exe in $proj_root"
     bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe -pb $gcov_arg {} +" || true
   else
     say "${e}==>${x} gcov disable"
@@ -823,7 +823,7 @@ say "${e}==>${x} Reading reports"
 while IFS='' read -r file;
 do
   # read the coverage file
-  if [ $(echo "$file" | tr -d ' ') != '' ];
+  if [ "$(echo "$file" | tr -d ' ')" != '' ];
   then
     if [ -f "$file" ];
     then
@@ -932,7 +932,7 @@ else
               "$s3target" || true)
     if [ "$s3" != "" ];
     then
-      say "    View reports at ${b}$(echo "$res" | sed -n 1p)${x}"
+      say "    ${g}->${x} View reports at ${b}$(echo "$res" | sed -n 1p)${x}"
       exit 0
     else
       say "    ${r}Failed to upload to s3${n}"
