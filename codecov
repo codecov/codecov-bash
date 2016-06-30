@@ -492,7 +492,7 @@ else
   say "${r}x>${x} Unable to detect CI provider"
 fi
 
-say "$e(root)$x $git_root"
+say "    ${e}project root:${x} $git_root"
 
 # find branch, commit, repo from git command
 if [ "$GIT_BRANCH" != "" ];
@@ -621,7 +621,7 @@ else
 
   if [ "$ft_gcov" = "1" ];
   then
-    say "$e==>$x Running gcov (disable via -X gcov)"
+    say "${e}==>${x} Running gcov ${e}disable via -X gcov${x}"
     # search for osx coverage data
     if [ -d "$ddp" ];
     then
@@ -713,10 +713,10 @@ else
                     -not -path '*/node_modules/*' \
                     -not -path '*/conftest_*.c.gcov' 2>/dev/null)
 
-  num_of_files=$(echo "$files" | wc -l | tr -d '[[:space:]]')
+  num_of_files=$(echo "$files" | wc -l | tr -d ' ')
   if [ "$num_of_files" != '' ];
   then
-    say "    ${e}->${x} Found $num_of_files reports."
+    say "    ${e}->${x} Found $num_of_files reports"
   fi
 
   # Python coveragepy generation
@@ -724,7 +724,7 @@ else
   then
     if which coverage >/dev/null 2>&1;
     then
-      say "${e}==>${x} Python coveragepy exists (disable via -X coveragepy)"
+      say "${e}==>${x} Python coveragepy exists ${e}disable via -X coveragepy${x}"
 
       # find the .coverage
       if [ "$verbose" = "1" ];
@@ -823,17 +823,20 @@ say "${e}==>${x} Reading reports"
 while IFS='' read -r file;
 do
   # read the coverage file
-  if [ -f "$file" ];
+  if [ $(echo "$file" | tr -d ' ') != '' ];
   then
-    report=$(cat "$file")
-    say "    ${g}+${x} $file ${e}bytes=${#report}${x}"
-    # append to to upload
-    upload="$upload
+    if [ -f "$file" ];
+    then
+      report=$(cat "$file")
+      say "    ${g}+${x} $file ${e}bytes=${#report}${x}"
+      # append to to upload
+      upload="$upload
 # path=$(echo "$file" | sed "s|^$git_root/||")
 $report
 <<<<<< EOF"
-  else
-    say "    ${r}-${x} file not found at $file"
+    else
+      say "    ${r}-${x} file not found at $file"
+    fi
   fi
 done <<< "$(echo -e "$files")"
 
@@ -913,7 +916,7 @@ else
   # now add token to query
   query=$(echo "package=bash-$VERSION&token=$token&$query" | tr -d ' ')
 
-  say "    Pinging Codecov"
+  say "    ${e}->${x} Pinging Codecov"
   res=$(curl -sX $cacert POST "$url/upload/v4?$query" -H 'Accept: text/plain' || true)
   # a good replay is "https://codecov.io" + "\n" + "https://codecov.s3.amazonaws.com/..."
   status=$(echo "$res" | head -1 | grep 'HTTP ' | cut -d' ' -f2)
