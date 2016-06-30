@@ -951,7 +951,7 @@ else
     i=$[$i+1]
 
     res=$(echo "$upload" | curl -sX POST $cacert --data-binary @- "$url/upload/v2?$query" -H 'Accept: text/plain')
-    echo "status $status"
+    status=$(echo "$res" | head -1 | grep 'HTTP ' | cut -d' ' -f2)
     if [ "$status" = "" ];
     then
       say "    View reports at ${b}${res}${x}"
