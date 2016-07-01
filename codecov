@@ -861,6 +861,15 @@ $(find "$git_root" -type f -not -path '*/vendor/*' -name '*.go' -exec grep -nIH 
 $(find "$git_root" -type f -not -path '*/vendor/*' -name '*.go' -exec grep -nIH '^[[:space:]]*\*/' {} \;)
 $(find "$git_root" -type f -not -path '*/vendor/*' -name '*.go' -exec grep -nIH '^[[:space:]]*}$' {} \;)"
     fi
+    if [[ $(echo "$network" | grep '.jsx$') != '' ]];
+    then
+      adjustments="$adjustments
+$(find "$git_root" -type f -name '*.jsx' -exec grep -nIH '^[[:space:]]*$' {} \;)
+$(find "$git_root" -type f -name '*.jsx' -exec grep -nIH '^[[:space:]]*//.*' {} \;)
+$(find "$git_root" -type f -name '*.jsx' -exec grep -nIH '^[[:space:]]*/\*' {} \;)
+$(find "$git_root" -type f -name '*.jsx' -exec grep -nIH '^[[:space:]]*\*/' {} \;)
+$(find "$git_root" -type f -name '*.jsx' -exec grep -nIH '^[[:space:]]*}$' {} \;)"
+    fi
     if [[ $(echo "$network" | grep '.swift$') != '' ]];
     then
       adjustments="$adjustments
