@@ -951,10 +951,12 @@ else
     i=$[$i+1]
 
     res=$(echo "$upload" | curl -sX POST $cacert --data-binary @- "$url/upload/v2?$query" -H 'Accept: text/plain')
-    status=$(echo "$res" | head -1 | grep 'HTTP ' | cut -d' ' -f2)
+    # HTTP 200
+    # http://....
+    status=$(echo "$res" | head -1 | cut -d' ' -f2)
     if [ "$status" = "" ];
     then
-      say "    View reports at ${b}${res}${x}"
+      say "    View reports at ${b}$(echo "$res" | head -2 | tail -1)${x}"
       exit 0
 
     elif [ "${status:0:1}" = "5" ];
