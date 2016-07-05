@@ -874,7 +874,7 @@ $(find "$git_root" -type f -name '*.jsx' -exec grep -nIH '^[[:space:]]*}$' {} \;
     then
       adjustments="$adjustments
 $(find "$git_root" -type f -not -path '*/Pods/*' -name '*.swift' -exec grep -nIH '^[[:space:]]*}$' {} \;)
-$(find "$git_root" -type f -not -path '*/Pods/*' -name '*.swift' -exec grep -nIH '^\@implementation$' {} \;)"
+$(find "$git_root" -type f -not -path '*/Pods/*' -name '*.swift' -exec grep -nIH '^\@implementation' {} \;)"
     fi
     if [[ $(echo "$network" | grep '.php$') != '' ]];
     then
