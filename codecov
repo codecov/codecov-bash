@@ -870,12 +870,6 @@ $(find "$git_root" -type f -name '*.jsx' -exec grep -nIH '^[[:space:]]*/\*' {} \
 $(find "$git_root" -type f -name '*.jsx' -exec grep -nIH '^[[:space:]]*\*/' {} \;)
 $(find "$git_root" -type f -name '*.jsx' -exec grep -nIH '^[[:space:]]*}$' {} \;)"
     fi
-    if [[ $(echo "$network" | grep '.swift$') != '' ]];
-    then
-      adjustments="$adjustments
-$(find "$git_root" -type f -not -path '*/Pods/*' -name '*.swift' -exec grep -nIH '^[[:space:]]*}$' {} \;)
-$(find "$git_root" -type f -not -path '*/Pods/*' -name '*.swift' -exec grep -nIH '^\@implementation' {} \;)"
-    fi
     if [[ $(echo "$network" | grep '.php$') != '' ]];
     then
       adjustments="$adjustments
