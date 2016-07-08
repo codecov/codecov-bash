@@ -642,7 +642,7 @@ else
   do
     say "    ${g}+${x} $_path"
   done
-  files=$(find $search_in -type f \( -name '*coverage.*' \
+  files=$(find $search_in -type f \( -name '*coverage*.*' \
                      -or -name 'nosetests.xml' \
                      -or -name 'jacoco*.xml' \
                      -or -name 'clover.xml' \
