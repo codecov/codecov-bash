@@ -489,7 +489,15 @@ then
   commit="$CI_BUILD_REF"
 
 else
-  say "${r}x>${x} Unable to detect CI provider"
+  say "${r}x>${x} No CI provider detected."
+
+  commit="$VCS_COMMIT_ID"
+  branch="$VCS_BRANCH_NAME"
+  build_url="$VCS_BRANCH_URL"
+  build="$VCS_BUILD_ID"
+  pr="$VCS_PULL_REQUEST"
+  slug="$VCS_SLUG"
+
 fi
 
 say "    ${e}project root:${x} $git_root"
