@@ -676,6 +676,7 @@ else
                     -not -name '*.ec' \
                     -not -name '*.coverage' \
                     -not -name 'Coverage.profdata' \
+                    -not -name 'coverage-summary.json' \
                     -not -name 'phpunit-code-coverage.xml' \
                     -not -name 'coverage.serialized' \
                     -not -name '*codecov.yml' \
