@@ -668,6 +668,7 @@ else
                      -or -name '*.gcov' \
                      -or -name '*.lst' \) \
                     -not -name '*.sh' \
+                    -not -name '*.bash' \
                     -not -name '*.data' \
                     -not -name '*.py' \
                     -not -name '*.class' \
@@ -681,6 +682,8 @@ else
                     -not -name '*.pyc' \
                     -not -name '*.cfg' \
                     -not -name '*.egg' \
+                    -not -name '*.css' \
+                    -not -name '*.less' \
                     -not -name '*.whl' \
                     -not -name '*.html' \
                     -not -name '*.erb' \
