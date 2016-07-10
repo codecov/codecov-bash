@@ -493,10 +493,10 @@ else
 
   commit="$VCS_COMMIT_ID"
   branch="$VCS_BRANCH_NAME"
-  build_url="$VCS_BRANCH_URL"
-  build="$VCS_BUILD_ID"
   pr="$VCS_PULL_REQUEST"
   slug="$VCS_SLUG"
+  build_url="$CI_BUILD_URL"
+  build="$CI_BUILD_ID"
 
 fi
 
