@@ -777,7 +777,7 @@ if [ "$files" = "" ];
 then
   say "${r}-->${x} No coverage report found."
   say "    Please visit https://github.com/codecov and search for your projects language to learn how to collect reports."
-  exit $exit_with;
+  exit ${exit_with};
 fi
 
 say "${e}==>${x} Detecting git/mercurial file structure"
@@ -945,7 +945,7 @@ else
   if [ "$status" = "" ];
   then
     s3target=$(echo "$res" | sed -n 2p)
-    say "    ${e}->${x} to S3 $(echo "$s3target" | cut -c1-32)"
+    say "    ${e}->${x} Uploading to S3 $(echo "$s3target" | cut -c1-32)"
     s3=$(echo "$upload" | \
          curl -fisX PUT --data-binary @- \
               -H 'Content-Type: text/plain' \
@@ -957,22 +957,22 @@ else
       say "    ${g}->${x} View reports at ${b}$(echo "$res" | sed -n 1p)${x}"
       exit 0
     else
-      say "    ${r}Failed to upload to s3${n}"
+      say "    ${r}X> Failed to upload to S3${n}"
     fi
   elif [ "$status" = "400" ];
   then
       # 400 Error
       say "${g}${res}${x}"
-      exit $exit_with
+      exit ${exit_with}
   fi
 
-  say "    ${e}->${x} to Codecov"
+  say "    ${e}->${x} Uploading to Codecov"
   i="0"
   while [ $i -lt 4 ]
   do
     i=$[$i+1]
 
-    res=$(echo "$upload" | curl -sX POST $cacert --data-binary @- "$url/upload/v2?$query" -H 'Accept: text/plain')
+    res=$(echo "$upload" | curl -fsX POST $cacert --data-binary @- "$url/upload/v2?$query" -H 'Accept: text/plain' || echo 'HTTP 500')
     # HTTP 200
     # http://....
     status=$(echo "$res" | head -1 | cut -d' ' -f2)
@@ -983,16 +983,20 @@ else
 
     elif [ "${status:0:1}" = "5" ];
     then
-      say "    ${e}Sleeping for 10s and trying again...#{x}"
+      say "    ${e}->${x} Sleeping for 10s and trying again..."
       sleep 10
 
     else
       say "    ${g}${res}${x}"
-      exit $exit_with
+      exit 0
+      exit ${exit_with}
     fi
 
   done
 
 fi
+
+say "    ${r}X> Failed to upload coverage reports${x}"
+exit ${exit_with}
 
 # EOF
