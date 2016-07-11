@@ -20,6 +20,7 @@ search_in=""
 tag_o=""
 tag=""
 flags=""
+exit_with=0
 branch_o=""
 slug_o=""
 dump="0"
@@ -70,6 +71,7 @@ Upload reports to Codecov
     -F flag      Flag this upload to with one or more titles
                  ex. -F unittests -F docker
     -K           Remove color from the output
+    -Z           Exit with 1 if not successful. Default will Exit with 0
 
     -- Override CI Environment Variables --
        These variables are automatically detected by popular CI providers
@@ -158,7 +160,7 @@ parse_yaml() {
 
 if [ $# != 0 ];
 then
-  while getopts "svdhu:t:f:r:e:g:p:s:T:X:x:a:b:C:B:P:D:S:R:J:F:K:" o
+  while getopts "svdhu:t:f:r:e:g:p:s:T:X:x:a:b:C:B:P:D:S:R:J:F:K:Z" o
   do
     case "$o" in
       "v")
@@ -277,6 +279,9 @@ $OPTARG"
         ;;
       "e")
         env="$env,$OPTARG"
+        ;;
+      "Z")
+        exit_with=1
         ;;
     esac
   done
@@ -772,7 +777,7 @@ if [ "$files" = "" ];
 then
   say "${r}-->${x} No coverage report found."
   say "    Please visit https://github.com/codecov and search for your projects language to learn how to collect reports."
-  exit 0;
+  exit $exit_with;
 fi
 
 say "${e}==>${x} Detecting git/mercurial file structure"
@@ -958,7 +963,7 @@ else
   then
       # 400 Error
       say "${g}${res}${x}"
-      exit 0
+      exit $exit_with
   fi
 
   say "    ${e}->${x} to Codecov"
@@ -983,7 +988,7 @@ else
 
     else
       say "    ${g}${res}${x}"
-      exit 0
+      exit $exit_with
     fi
 
   done
