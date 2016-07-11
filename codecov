@@ -650,7 +650,7 @@ else
   fi
 
   search_in="$search_in $proj_root"
-  say "$e==>$x Searching for coverage reports under:"
+  say "$e==>$x Searching for coverage reports in:"
   for _path in "$search_in"
   do
     say "    ${g}+${x} $_path"
@@ -731,7 +731,7 @@ else
                     -not -path '*/conftest_*.c.gcov' 2>/dev/null)
 
   num_of_files=$(echo "$files" | wc -l | tr -d ' ')
-  if [ "$num_of_files" != '' ];
+  if [ "$num_of_files" != '' ] && [ "$files" != '' ];
   then
     say "    ${e}->${x} Found $num_of_files reports"
   fi
