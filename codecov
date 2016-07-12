@@ -852,12 +852,17 @@ do
     if [ -f "$file" ];
     then
       report=$(cat "$file")
-      say "    ${g}+${x} $file ${e}bytes=${#report}${x}"
-      # append to to upload
-      upload="$upload
+      if [ "$report" != "" ];
+      then
+        say "    ${g}+${x} $file ${e}bytes=${#report}${x}"
+        # append to to upload
+        upload="$upload
 # path=$(echo "$file" | sed "s|^$git_root/||")
 $report
 <<<<<< EOF"
+      else
+        say "    ${r}-${x} Skipping empty file $file"
+      fi
     else
       say "    ${r}-${x} file not found at $file"
     fi
