@@ -2,12 +2,16 @@ Codecov Global Uploader
 =======================
 > Upload reports to Codecov for almost every supported language.
 
-[![Deployed Version](https://codecov.io/bash?badge=y)](https://codecov.io/bash?redirect=y)
+[![Deployed Version](https://codecov.io?bash=badge)](https://codecov.io?bash=redirect)
 
 ------
 
 > ```bash
+# All CI
 bash <(curl -s https://codecov.io/bash)
+
+# Jenkins
+curl -s https://codecov.io/bash | bash
 ```
 
 ------
