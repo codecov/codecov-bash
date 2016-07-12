@@ -112,7 +112,7 @@ EOF
 }
 
 say() {
-  printf "$1\n" || echo "$1"
+  echo -e "$1"
 }
 
 
@@ -583,7 +583,14 @@ then
 
 fi
 
-query="branch=$([ "$branch_o" = "" ] && echo "$branch" || echo "$branch_o")\
+if [ "$branch_o" != "" ];
+then
+  branch=$(urlencode "$branch_o")
+else
+  branch=$(urlencode "$branch")
+fi
+
+query="branch=$branch\
        &commit=$commit\
        &build=$([ "$build_o" = "" ] && echo "$build" || echo "$build_o")\
        &build_url=$build_url\
@@ -931,9 +938,10 @@ then
   echo "$upload"
 else
 
+  query=$(echo "${query}" | tr -d ' ')
   say "${e}==>${x} Uploading reports"
   say "    ${e}url:${x} $url"
-  say "    ${e}query:${x} $(echo "$query" | tr -d ' ')"
+  say "    ${e}query:${x} $query"
 
   # now add token to query
   query=$(echo "package=bash-$VERSION&token=$token&$query" | tr -d ' ')
