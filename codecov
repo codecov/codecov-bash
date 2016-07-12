@@ -985,7 +985,7 @@ else
   do
     i=$[$i+1]
 
-    res=$(echo "$upload" | curl -fsX POST $cacert --data-binary @- "$url/upload/v2?$query" -H 'Accept: text/plain' || echo 'HTTP 500')
+    res=$(echo "$upload" | curl -sX POST $cacert --data-binary @- "$url/upload/v2?$query" -H 'Accept: text/plain' || echo 'HTTP 500')
     # HTTP 200
     # http://....
     status=$(echo "$res" | head -1 | cut -d' ' -f2)
