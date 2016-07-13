@@ -674,6 +674,7 @@ else
                      -or -name 'coverage-final.json' \
                      -or -name 'naxsi.info' \
                      -or -name 'lcov.info' \
+                     -or -name 'lcov.dat' \
                      -or -name '*.lcov' \
                      -or -name 'cover.out' \
                      -or -name 'gcov.info' \
