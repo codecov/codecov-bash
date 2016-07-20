@@ -31,6 +31,7 @@ xp=""
 files=""
 cacert="$CODECOV_CA_BUNDLE"
 gcov_ignore=""
+gcov_include=""
 ft_gcov="1"
 ft_coveragepy="1"
 ft_fix="1"
@@ -90,6 +91,7 @@ Upload reports to Codecov
 
     -- gcov --
     -g GLOB      Paths to ignore during gcov gathering
+    -G GLOB      Paths to include during gcov gathering
     -p dir       Project root directory (default: PWD, WORKSPACE, or TRAVIS_BUILD_DIR)
                  Also used when preparing gcov
     -x gcovexe   gcov executable to run. Defaults to 'gcov'
@@ -160,7 +162,7 @@ parse_yaml() {
 
 if [ $# != 0 ];
 then
-  while getopts "svdhu:t:f:r:e:g:p:s:T:X:x:a:b:C:B:P:D:S:R:J:F:K:Z" o
+  while getopts "svdhu:t:f:r:e:g:G:p:s:T:X:x:a:b:C:B:P:D:S:R:J:F:K:Z" o
   do
     case "$o" in
       "v")
@@ -270,6 +272,9 @@ $OPTARG"
         ;;
       "g")
         gcov_ignore="$gcov_ignore -not -path '$OPTARG'"
+        ;;
+      "G")
+        gcov_include="$gcov_include -path '$OPTARG'"
         ;;
       "x")
         gcov_exe=$OPTARG
@@ -651,7 +656,7 @@ else
 
     # all other gcov
     say "    ${e}->${x} Running $gcov_exe in $proj_root"
-    bash -c "find $proj_root -type f -name '*.gcno' $gcov_ignore -exec $gcov_exe -pb $gcov_arg {} +" || true
+    bash -c "find $proj_root -type f -name '*.gcno' $gcov_include $gcov_ignore -exec $gcov_exe -pb $gcov_arg {} +" || true
   else
     say "${e}==>${x} gcov disable"
   fi
