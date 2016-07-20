@@ -849,6 +849,7 @@ $upload"
 fi
 
 # Append Reports
+fr=0
 say "${e}==>${x} Reading reports"
 while IFS='' read -r file;
 do
@@ -866,6 +867,7 @@ do
 # path=$(echo "$file" | sed "s|^$git_root/||")
 $report
 <<<<<< EOF"
+        fr=1
       else
         say "    ${r}-${x} Skipping empty file $file"
       fi
@@ -874,6 +876,13 @@ $report
     fi
   fi
 done <<< "$(echo -e "$files")"
+
+if [ "$fr" = "0" ];
+then
+  say "${r}-->${x} No coverage data found."
+  say "    Please visit https://github.com/codecov and search for your projects language to learn how to collect reports."
+  exit ${exit_with};
+fi
 
 if [ "$ft_fix" = "1" ];
 then
