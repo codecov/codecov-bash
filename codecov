@@ -24,6 +24,7 @@ exit_with=0
 branch_o=""
 slug_o=""
 dump="0"
+clean="0"
 branch=""
 commit=""
 ddp="$(echo ~)/Library/Developer/Xcode/DerivedData"
@@ -73,6 +74,7 @@ Upload reports to Codecov
                  ex. -F unittests -F docker
     -K           Remove color from the output
     -Z           Exit with 1 if not successful. Default will Exit with 0
+    -c           Move discovered coverage reports to the trash
 
     -- Override CI Environment Variables --
        These variables are automatically detected by popular CI providers
@@ -162,7 +164,7 @@ parse_yaml() {
 
 if [ $# != 0 ];
 then
-  while getopts "svdhu:t:f:r:e:g:G:p:s:T:X:x:a:b:C:B:P:D:S:R:J:F:K:Z" o
+  while getopts "svdhcu:t:f:r:e:g:G:p:s:T:X:x:a:b:C:B:P:D:S:R:J:F:K:Z" o
   do
     case "$o" in
       "v")
@@ -188,6 +190,9 @@ then
         ;;
       "d")
         dump="1"
+        ;;
+      "c")
+        clean="1"
         ;;
       "C")
         commit_o="$OPTARG"
@@ -884,6 +889,10 @@ do
 $report
 <<<<<< EOF"
         fr=1
+        if [ "$clean" = "1" ];
+        then
+          rm "$file"
+        fi
       else
         say "    ${r}-${x} Skipping empty file $file"
       fi
