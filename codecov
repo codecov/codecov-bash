@@ -685,7 +685,23 @@ else
                      -or -name 'gcov.info' \
                      -or -name '*.gcov' \
                      -or -name '*.lst' \) \
+                    -not -name 'Coverage.profdata' \
+                    -not -name 'coverage-summary.json' \
+                    -not -name 'phpunit-code-coverage.xml' \
+                    -not -name '*codecov.yml' \
+                    -not -name '*.serialized' \
+                    -not -name 'coverage*' \
+                    -not -name '.coverage*' \
+                    -not -name '.*coveragerc' \
                     -not -name '*.sh' \
+                    -not -name '*.log' \
+                    -not -name '*.pth' \
+                    -not -name '*.in' \
+                    -not -name '*.jar*' \
+                    -not -name '*.pom*' \
+                    -not -name '*.csv' \
+                    -not -name '*.snapshot' \
+                    -not -name '*.mak*' \
                     -not -name '*.bash' \
                     -not -name '*.data' \
                     -not -name '*.py' \
@@ -693,31 +709,31 @@ else
                     -not -name '*.xcconfig' \
                     -not -name '*.ec' \
                     -not -name '*.coverage' \
-                    -not -name 'Coverage.profdata' \
-                    -not -name 'coverage-summary.json' \
-                    -not -name 'phpunit-code-coverage.xml' \
-                    -not -name 'coverage.serialized' \
-                    -not -name '*codecov.yml' \
                     -not -name '*.pyc' \
                     -not -name '*.cfg' \
                     -not -name '*.egg' \
+                    -not -name '*.ru' \
                     -not -name '*.css' \
                     -not -name '*.less' \
                     -not -name '*.whl' \
                     -not -name '*.html' \
                     -not -name '*.erb' \
+                    -not -name '*.rb' \
                     -not -name '*.js' \
+                    -not -name '*.jade' \
+                    -not -name '*.db' \
                     -not -name '*.md' \
                     -not -name '*.cpp' \
-                    -not -name 'coverage.jade' \
-                    -not -name 'coverage.db' \
+                    -not -name '*.cmake' \
+                    -not -name '*.gradle' \
+                    -not -name '*.tar.tz' \
+                    -not -name '*.scss' \
                     -not -name 'include.lst' \
+                    -not -name 'fullLocaleNames.lst' \
                     -not -name 'inputFiles.lst' \
                     -not -name 'createdFiles.lst' \
-                    -not -name 'coverage.html' \
                     -not -name 'scoverage.measurements.*' \
                     -not -name 'test_*_coverage.txt' \
-                    -not -name '*.cmake' \
                     -not -path '*/vendor/*' \
                     -not -path '*/htmlcov/*' \
                     -not -path '*/home/cainus/*' \
