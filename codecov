@@ -571,24 +571,24 @@ yaml=$(find "$proj_root" -name 'codecov.yml' -or -name '.codecov.yml' | head -1 
 
 if [ "$yaml" != "" ];
 then
-  eval $(parse_yaml "$yaml" "yml_" || true)
+  config=$(parse_yaml $yaml || echo '')
 
-  if [ "$yml_codecov_token" != "" ] && [ "$token" = "" ];
+  if [ "$(echo "$config" | grep 'codecov_token="')" != "" ] && [ "$token" = "" ];
   then
     say "${e}-->${x} token set from yaml"
-    token="$yml_codecov_token"
+    token="$(echo "$config" | grep 'codecov_token="' | sed -e 's/codecov_token="//' | sed -e 's/"\.*//')"
   fi
 
-  if [ "$yml_codecov_url" != "" ] && [ "$url_o" = "" ];
+  if [ "$(echo "$config" | grep 'codecov_url="')" != "" ] && [ "$url_o" = "" ];
   then
     say "${e}-->${x} url set from yaml"
-    url_o="$yml_codecov_url"
+    url_o="$(echo "$config" | grep 'codecov_url="' | sed -e 's/codecov_url="//' | sed -e 's/"\.*//')"
   fi
 
-  if [ "$yml_codecov_slug" != "" ] && [ "$slug_o" = "" ];
+  if [ "$(echo "$config" | grep 'codecov_slug="')" != "" ] && [ "$slug_o" = "" ];
   then
     say "${e}-->${x} slug set from yaml"
-    slug_o="$yml_codecov_slug"
+    slug_o="$(echo "$config" | grep 'codecov_slug="' | sed -e 's/codecov_slug="//' | sed -e 's/"\.*//')"
   fi
 
 fi
