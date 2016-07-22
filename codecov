@@ -695,7 +695,6 @@ else
                     -not -name 'phpunit-code-coverage.xml' \
                     -not -name '*codecov.yml' \
                     -not -name '*.serialized' \
-                    -not -name 'coverage*' \
                     -not -name '.coverage*' \
                     -not -name '.*coveragerc' \
                     -not -name '*.sh' \
