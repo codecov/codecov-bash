@@ -481,7 +481,7 @@ then
   say "$e==>$x Shippable CI detected."
   # http://docs.shippable.com/ci_configure/
   service="shippable"
-  branch="$BRANCH"
+  branch=$([ "$HEAD_BRANCH" != "" ] && echo "$HEAD_BRANCH" || echo "$BRANCH")
   build="$BUILD_NUMBER"
   build_url=$(urlencode "$BUILD_URL")
   pr="$PULL_REQUEST"
