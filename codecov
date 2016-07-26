@@ -673,7 +673,10 @@ else
     say "${e}==>${x} gcov disable"
   fi
 
-  search_in="$search_in $proj_root"
+  if [ "$search_in" = "" ];
+  then
+    search_in="$proj_root"
+  fi
   say "$e==>$x Searching for coverage reports in:"
   for _path in "$search_in"
   do
