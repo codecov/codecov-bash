@@ -797,7 +797,7 @@ else
       if [ "$dotcoverage" != "" ];
       then
         say "    ${e}->${x} Running coverage xml"
-        if [ "$(coverage xml -i)" != "No data to report." ];
+        if [ "$(coverage combine && coverage xml -i)" != "No data to report." ];
         then
           files="$files
 coverage.xml"
