@@ -500,7 +500,7 @@ then
   commit="$GREENHOUSE_COMMIT"
   search_in="$search_in $GREENHOUSE_EXPORT_DIR"
 
-elif [ "$CI_SERVER_NAME" = "GitLab CI" ];
+elif [ "$GITLAB_CI" != "" ];
 then
   say "$e==>$x GitLab CI detected."
   # http://doc.gitlab.com/ce/ci/variables/README.html
