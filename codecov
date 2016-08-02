@@ -913,7 +913,7 @@ fi
 
 if [ "$ft_fix" = "1" ];
 then
-  if [ "$(find "$git_root" -name '*.go' -or -name '*.php' -or -name '*.kt' -or -name '*.swift' -or -name '*.m')" != "" ];
+  if [ "$(find "$git_root" -name '*.go' -or -name '*.php' -or -name '*.kt' -or -name '*.swift' -or -name '*.m' -or -name '*.jsx' -or -name .cpp -or -name .h -or -name .cxx -or -name .c -or -name .hpp)" != "" ];
   then
     say "${e}==>${x} Appending adjustments (http://bit.ly/1O4eBpt)"
     adjustments=""
