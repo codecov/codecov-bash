@@ -22,14 +22,7 @@ curl -s https://codecov.io/bash | bash
 
 
 ### Usage
-> Below are most commonly used settings. [View full list of commands](https://github.com/codecov/codecov-bash/blob/master/codecov#L52) to see the full list of commands.
-
-| Argument |   Environment   |                                                                    Description                                                                     |
-| -------- | --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `-t`     | `CODECOV_TOKEN` | Private repo token for uploading                                                                                                                   |
-| `-e`     | `CODECOV_ENV`   | List of config vars to store for the build [see example](https://codecov.io/github/pyca/cryptography?ref=d47946f3d3e358b706e996d0b951d496ffc2461f) |
-| `-u`     | `CODECOV_URL`   | **Enterprise** url of your instance of Codecov                                                                                                     |
-| `-r`     | `CODECOV_SLUG`  | **Enterprise** repository slug ex. "owner/repo"                                                                                                    |
+> Below are most commonly used settings. [View full list of commands](https://github.com/codecov/codecov-bash/blob/master/codecov#L56) to see the full list of commands.
 
 ```yaml
 # public repo on Travis CI
@@ -40,7 +33,13 @@ after_success:
 ```yaml
 # private repo
 after_success:
-  - bash <(curl -s https://codecov.io/bash) -t :repo-token
+  - bash <(curl -s https://codecov.io/bash) -t your-repository-upload-token
+```
+
+```yaml
+# Flag build types
+after_success:
+  - bash <(curl -s https://codecov.io/bash) -F unittests
 ```
 
 ```yaml
