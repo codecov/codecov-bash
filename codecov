@@ -640,7 +640,7 @@ else
     then
       # xp=$(xcodebuild -showBuildSettings 2>/dev/null | grep -i "^\s*PRODUCT_NAME" | sed -e 's/.*= \(.*\)/\1/')
       # say " ${e}->${x} Speed up XCode processing by adding ${e}-J '$xp'${x}"
-      say "    ${e}->${x} Speed up xcode processing by using use -J 'AppName'"
+      say "    ${e}->${x} Speed up xcode processing by using use -J 'AppName' (accepting regexp)"
     fi
 
     while read -r profdata;
