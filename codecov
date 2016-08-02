@@ -952,7 +952,7 @@ $(find "$git_root" -type f -not -path '*/vendor/*' -name '*.php' -exec grep -nIH
     then
       adjustments="$adjustments
 $(find "$git_root" -type f \( -name '*.h' -or -name '*.cpp' -or -name '*.cxx' -or -name '*.c' -or -name '*.hpp' \) -exec grep -nIH '^}' {} \;)
-$(find "$git_root" -type f \( -name '*.h' -or -name '*.cpp' -or -name '*.cxx' -or -name '*.c' -or -name '*.hpp' \) -exec grep -nIH '// LCOV_EXCL_' {} \;)"
+$(find "$git_root" -type f \( -name '*.h' -or -name '*.cpp' -or -name '*.cxx' -or -name '*.c' -or -name '*.hpp' \) -exec grep -nIH '// LCOV_EXCL' {} \;)"
     fi
     if [[ $(echo "$network" | grep '.m$') != '' ]];
     then
