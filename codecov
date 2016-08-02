@@ -402,7 +402,7 @@ then
   pr="$PULL_REQUEST_NUMBER"
   slug="$SEMAPHORE_REPO_SLUG"
   commit="$REVISION"
-  env="$env,$SEMAPHORE_TRIGGER_SOURCE"
+  env="$env,SEMAPHORE_TRIGGER_SOURCE"
 
 elif [ "$CI" = "true" ] && [ "$BUILDKITE" = "true" ];
 then
@@ -861,8 +861,8 @@ then
   do
     if [ "$varname" != "" ];
     then
-      say "    ${g}+${x} $e"
-      inc_env="$inc_env$varname=$(eval echo "\$$varname")
+      say "    ${g}+${x} $varname"
+      inc_env="${inc_env}${varname}=$(eval echo "\$${varname}")
 "
     fi
   done
