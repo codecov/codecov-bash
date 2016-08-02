@@ -138,7 +138,7 @@ function test_env_opt () {
     res="$(BUILD_ID="apples" ./codecov -de BUILD_ID)"
     assertContains "$res" 'BUILD_ID=apples'
 
-    res="$(COMMIT="abc" ./codecov -de BUILD_ID,COMMIT)"
+    res="$(COMMIT="abc" BUILD_ID="apples" ./codecov -de BUILD_ID,COMMIT)"
     assertContains "$res" 'BUILD_ID=apples'
     assertContains "$res" 'COMMIT=abc'
 }
@@ -148,7 +148,7 @@ function test_env_env () {
     res="$(CODECOV_ENV="BUILD_ID" BUILD_ID="apples" ./codecov -d)"
     assertContains "$res" 'BUILD_ID=apples'
 
-    res="$(CODECOV_ENV="BUILD_ID,COMMIT" COMMIT="abc" ./codecov -d)"
+    res="$(CODECOV_ENV="BUILD_ID,COMMIT" COMMIT="abc" BUILD_ID="apples" ./codecov -d)"
     assertContains "$res" 'BUILD_ID=apples'
     assertContains "$res" 'COMMIT=abc'
 }
@@ -277,19 +277,6 @@ function test_codeship (){
     assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=12.1&build_url=http%3A%2F%2Fendpoint&tag=&slug=&yaml=&service=codeship&flags=&pr=&job="
 }
 
-function test_circleci (){
-    reset
-    export CI="true"
-    export CIRCLECI="true"
-    export CIRCLE_BRANCH="develop"
-    export CIRCLE_BUILD_NUM="9"
-    export CIRCLE_NODE_INDEX="1"
-    export CIRCLE_PR_NUMBER="113"
-    export CIRCLE_PROJECT_USERNAME="myuser"
-    export CIRCLE_PROJECT_REPONAME="myrepo"
-    export CIRCLE_SHA1="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
-    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=9.1&build_url=&tag=&slug=myuser/myrepo&yaml=&service=circleci&flags=&pr=113&job="
-}
 
 function test_semaphore (){
     reset
@@ -371,16 +358,6 @@ function test_snap_ci (){
     export SNAP_PULL_REQUEST_NUMBER="1"
     export SNAP_COMMIT="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
     assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=12311&build_url=&tag=&slug=&yaml=&service=snap&flags=&pr=1&job="
-}
-
-function test_gitlab (){
-    reset
-    export CI_SERVER_NAME="GitLab CI"
-    export CI_BUILD_REF_NAME="develop"
-    export CI_BUILD_ID="1.2"
-    export CI_BUILD_REPO="https://gitlab.com/myowner/myrepo.git"
-    export CI_BUILD_REF="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
-    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=1.2&build_url=&tag=&slug=myowner/myrepo&yaml=&service=gitlab&flags=&pr=&job="
 }
 
 function test_shippable (){
