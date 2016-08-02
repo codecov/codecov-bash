@@ -319,13 +319,6 @@ then
   build="$BUILD_NUMBER"
   pr="$ghprbPullId"
   build_url=$(urlencode "$BUILD_URL")
-  if [[ "$mc" =~ ^Merge[[:space:]]pull[[:space:]]request ]];
-  then
-    # Merge pull request #40 from goeuro/SI-000-contributing
-    say "    Fixing merge commit sha"
-    _from=$(echo "$mc" | cut -d' ' -f6 | cut -d'/' -f2-)
-    commit=$(git ls-remote | grep "refs/heads/$_from" | cut -d' ' -f1)
-  fi
 
 elif [ "$CI" = "true" ] && [ "$TRAVIS" = "true" ] && [ "$SHIPPABLE" != "true" ];
 then
