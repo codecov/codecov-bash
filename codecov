@@ -675,7 +675,7 @@ else
     search_in="$search_in_o"
   fi
   say "$e==>$x Searching for coverage reports in:"
-  for _path in "$search_in"
+  for _path in $search_in
   do
     say "    ${g}+${x} $_path"
   done
