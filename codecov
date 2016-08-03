@@ -309,6 +309,8 @@ say "
 
 "
 
+search_in="$proj_root"
+
 if [ "$JENKINS_URL" != "" ];
 then
   say "$e==>$x Jenkins CI detected."
@@ -671,8 +673,6 @@ else
   then
     # location override
     search_in="$search_in_o"
-  else
-    search_in="$proj_root"
   fi
   say "$e==>$x Searching for coverage reports in:"
   for _path in "$search_in"
