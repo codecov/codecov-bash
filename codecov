@@ -17,6 +17,7 @@ build_o=""
 token=""
 commit_o=""
 search_in=""
+search_in_o=""
 tag_o=""
 tag=""
 flags=""
@@ -178,11 +179,11 @@ then
         x=""
         ;;
       "s")
-        if [ "$search_in" = "" ];
+        if [ "$search_in_o" = "" ];
         then
-          search_in="$OPTARG"
+          search_in_o="$OPTARG"
         else
-          search_in="$search_in $OPTARG"
+          search_in_o="$search_in_o $OPTARG"
         fi
         ;;
       "T")
@@ -666,9 +667,10 @@ else
     say "${e}==>${x} gcov disable"
   fi
 
-  if [ "$search_in" = "" ];
+  if [ "$search_in_o" != "" ];
   then
-    search_in="$proj_root"
+    # location override
+    search_in="$search_in_o"
   fi
   say "$e==>$x Searching for coverage reports in:"
   for _path in "$search_in"

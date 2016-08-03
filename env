@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Documentation at https://github.com/codecov/support/wiki/Docker-Integration
+
 set -e +o pipefail
 
 VERSION="tbd"
