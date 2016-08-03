@@ -671,6 +671,8 @@ else
   then
     # location override
     search_in="$search_in_o"
+  else
+    search_in="$proj_root"
   fi
   say "$e==>$x Searching for coverage reports in:"
   for _path in "$search_in"
