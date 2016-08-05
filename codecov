@@ -706,6 +706,7 @@ else
                     -not -name '.*coveragerc' \
                     -not -name '*.sh' \
                     -not -name '*.log' \
+                    -not -name '*.cmake' \
                     -not -name '*.pth' \
                     -not -name '*.in' \
                     -not -name '*.jar*' \
