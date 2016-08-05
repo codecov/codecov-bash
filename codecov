@@ -793,8 +793,13 @@ else
       cd "$(dirname "$dotcoverage")"
       if [ "$dotcoverage" != "" ];
       then
+        if [ ! -f .coverage ];
+        then
+          say "    ${e}->${x} Running coverage combine"
+          coverage combine
+        fi
         say "    ${e}->${x} Running coverage xml"
-        if [ "$(coverage combine && coverage xml -i)" != "No data to report." ];
+        if [ "$(coverage xml -i)" != "No data to report." ];
         then
           files="$files
 coverage.xml"
