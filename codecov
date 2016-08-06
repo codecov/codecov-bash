@@ -958,7 +958,7 @@ $(find "$git_root" -type f -not -path '*/vendor/*' -name '*.php' -exec grep -nIH
 $(find "$git_root" -type f -not -path '*/vendor/*' -name '*.php' -exec grep -nIH '^[[:space:]]*);[[:space:]]*$' {} \;)
 $(find "$git_root" -type f -not -path '*/vendor/*' -name '*.php' -exec grep -nIH '^[[:space:]]*][[:space:]]*$' {} \;)"
     fi
-    if [[ $(echo "$network" | grep '(.cpp|.h|.cxx|.c|.hpp|.m)$') != '' ]];
+    if [[ $(echo "$network" | grep '\(.cpp\|.h\|.cxx\|.c\|.hpp\|.m\)$') != '' ]];
     then
       adjustments="$adjustments
 $(find "$git_root" -type f \( -name '*.h' -or -name '*.cpp' -or -name '*.cxx' -or -name '*.m' -or -name '*.c' -or -name '*.hpp' \) -exec grep -nIH '^[[:space:]]*}' {} \;)
