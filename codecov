@@ -543,14 +543,7 @@ fi
 if [ "$commit_o" = "" ];
 then
   # merge commit -> actual commit
-  mc=$(git log -1 --pretty=%B 2>/dev/null | tr -d '[[:space:]]' || true)
-  if [[ "$mc" =~ ^Merge[[:space:]][a-z0-9]{40}[[:space:]]into[[:space:]][a-z0-9]{40}$ ]];
-  then
-    say "    (DEPRECIATING SOON) Learn more at http://docs.codecov.io/docs/merge-commits"
-    # Merge xxx into yyy
-    say "    Fixing merge commit sha"
-    commit=$(echo "$mc" | cut -d' ' -f2)
-  elif [ "$GIT_COMMIT" != "" ];
+  if [ "$GIT_COMMIT" != "" ];
   then
     commit="$GIT_COMMIT"
   elif [ "$commit" = "" ];
