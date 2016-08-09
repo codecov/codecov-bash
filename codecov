@@ -570,7 +570,8 @@ then
 fi
 
 
-yaml=$(find "$proj_root" -name 'codecov.yml' -or -name '.codecov.yml' | head -1 | sed -e 's/^\.\///')
+yaml=$(cd "$proj_root" && git ls-files "*codecov.yml" 2>/dev/null || hg locate "*codecov.yml" 2>/dev/null || find . -name "*codecov.yml")
+yaml=$(echo "$yaml" | head -1 | sed -e 's/^\.\///')
 
 if [ "$yaml" != "" ];
 then
