@@ -371,7 +371,7 @@ then
   branch="$TEAMCITY_BUILD_BRANCH"
   build="$TEAMCITY_BUILD_ID"
   build_url=$(urlencode "$TEAMCITY_BUILD_URL")
-  if [ "$TEAMCITY_BUILD_COMMIT" = "" ];
+  if [ "$TEAMCITY_BUILD_COMMIT" != "" ];
   then
     commit="$TEAMCITY_BUILD_COMMIT"
   else
