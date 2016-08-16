@@ -66,6 +66,7 @@ Upload reports to Codecov
                  Already searches project root and artifact folders.
     -t TOKEN     Set the private repository token
                  (or) set environment variable CODECOV_TOKEN=:uuid
+                 (or) from a file by -t @tokenfile
     -e ENV       Specify environment variables to be included with this build
                  ex. codecov -e VAR,VAR2
                  (or) set environment variable CODECOV_ENV=VAR,VAR2
@@ -165,32 +166,17 @@ parse_yaml() {
 
 if [ $# != 0 ];
 then
-  while getopts "svdhcu:t:f:r:e:g:G:p:s:T:X:x:a:b:C:B:P:D:S:R:J:F:K:Z" o
+  while getopts "a:b:B:cC:dD:e:f:F:g:G:hJ:K:p:P:r:R:s:S:t:T:u:vx:X:Z" o
   do
     case "$o" in
-      "v")
-        verbose="1"
+      "a")
+        gcov_arg=$OPTARG
         ;;
-      "K")
-        b=""
-        g=""
-        r=""
-        e=""
-        x=""
+      "b")
+        build_o="$OPTARG"
         ;;
-      "s")
-        if [ "$search_in_o" = "" ];
-        then
-          search_in_o="$OPTARG"
-        else
-          search_in_o="$search_in_o $OPTARG"
-        fi
-        ;;
-      "T")
-        tag_o="$OPTARG"
-        ;;
-      "d")
-        dump="1"
+      "B")
+        branch_o="$OPTARG"
         ;;
       "c")
         clean="1"
@@ -198,33 +184,14 @@ then
       "C")
         commit_o="$OPTARG"
         ;;
+      "d")
+        dump="1"
+        ;;
       "D")
         ddp="$OPTARG"
         ;;
-      "B")
-        branch_o="$OPTARG"
-        ;;
-      "P")
-        pr_o="$OPTARG"
-        ;;
-      "S")
-        cacert="--cacert \"$OPTARG\""
-        ;;
-      "R")
-        git_root="$OPTARG"
-        ;;
-      "b")
-        build_o="$OPTARG"
-        ;;
-      "h")
-        show_help
-        exit 0;
-        ;;
-      "u")
-        url_o=$(echo "$OPTARG" | sed -e 's/\/$//')
-        ;;
-      "t")
-        token="$OPTARG"
+      "e")
+        env="$env,$OPTARG"
         ;;
       "f")
         if [ "$files" = "" ];
@@ -243,6 +210,16 @@ $OPTARG"
           flags="$flags,$OPTARG"
         fi
         ;;
+      "g")
+        gcov_ignore="$gcov_ignore -not -path '$OPTARG'"
+        ;;
+      "G")
+        gcov_include="$gcov_include -path '$OPTARG'"
+        ;;
+      "h")
+        show_help
+        exit 0;
+        ;;
       "J")
         if [ "$xp" = "" ];
         then
@@ -251,11 +228,55 @@ $OPTARG"
           xp="$xp\|$OPTARG"
         fi
         ;;
+      "K")
+        b=""
+        g=""
+        r=""
+        e=""
+        x=""
+        ;;
       "p")
         proj_root="$OPTARG"
         ;;
+      "P")
+        pr_o="$OPTARG"
+        ;;
       "r")
         slug_o="$OPTARG"
+        ;;
+      "R")
+        git_root="$OPTARG"
+        ;;
+      "s")
+        if [ "$search_in_o" = "" ];
+        then
+          search_in_o="$OPTARG"
+        else
+          search_in_o="$search_in_o $OPTARG"
+        fi
+        ;;
+      "S")
+        cacert="--cacert \"$OPTARG\""
+        ;;
+      "t")
+        if [ "${OPTARG::1}" = "@" ];
+        then
+          token=$(cat "${OPTARG:1}" | tr -d ' \n')
+        else
+          token="$OPTARG"
+        fi
+        ;;
+      "T")
+        tag_o="$OPTARG"
+        ;;
+      "u")
+        url_o=$(echo "$OPTARG" | sed -e 's/\/$//')
+        ;;
+      "v")
+        verbose="1"
+        ;;
+      "x")
+        gcov_exe=$OPTARG
         ;;
       "X")
         if [ "$OPTARG" = "gcov" ];
@@ -275,21 +296,6 @@ $OPTARG"
           e=""
           x=""
         fi
-        ;;
-      "g")
-        gcov_ignore="$gcov_ignore -not -path '$OPTARG'"
-        ;;
-      "G")
-        gcov_include="$gcov_include -path '$OPTARG'"
-        ;;
-      "x")
-        gcov_exe=$OPTARG
-        ;;
-      "a")
-        gcov_arg=$OPTARG
-        ;;
-      "e")
-        env="$env,$OPTARG"
         ;;
       "Z")
         exit_with=1
