@@ -666,7 +666,7 @@ else
     if [ -d "$ddp" ];
     then
       say "    ${e}->${x} Obj-C in $ddp"
-      find "$ddp" -name '*.gcda' -exec gcov -pbcu {} + || true
+      bash -c "find $ddp -type f -name '*.gcda' $gcov_include $gcov_ignore -exec $gcov_exe -pbcu $gcov_arg {} +" || true
     fi
 
     # all other gcov
