@@ -6,7 +6,6 @@ VERSION="tbd"
 
 url="https://codecov.io"
 url_o=""
-verbose="0"
 env="$CODECOV_ENV"
 pr_o=""
 pr=""
@@ -110,12 +109,12 @@ Upload reports to Codecov
                  Detected in environment variable: CODECOV_CA_BUNDLE
 
     -- Debugging --
-    -v           Verbose Mode
     -d           Dont upload and dump to stdin
 
 Contribute and source at https://github.com/codecov/codecov-bash
 EOF
 }
+
 
 say() {
   echo -e "$1"
@@ -163,6 +162,7 @@ parse_yaml() {
       }
    }'
 }
+
 
 if [ $# != 0 ];
 then
@@ -273,7 +273,7 @@ $OPTARG"
         url_o=$(echo "$OPTARG" | sed -e 's/\/$//')
         ;;
       "v")
-        verbose="1"
+        # empty
         ;;
       "x")
         gcov_exe=$OPTARG
@@ -534,7 +534,10 @@ then
 elif [ "$branch" = "" ];
 then
   branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || hg branch 2>/dev/null || echo "")
-  if [ "$branch" = "HEAD" ]; then branch=""; fi
+  if [ "$branch" = "HEAD" ];
+  then
+    branch=""
+  fi
 fi
 
 if [ "$commit_o" = "" ];
@@ -543,6 +546,7 @@ then
   mc=$(git log -1 --pretty=%B 2>/dev/null | tr -d '[[:space:]]' || true)
   if [[ "$mc" =~ ^Merge[[:space:]][a-z0-9]{40}[[:space:]]into[[:space:]][a-z0-9]{40}$ ]];
   then
+    say "    (DEPRECIATE) Learn more at https://github.com/codecov/support/wiki/Merge-Commits"
     # Merge xxx into yyy
     say "    Fixing merge commit sha"
     commit=$(echo "$mc" | cut -d' ' -f2)
@@ -581,7 +585,10 @@ yaml=$(echo "$yaml" | head -1 | sed -e 's/^\.\///')
 
 if [ "$yaml" != "" ];
 then
+  say "    ${e}Yaml found at:${x} $yaml"
   config=$(parse_yaml $yaml || echo '')
+
+  # TODO validate the yaml here
 
   if [ "$(echo "$config" | grep 'codecov_token="')" != "" ] && [ "$token" = "" ];
   then
@@ -600,6 +607,9 @@ then
     say "${e}-->${x} slug set from yaml"
     slug_o="$(echo "$config" | grep 'codecov_slug="' | sed -e 's/codecov_slug="//' | sed -e 's/"\.*//')"
   fi
+else
+  say "    ${e}Yaml not found${x}, thats ok!"
+  say "    Learn more at https://github.com/codecov/support/wiki/Codecov-Yaml"
 
 fi
 
@@ -655,7 +665,10 @@ else
 
     while read -r profdata;
     do
-      swiftcov "$profdata" "$xp"
+      if [ "$profdata" != "" ];
+      then
+        swiftcov "$profdata" "$xp"
+      fi
     done <<< "$(find "$ddp" -name '*.profdata')"
   fi
 
@@ -792,12 +805,6 @@ else
     then
       say "${e}==>${x} Python coveragepy exists ${e}disable via -X coveragepy${x}"
 
-      # find the .coverage
-      if [ "$verbose" = "1" ];
-      then
-        say "    ${e}->${x} Searching for .coverage file"
-        find "$git_root" \( -name '.coverage' -or -name '.coverage.*' \) -not -path '.coveragerc'
-      fi
       dotcoverage=$(find "$git_root" \( -name '.coverage' -or -name '.coverage.*' \) -not -path '.coveragerc' | head -1)
       cd "$(dirname "$dotcoverage")"
       if [ "$dotcoverage" != "" ];
@@ -830,7 +837,8 @@ fi
 if [ "$files" = "" ];
 then
   say "${r}-->${x} No coverage report found."
-  say "    Please visit https://github.com/codecov and search for your projects language to learn how to collect reports."
+  say "    Please visit https://github.com/codecov/support/wiki/Supported-Languages"
+  say "    Choose your language for additional help."
   exit ${exit_with};
 fi
 
@@ -870,7 +878,6 @@ fi
 upload="$network
 <<<<<< network"
 
-# Append Environment Variables
 if [ "$env" != "" ];
 then
   inc_env=""
@@ -889,7 +896,6 @@ then
 $upload"
 fi
 
-# Append Reports
 fr=0
 say "${e}==>${x} Reading reports"
 while IFS='' read -r file;
