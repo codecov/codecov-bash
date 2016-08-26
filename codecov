@@ -813,9 +813,9 @@ else
         say "${e}==>${x} Python coveragepy exists ${e}disable via -X coveragepy${x}"
 
         dotcoverage=$(find "$git_root" -name '.coverage' -or -name '.coverage.*' | head -1)
-        cd "$(dirname "$dotcoverage")"
         if [ "$dotcoverage" != "" ];
         then
+          cd "$(dirname "$dotcoverage")"
           if [ ! -f .coverage ];
           then
             say "    ${e}->${x} Running coverage combine"
@@ -829,6 +829,7 @@ coverage.xml"
           else
             say "    ${r}No data to report.${x}"
           fi
+          cd "$proj_root"
         else
           say "    ${r}No .coverage file found.${x}"
         fi
