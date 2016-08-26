@@ -546,7 +546,7 @@ then
   mc=$(git log -1 --pretty=%B 2>/dev/null | tr -d '[[:space:]]' || true)
   if [[ "$mc" =~ ^Merge[[:space:]][a-z0-9]{40}[[:space:]]into[[:space:]][a-z0-9]{40}$ ]];
   then
-    say "    (DEPRECIATE) Learn more at https://github.com/codecov/support/wiki/Merge-Commits"
+    say "    (DEPRECIATING SOON) Learn more at http://docs.codecov.io/docs/merge-commits"
     # Merge xxx into yyy
     say "    Fixing merge commit sha"
     commit=$(echo "$mc" | cut -d' ' -f2)
@@ -608,8 +608,7 @@ then
     slug_o="$(echo "$config" | grep 'codecov_slug="' | sed -e 's/codecov_slug="//' | sed -e 's/"\.*//')"
   fi
 else
-  say "    ${e}Yaml not found${x}, thats ok!"
-  say "    Learn more at https://github.com/codecov/support/wiki/Codecov-Yaml"
+  say "    ${g}Yaml not found, that's ok! Learn more at${x} ${b}http://docs.codecov.io/docs/codecov-yaml${x}"
 
 fi
 
