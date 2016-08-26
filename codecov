@@ -807,32 +807,35 @@ else
   # Python coveragepy generation
   if [ "$ft_coveragepy" = "1" ];
   then
-    if which coverage >/dev/null 2>&1;
+    if [ ! -f coverage.xml ];
     then
-      say "${e}==>${x} Python coveragepy exists ${e}disable via -X coveragepy${x}"
-
-      dotcoverage=$(find "$git_root" \( -name '.coverage' -or -name '.coverage.*' \) -not -path '.coveragerc' | head -1)
-      cd "$(dirname "$dotcoverage")"
-      if [ "$dotcoverage" != "" ];
+      if which coverage >/dev/null 2>&1;
       then
-        if [ ! -f .coverage ];
+        say "${e}==>${x} Python coveragepy exists ${e}disable via -X coveragepy${x}"
+
+        dotcoverage=$(find "$git_root" -name '.coverage' -or -name '.coverage.*' | head -1)
+        cd "$(dirname "$dotcoverage")"
+        if [ "$dotcoverage" != "" ];
         then
-          say "    ${e}->${x} Running coverage combine"
-          coverage combine
-        fi
-        say "    ${e}->${x} Running coverage xml"
-        if [ "$(coverage xml -i)" != "No data to report." ];
-        then
-          files="$files
+          if [ ! -f .coverage ];
+          then
+            say "    ${e}->${x} Running coverage combine"
+            coverage combine
+          fi
+          say "    ${e}->${x} Running coverage xml"
+          if [ "$(coverage xml -i)" != "No data to report." ];
+          then
+            files="$files
 coverage.xml"
+          else
+            say "    ${r}No data to report.${x}"
+          fi
         else
-          say "    ${r}No data to report.${x}"
+          say "    ${r}No .coverage file found.${x}"
         fi
       else
-        say "    ${r}No .coverage file found.${x}"
+        say "${e}==>${x} Python coveragepy not found"
       fi
-    else
-      say "${e}==>${x} Python coveragepy not found"
     fi
   else
     say "${e}==>${x} Python coveragepy disabled"
