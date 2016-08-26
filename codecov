@@ -731,6 +731,12 @@ else
                     -not -name '*.in' \
                     -not -name '*.jar*' \
                     -not -name '*.pom*' \
+                    -not -name '*.png' \
+                    -not -name '*.jpg' \
+                    -not -name '*.sql' \
+                    -not -name '*.jpeg' \
+                    -not -name '*.svg' \
+                    -not -name '*.gif' \
                     -not -name '*.csv' \
                     -not -name '*.snapshot' \
                     -not -name '*.mak*' \
