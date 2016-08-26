@@ -922,14 +922,15 @@ do
   then
     if [ -f "$file" ];
     then
-      report=$(cat "$file")
-      if [ "$report" != "" ];
+      report_len=$(wc -c < "$file")
+      if [ "$report_len" -ne 0 ];
       then
-        say "    ${g}+${x} $file ${e}bytes=${#report}${x}"
+        say "    ${g}+${x} $file ${e}bytes=${report_len}${x}"
         # append to to upload
         echo "
-# path=$(echo "$file" | sed "s|^$git_root/||")
-$report
+# path=$(echo "$file" | sed "s|^$git_root/||")" >> $upload_file
+        cat "$file" >> $upload_file
+        echo "
 <<<<<< EOF" >> $upload_file
         fr=1
         if [ "$clean" = "1" ];
