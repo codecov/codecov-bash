@@ -757,7 +757,6 @@ else
                     -not -name '*.db' \
                     -not -name '*.md' \
                     -not -name '*.cpp' \
-                    -not -name '*.cmake' \
                     -not -name '*.gradle' \
                     -not -name '*.tar.tz' \
                     -not -name '*.scss' \
