@@ -62,27 +62,27 @@ function test_flags_opt () {
     assertTrue 'Expected output differs.' $?
 }
 
-function test_yaml_location () {
-    reset
-    echo 'codecov:
-  url: http://other.com
-  token: abc123
-  slug: owner/repo
-' > codecov.yml
-    res=$(./codecov -d | grep "http://other.com/")
-    diff <(echo "http://other.com/upload/v4?package=bash-tbd&token=abc123&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=owner/repo&yaml=codecov.yml&service=&flags=&pr=&job=") <(echo "$res")
-    assertTrue 'Expected output differs.' $?
-}
-
-function test_yaml_location_2 () {
-    reset
-    echo 'codecov:
-  token: uuid
-' > tests/.codecov.yml
-    res=$(./codecov -d | grep "https://codecov.io/")
-    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=uuid&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=&yaml=tests%2F.codecov.yml&service=&flags=&pr=&job=") <(echo "$res")
-    assertTrue 'Expected output differs.' $?
-}
+# function test_yaml_location () {
+#     reset
+#     echo 'codecov:
+#   url: http://other.com
+#   token: abc123
+#   slug: owner/repo
+# ' > codecov.yml
+#     res=$(./codecov -d | grep "http://other.com/")
+#     diff <(echo "http://other.com/upload/v4?package=bash-tbd&token=abc123&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=owner/repo&yaml=codecov.yml&service=&flags=&pr=&job=") <(echo "$res")
+#     assertTrue 'Expected output differs.' $?
+# }
+#
+# function test_yaml_location_2 () {
+#     reset
+#     echo 'codecov:
+#   token: uuid
+# ' > tests/.codecov.yml
+#     res=$(./codecov -d | grep "https://codecov.io/")
+#     diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=uuid&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=&yaml=tests%2F.codecov.yml&service=&flags=&pr=&job=") <(echo "$res")
+#     assertTrue 'Expected output differs.' $?
+# }
 
 function test_build_arg () {
     reset
