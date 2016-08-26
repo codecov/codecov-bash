@@ -725,6 +725,8 @@ else
                     -not -name '.coverage*' \
                     -not -name '.*coveragerc' \
                     -not -name '*.sh' \
+                    -not -name '*.bat' \
+                    -not -name '*.ps1' \
                     -not -name '*.log' \
                     -not -name '*.cmake' \
                     -not -name '*.pth' \
