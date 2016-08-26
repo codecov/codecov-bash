@@ -884,8 +884,17 @@ then
                  -not -path "*/$bower_components/*")
 fi
 
-upload="$network
-<<<<<< network"
+upload_file=`mktemp /tmp/codecov.XXXXXX`
+
+cleanup() {
+    rm -f $upload_file
+}
+
+trap cleanup INT ABRT TERM
+
+
+echo "$network
+<<<<<< network" > $upload_file
 
 if [ "$env" != "" ];
 then
@@ -901,8 +910,7 @@ then
     fi
   done
 
-  upload="$inc_env<<<<<< ENV
-$upload"
+echo "$inc_env<<<<<< ENV" >> $upload_file
 fi
 
 fr=0
@@ -919,10 +927,10 @@ do
       then
         say "    ${g}+${x} $file ${e}bytes=${#report}${x}"
         # append to to upload
-        upload="$upload
+        echo "
 # path=$(echo "$file" | sed "s|^$git_root/||")
 $report
-<<<<<< EOF"
+<<<<<< EOF" >> $upload_file
         fr=1
         if [ "$clean" = "1" ];
         then
@@ -991,10 +999,10 @@ $(find "$git_root" -type f \( -name '*.h' -or -name '*.cpp' -or -name '*.cxx' -o
     if [ "$found" != "1" ];
     then
       say "    ${g}+${x} Found $found adjustments"
-      upload="$upload
+      echo "
 # path=fixes
 $adjustments
-<<<<<< EOF"
+<<<<<< EOF" >> $upload_file
     else
       say "    ${e}->${x} Found 0 adjustments"
     fi
@@ -1010,7 +1018,7 @@ fi
 if [ "$dump" != "0" ];
 then
   echo "$url/upload/v4?$(echo "package=bash-$VERSION&token=$token&$query" | tr -d ' ')"
-  echo "$upload"
+  cat $upload_file
 else
 
   query=$(echo "${query}" | tr -d ' ')
@@ -1029,8 +1037,7 @@ else
   then
     s3target=$(echo "$res" | sed -n 2p)
     say "    ${e}->${x} Uploading to S3 $(echo "$s3target" | cut -c1-32)"
-    s3=$(echo "$upload" | \
-         curl -fisX PUT --data-binary @- \
+    s3=$(curl -fisX PUT --data-binary @$upload_file \
               -H 'Content-Type: text/plain' \
               -H 'x-amz-acl: public-read' \
               -H 'x-amz-storage-class: REDUCED_REDUNDANCY' \
@@ -1055,7 +1062,7 @@ else
   do
     i=$[$i+1]
 
-    res=$(echo "$upload" | curl -sX POST $cacert --data-binary @- "$url/upload/v2?$query" -H 'Accept: text/plain' || echo 'HTTP 500')
+    res=$(curl -sX POST $cacert --data-binary @$upload_file "$url/upload/v2?$query" -H 'Accept: text/plain' || echo 'HTTP 500')
     # HTTP 200
     # http://....
     status=$(echo "$res" | head -1 | cut -d' ' -f2)
