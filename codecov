@@ -818,7 +818,7 @@ else
           if [ "$(coverage xml -i)" != "No data to report." ];
           then
             files="$files
-coverage.xml"
+$PWD/coverage.xml"
           else
             say "    ${r}No data to report.${x}"
           fi
