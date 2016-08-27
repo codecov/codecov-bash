@@ -723,6 +723,8 @@ else
                     -not -name '.coverage*' \
                     -not -name '.*coveragerc' \
                     -not -name '*.sh' \
+                    -not -name '*.bat' \
+                    -not -name '*.ps1' \
                     -not -name '*.log' \
                     -not -name '*.cmake' \
                     -not -name '*.pth' \
@@ -761,7 +763,6 @@ else
                     -not -name '*.db' \
                     -not -name '*.md' \
                     -not -name '*.cpp' \
-                    -not -name '*.cmake' \
                     -not -name '*.gradle' \
                     -not -name '*.tar.tz' \
                     -not -name '*.scss' \
