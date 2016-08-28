@@ -27,6 +27,8 @@ dump="0"
 clean="0"
 branch=""
 commit=""
+include_cov=""
+exclude_cov=""
 ddp="$(echo ~)/Library/Developer/Xcode/DerivedData"
 xp=""
 files=""
@@ -36,6 +38,7 @@ gcov_include=""
 ft_gcov="1"
 ft_coveragepy="1"
 ft_fix="1"
+ft_search="1"
 _git_root=$(git rev-parse --show-toplevel 2>/dev/null || hg root 2>/dev/null || echo $PWD)
 git_root="$_git_root"
 if [ "$git_root" = "$PWD" ];
@@ -60,7 +63,12 @@ Upload reports to Codecov
 
     -h           Display this help and exit
     -f COVERAGE  Reference a specific file only to upload
-                 When not specified commonly known coverage files will found
+
+                 -f "path/to/file"     only upload this report and disable serching for reports
+                 -f "+path/to/file"    add this path and search for reports
+                 -f "!*.bar"           ignore all files at pattern *.bar
+                 -f "*.foo"            include all files at pattern *.foo
+
     -s DIR       Directory to search for coverage reports.
                  Already searches project root and artifact folders.
     -t TOKEN     Set the private repository token
@@ -194,12 +202,29 @@ then
         env="$env,$OPTARG"
         ;;
       "f")
-        if [ "$files" = "" ];
+        if [ "${OPTARG::1}" = "!" ];
         then
-          files="$OPTARG"
+          exclude_cov="$exclude_cov -not -path '${OPTARG:1}'"
+
+        elif [[ "$OPTARG" = *"*"* ]];
+        then
+          include_cov="$include_cov -or -name '$OPTARG'"
         else
-          files="$files
+
+          if [ "${OPTARG::1}" = "+" ];
+          then
+            OPTARG="${OPTARG:1}"
+          else
+            ft_search="0"
+          fi
+
+          if [ "$files" = "" ];
+          then
+            files="$OPTARG"
+          else
+            files="$files
 $OPTARG"
+          fi
         fi
         ;;
       "F")
@@ -644,7 +669,7 @@ then
 fi
 
 # find all the reports
-if [ "$files" != "" ];
+if [ "$ft_search" = "0" ];
 then
   say "$e==>$x Targeting specific file(s)"
 
@@ -715,7 +740,9 @@ else
                      -or -name 'cover.out' \
                      -or -name 'gcov.info' \
                      -or -name '*.gcov' \
-                     -or -name '*.lst' \) \
+                     -or -name '*.lst' \
+                     $include_cov \) \
+                    $exclude_cov \
                     -not -name 'Coverage.profdata' \
                     -not -name 'coverage-summary.json' \
                     -not -name 'phpunit-code-coverage.xml' \
