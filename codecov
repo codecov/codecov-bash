@@ -209,15 +209,8 @@ then
         elif [[ "$OPTARG" = *"*"* ]];
         then
           include_cov="$include_cov -or -name '$OPTARG'"
+
         else
-
-          if [ "${OPTARG::1}" = "+" ];
-          then
-            OPTARG="${OPTARG:1}"
-          else
-            ft_search="0"
-          fi
-
           if [ "$files" = "" ];
           then
             files="$OPTARG"
@@ -298,7 +291,7 @@ $OPTARG"
         url_o=$(echo "$OPTARG" | sed -e 's/\/$//')
         ;;
       "v")
-        # empty
+        set -x
         ;;
       "x")
         gcov_exe=$OPTARG
@@ -313,6 +306,9 @@ $OPTARG"
         elif [ "$OPTARG" = "fix" ];
         then
           ft_fix="0"
+        elif [ "$OPTARG" = "search" ];
+        then
+          ft_search="0"
         elif [ "$OPTARG" = "nocolor" ];
         then
           b=""
@@ -668,17 +664,13 @@ then
   fi
 fi
 
-# find all the reports
-if [ "$ft_search" = "0" ];
+if [ -d "$ddp" ];
 then
-  say "$e==>$x Targeting specific file(s)"
-
-else
-
-  if [ -d "$ddp" ];
+  say "${e}==>${x} xcode DerivedData: $ddp"
+  profdata_files=$(find "$ddp" -name '*.profdata')
+  if [ "$profdata_files" != "" ];
   then
     say "${e}==>${x} Swift in $ddp"
-
     # xcode via profdata
     if [ "$xp" = "" ];
     then
@@ -686,44 +678,45 @@ else
       # say " ${e}->${x} Speed up XCode processing by adding ${e}-J '$xp'${x}"
       say "    ${e}->${x} Speed up xcode processing by using use -J 'AppName' (accepting regexp)"
     fi
-
     while read -r profdata;
     do
       if [ "$profdata" != "" ];
       then
         swiftcov "$profdata" "$xp"
       fi
-    done <<< "$(find "$ddp" -name '*.profdata')"
+    done <<< "$profdata_files"
   fi
 
   if [ "$ft_gcov" = "1" ];
   then
-    say "${e}==>${x} Running gcov ${e}disable via -X gcov${x}"
-    # search for osx coverage data
-    if [ -d "$ddp" ];
-    then
-      say "    ${e}->${x} Obj-C in $ddp"
-      bash -c "find $ddp -type f -name '*.gcda' $gcov_include $gcov_ignore -exec $gcov_exe -pbcu $gcov_arg {} +" || true
-    fi
-
-    # all other gcov
-    say "    ${e}->${x} Running $gcov_exe in $proj_root"
-    bash -c "find $proj_root -type f -name '*.gcno' $gcov_include $gcov_ignore -exec $gcov_exe -pb $gcov_arg {} +" || true
-  else
-    say "${e}==>${x} gcov disable"
+    say "    ${e}->${x} Running $gcov_exe for Obj-C"
+    bash -c "find $ddp -type f -name '*.gcda' $gcov_include $gcov_ignore -exec $gcov_exe -pbcu $gcov_arg {} +" || true
   fi
+fi
 
-  if [ "$search_in_o" != "" ];
-  then
-    # location override
-    search_in="$search_in_o"
-  fi
-  say "$e==>$x Searching for coverage reports in:"
-  for _path in $search_in
-  do
-    say "    ${g}+${x} $_path"
-  done
-  files=$(find $search_in -type f \( -name '*coverage*.*' \
+if [ "$ft_gcov" = "1" ];
+then
+  say "${e}==>${x} Running gcov in $proj_root${e}disable via -X gcov${x}"
+  bash -c "find $proj_root -type f -name '*.gcno' $gcov_include $gcov_ignore -exec $gcov_exe -pb $gcov_arg {} +" || true
+else
+  say "${e}==>${x} gcov disable"
+fi
+
+if [ "$search_in_o" != "" ];
+then
+  # location override
+  search_in="$search_in_o"
+fi
+
+say "$e==>$x Searching for coverage reports in:"
+for _path in $search_in
+do
+  say "    ${g}+${x} $_path"
+done
+
+if [ "$ft_search" = "1" ];
+then
+  patterns="find $search_in -type f \( -name '*coverage*.*' \
                      -or -name 'nosetests.xml' \
                      -or -name 'jacoco*.xml' \
                      -or -name 'clover.xml' \
@@ -743,7 +736,7 @@ else
                      -or -name '*.lst' \
                      $include_cov \) \
                     $exclude_cov \
-                    -not -name 'Coverage.profdata' \
+                    -not -name '*.profdata' \
                     -not -name 'coverage-summary.json' \
                     -not -name 'phpunit-code-coverage.xml' \
                     -not -name '*codecov.yml' \
@@ -821,61 +814,65 @@ else
                     -not -path '*/.tox/*' \
                     -not -path '*/__pycache__/*' \
                     -not -path '*/.egg-info*' \
-                    -not -path "*/$bower_components/*" \
+                    -not -path '*/$bower_components/*' \
                     -not -path '*/node_modules/*' \
-                    -not -path '*/conftest_*.c.gcov' 2>/dev/null)
+                    -not -path '*/conftest_*.c.gcov' 2>/dev/null"
+  files=$(eval "$patterns")
 
-  num_of_files=$(echo "$files" | wc -l | tr -d ' ')
-  if [ "$num_of_files" != '' ] && [ "$files" != '' ];
-  then
-    say "    ${e}->${x} Found $num_of_files reports"
-  fi
+elif [ "$include_cov" != "" ];
+then
+  files=$(eval "find $search_in -type f \( ${include_cov:5} \)$exclude_cov 2>/dev/null")
+fi
 
-  # Python coveragepy generation
-  if [ "$ft_coveragepy" = "1" ];
+num_of_files=$(echo "$files" | wc -l | tr -d ' ')
+if [ "$num_of_files" != '' ] && [ "$files" != '' ];
+then
+  say "    ${e}->${x} Found $num_of_files reports"
+fi
+
+# Python coveragepy generation
+if [ "$ft_coveragepy" = "1" ];
+then
+  if [ ! -f coverage.xml ];
   then
-    if [ ! -f coverage.xml ];
+    if which coverage >/dev/null 2>&1;
     then
-      if which coverage >/dev/null 2>&1;
-      then
-        say "${e}==>${x} Python coveragepy exists ${e}disable via -X coveragepy${x}"
+      say "${e}==>${x} Python coveragepy exists ${e}disable via -X coveragepy${x}"
 
-        dotcoverage=$(find "$git_root" -name '.coverage' -or -name '.coverage.*' | head -1)
-        if [ "$dotcoverage" != "" ];
+      dotcoverage=$(find "$git_root" -name '.coverage' -or -name '.coverage.*' | head -1)
+      if [ "$dotcoverage" != "" ];
+      then
+        cd "$(dirname "$dotcoverage")"
+        if [ ! -f .coverage ];
         then
-          cd "$(dirname "$dotcoverage")"
-          if [ ! -f .coverage ];
-          then
-            say "    ${e}->${x} Running coverage combine"
-            coverage combine
-          fi
-          say "    ${e}->${x} Running coverage xml"
-          if [ "$(coverage xml -i)" != "No data to report." ];
-          then
-            files="$files
-$PWD/coverage.xml"
-          else
-            say "    ${r}No data to report.${x}"
-          fi
-          cd "$proj_root"
-        else
-          say "    ${r}No .coverage file found.${x}"
+          say "    ${e}->${x} Running coverage combine"
+          coverage combine
         fi
+        say "    ${e}->${x} Running coverage xml"
+        if [ "$(coverage xml -i)" != "No data to report." ];
+        then
+          files="$files
+$PWD/coverage.xml"
+        else
+          say "    ${r}No data to report.${x}"
+        fi
+        cd "$proj_root"
       else
-        say "${e}==>${x} Python coveragepy not found"
+        say "    ${r}No .coverage file found.${x}"
       fi
+    else
+      say "${e}==>${x} Python coveragepy not found"
     fi
-  else
-    say "${e}==>${x} Python coveragepy disabled"
   fi
+else
+  say "${e}==>${x} Python coveragepy disabled"
 fi
 
 # no files found
 if [ "$files" = "" ];
 then
   say "${r}-->${x} No coverage report found."
-  say "    Please visit https://github.com/codecov/support/wiki/Supported-Languages"
-  say "    Choose your language for additional help."
+  say "    Please visit ${b}http://docs.codecov.io/docs/supported-languages${x}"
   exit ${exit_with};
 fi
 
@@ -953,13 +950,11 @@ do
       report_len=$(wc -c < "$file")
       if [ "$report_len" -ne 0 ];
       then
-        say "    ${g}+${x} $file ${e}bytes=${report_len}${x}"
+        say "    ${g}+${x} $file ${e}bytes=$(echo "$report_len" | tr -d ' ')${x}"
         # append to to upload
-        echo "
-# path=$(echo "$file" | sed "s|^$git_root/||")" >> $upload_file
+        echo "# path=$(echo "$file" | sed "s|^$git_root/||")" >> $upload_file
         cat "$file" >> $upload_file
-        echo "
-<<<<<< EOF" >> $upload_file
+        echo "<<<<<< EOF" >> $upload_file
         fr=1
         if [ "$clean" = "1" ];
         then
@@ -1028,8 +1023,7 @@ $(find "$git_root" -type f \( -name '*.h' -or -name '*.cpp' -or -name '*.cxx' -o
     if [ "$found" != "1" ];
     then
       say "    ${g}+${x} Found $found adjustments"
-      echo "
-# path=fixes
+      echo "# path=fixes
 $adjustments
 <<<<<< EOF" >> $upload_file
     else
