@@ -412,6 +412,16 @@ then
   commit="$CIRCLE_SHA1"
   search_in="$search_in $CIRCLE_ARTIFACTS"
 
+elif [ "$BUDDYBUILD_BRANCH" != "" ];
+then
+  say "$e==>$x buddybuild detected"
+  # http://docs.buddybuild.com/v6/docs/custom-prebuild-and-postbuild-steps
+  service="buddybuild"
+  branch="$BUDDYBUILD_BRANCH"
+  build="$BUDDYBUILD_BUILD_NUMBER"
+  build_url="https://dashboard.buddybuild.com/public/apps/$BUDDYBUILD_APP_ID/build/$BUDDYBUILD_BUILD_ID"
+  # BUDDYBUILD_TRIGGERED_BY
+
 elif [ "$CI" = "true" ] && [ "$BITRISE_IO" = "true" ];
 then
   say "$e==>$x Bitrise CI detected."
