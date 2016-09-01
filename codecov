@@ -439,6 +439,10 @@ then
   build="$BUDDYBUILD_BUILD_NUMBER"
   build_url="https://dashboard.buddybuild.com/public/apps/$BUDDYBUILD_APP_ID/build/$BUDDYBUILD_BUILD_ID"
   # BUDDYBUILD_TRIGGERED_BY
+  if [ "$ddp" = "$(echo ~)/Library/Developer/Xcode/DerivedData" ];
+  then
+    ddp="/private/tmp/sandbox/${BUDDYBUILD_APP_ID}/bbtest"
+  fi
 
 elif [ "$CI" = "true" ] && [ "$BITRISE_IO" = "true" ];
 then
