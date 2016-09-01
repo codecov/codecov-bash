@@ -168,13 +168,13 @@ function test_slug_env () {
 
 function test_gcov () {
     reset
-    ./codecov -d -X gcov -X nocolor | grep '**> gcov disable'
+    ./codecov -d -X gcov -K | grep '**> gcov disable'
     assertTrue 'gcov was disabled' $?
 }
 
 function test_file_opt () {
     reset
-    assertContains "$(./codecov -df temp/coverage.json -X nocolor)" "+ temp/coverage.json bytes=25"
+    assertContains "$(./codecov -df temp/coverage.json -K)" "+ temp/coverage.json bytes=25"
 }
 
 function test_token_opt () {

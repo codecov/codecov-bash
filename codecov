@@ -197,7 +197,7 @@ parse_yaml() {
 
 if [ $# != 0 ];
 then
-  while getopts "a:b:B:cC:dD:e:f:F:g:G:hJ:K:p:P:r:R:s:S:t:T:u:vx:X:Z" o
+  while getopts "a:b:B:cC:dD:e:f:F:g:G:hJ:Kp:P:r:R:s:S:t:T:u:vx:X:Z" o
   do
     case "$o" in
       "a")
