@@ -133,15 +133,16 @@ cat << EOF
     -u URL       Set the target url for Enterprise customers
                  Not required when retrieving the bash uploader from your CCE
                  (option) Set environment variable CODECOV_URL=https://my-hosted-codecov.com
-    -r           owner/repo slug used instead of the private repo token in Enterprise
+    -r SLUG      owner/repo slug used instead of the private repo token in Enterprise
                  (option) set environment variable CODECOV_SLUG=:owner/:repo
                  (option) set in your codecov.yml "codecov.slug"
-    -S           File path to your cacert.pem file used to verify ssl with Codecov Enterprise (optional)
+    -S PATH      File path to your cacert.pem file used to verify ssl with Codecov Enterprise (optional)
                  (option) Set environment variable: CODECOV_CA_BUNDLE="/path/to/ca.pem"
 
     -- Debugging --
     -d           Dont upload and dump to stdin
     -K           Remove color from the output
+    -v           Verbose mode
 
 EOF
 }
