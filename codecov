@@ -58,68 +58,91 @@ x="\033[0m"
 
 show_help() {
 cat << EOF
-Codecov $VERSION
-Upload reports to Codecov
 
-    -h           Display this help and exit
-    -f COVERAGE  Reference a specific file only to upload
+                Codecov Bash $VERSION
 
-                 -f "path/to/file"     only upload this report and disable serching for reports
-                 -f "+path/to/file"    add this path and search for reports
+          Global report uploading tool for Codecov
+    Contribute at https://github.com/codecov/codecov-bash
+
+
+    -h          Display this help and exit
+    -f FILE     Target file(s) to upload
+
+                 -f "path/to/file"     only upload this file
+                                       skips searching unless provided patterns below
                  -f "!*.bar"           ignore all files at pattern *.bar
                  -f "*.foo"            include all files at pattern *.foo
 
     -s DIR       Directory to search for coverage reports.
                  Already searches project root and artifact folders.
     -t TOKEN     Set the private repository token
-                 (or) set environment variable CODECOV_TOKEN=:uuid
-                 (or) from a file by -t @tokenfile
+                 (option) set environment variable CODECOV_TOKEN=:uuid
+
+                 -t @/path/to/token_file
+                 -t uuid
+
     -e ENV       Specify environment variables to be included with this build
-                 ex. codecov -e VAR,VAR2
-                 (or) set environment variable CODECOV_ENV=VAR,VAR2
-    -X feature   Toggle functionalities, accepting: 'gcov', 'coveragepy', 'nocolor', 'fix'
+                 Also accepting environment variables: CODECOV_ENV=VAR,VAR2
+
+                 -e VAR,VAR2
+
+    -X feature   Toggle functionalities
+
+                 -X gcov          Disable gcov
+                 -X coveragepy    Disable python coverage
+                 -X fix           Disable report fixing
+                 -X search        Disable searching for reports
+
     -R root dir  Used when not in git/hg project to identify project root directory
-    -F flag      Flag this upload to with one or more titles
-                 ex. -F unittests -F docker
-    -K           Remove color from the output
-    -Z           Exit with 1 if not successful. Default will Exit with 0
+    -F flag      Flag the upload to group coverage metrics
+
+                 -F unittests        This upload is only unittests
+                 -F integration      This upload is only integration tests
+                 -F ui,chrome        This uplaod is Chrome - UI tests
+
     -c           Move discovered coverage reports to the trash
+    -Z           Exit with 1 if not successful. Default will Exit with 0
+
+    -- xcode --
+    -D           Custom Derived Data Path for Coverage.profdata and gcov processing
+                 Default '~/Library/Developer/Xcode/DerivedData'
+    -J           Specify packages to build coverage.
+                 This can significantly reduces time to build coverage reports.
+
+                 -J 'MyAppName'      Will match "MyAppName" and "MyAppNameTests"
+                 -J '^ExampleApp$'   Will match only "ExampleApp" not "ExampleAppTests"
+
+    -- gcov --
+    -g GLOB      Paths to ignore during gcov gathering
+    -G GLOB      Paths to include during gcov gathering
+    -p dir       Project root directory
+                 Also used when preparing gcov
+    -x gcovexe   gcov executable to run. Defaults to 'gcov'
+    -a gcovargs  extra arguments to pass to gcov
 
     -- Override CI Environment Variables --
        These variables are automatically detected by popular CI providers
+
     -B branch    Specify the branch name
     -C sha       Specify the commit sha
     -P pr        Specify the pull request number
     -b build     Specify the build number
     -T tag       Specify the git tag
 
-    -- xcode --
-    -D           Custom Derived Data Path for Coverage.profdata and gcov processing
-                 Default '~/Library/Developer/Xcode/DerivedData'
-    -J           Specify packages to build coverage.
-                 This *significantly* reduces time to build coverage reports.
-                 Ex. -J 'MyAppName'
-
-    -- gcov --
-    -g GLOB      Paths to ignore during gcov gathering
-    -G GLOB      Paths to include during gcov gathering
-    -p dir       Project root directory (default: PWD, WORKSPACE, or TRAVIS_BUILD_DIR)
-                 Also used when preparing gcov
-    -x gcovexe   gcov executable to run. Defaults to 'gcov'
-    -a gcovargs  extra arguments to pass to gcov
-
-    -- Enterprise customers --
-    -u URL       Set the target url for Enterprise customers [default https://codecov.io]
-                 (or) set environment variable CODECOV_URL=https://my-hosted-codecov.com
+    -- Enterprise --
+    -u URL       Set the target url for Enterprise customers
+                 Not required when retrieving the bash uploader from your CCE
+                 (option) Set environment variable CODECOV_URL=https://my-hosted-codecov.com
     -r           owner/repo slug used instead of the private repo token in Enterprise
-                 (or) set environment variable CODECOV_SLUG=:owner/:repo
+                 (option) set environment variable CODECOV_SLUG=:owner/:repo
+                 (option) set in your codecov.yml "codecov.slug"
     -S           File path to your cacert.pem file used to verify ssl with Codecov Enterprise (optional)
-                 Detected in environment variable: CODECOV_CA_BUNDLE
+                 (option) Set environment variable: CODECOV_CA_BUNDLE="/path/to/ca.pem"
 
     -- Debugging --
     -d           Dont upload and dump to stdin
+    -K           Remove color from the output
 
-Contribute and source at https://github.com/codecov/codecov-bash
 EOF
 }
 
@@ -211,6 +234,7 @@ then
           include_cov="$include_cov -or -name '$OPTARG'"
 
         else
+          ft_search=0
           if [ "$files" = "" ];
           then
             files="$OPTARG"
