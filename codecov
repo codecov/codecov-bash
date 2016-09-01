@@ -333,13 +333,6 @@ $OPTARG"
         elif [ "$OPTARG" = "search" ];
         then
           ft_search="0"
-        elif [ "$OPTARG" = "nocolor" ];
-        then
-          b=""
-          g=""
-          r=""
-          e=""
-          x=""
         fi
         ;;
       "Z")
