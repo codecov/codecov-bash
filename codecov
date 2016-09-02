@@ -725,7 +725,7 @@ then
     then
       # xp=$(xcodebuild -showBuildSettings 2>/dev/null | grep -i "^\s*PRODUCT_NAME" | sed -e 's/.*= \(.*\)/\1/')
       # say " ${e}->${x} Speed up XCode processing by adding ${e}-J '$xp'${x}"
-      say "    ${g}*${x} Speed up Swift processing by using use -J 'AppName' (accepting regexp)"
+      say "    ${g}hint${x} Speed up Swift processing by using use -J 'AppName' (accepting regexp)"
     fi
     while read -r profdata;
     do
@@ -735,7 +735,7 @@ then
       fi
     done <<< "$profdata_files"
   else
-    say "    ${e}->${x} No Swift coverage round"
+    say "    ${e}->${x} No Swift coverage found"
   fi
 
   if [ "$ft_gcov" = "1" ];
