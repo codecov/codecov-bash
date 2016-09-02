@@ -450,6 +450,17 @@ then
     ddp="/private/tmp/sandbox/${BUDDYBUILD_APP_ID}/bbtest"
   fi
 
+elif [ "${bamboo_planRepository_revision}" != "" ];
+then
+  say "$e==>$x Bamboo detected"
+  # https://confluence.atlassian.com/bamboo/bamboo-variables-289277087.html#Bamboovariables-Build-specificvariables
+  service="bamboo"
+  commit="${bamboo_planRepository_revision}"
+  branch="${bamboo_planRepository_branch}"
+  build="${bamboo_buildNumber}"
+  build_url="${bamboo_buildResultsUrl}"
+  slug=$(echo "${bamboo_planRepository_repositoryUrl}" | cut -d / -f 4,5 | cut -d . -f 1)
+
 elif [ "$CI" = "true" ] && [ "$BITRISE_IO" = "true" ];
 then
   say "$e==>$x Bitrise CI detected."
