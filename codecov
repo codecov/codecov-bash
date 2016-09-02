@@ -40,6 +40,7 @@ ft_coveragepy="1"
 ft_fix="1"
 ft_search="1"
 ft_s3="1"
+ft_xcode="1"
 _git_root=$(git rev-parse --show-toplevel 2>/dev/null || hg root 2>/dev/null || echo $PWD)
 git_root="$_git_root"
 if [ "$git_root" = "$PWD" ];
@@ -93,6 +94,7 @@ cat << EOF
                  -X coveragepy    Disable python coverage
                  -X fix           Disable report fixing
                  -X search        Disable searching for reports
+                 -X xcode         Disable xcode processing
 
     -R root dir  Used when not in git/hg project to identify project root directory
     -F flag      Flag the upload to group coverage metrics
@@ -332,6 +334,9 @@ $OPTARG"
         elif [ "$OPTARG" = "fix" ];
         then
           ft_fix="0"
+        elif [ "$OPTARG" = "xcode" ];
+        then
+          ft_xcode="0"
         elif [ "$OPTARG" = "search" ];
         then
           ft_search="0"
@@ -697,19 +702,19 @@ then
   fi
 fi
 
-if [ -d "$ddp" ];
+if [ "$ft_xcode" = "1" ] && [ -d "$ddp" ];
 then
-  say "${e}==>${x} xcode DerivedData: $ddp"
+  say "${e}==>${x} Processing XCode reports"
+  say "    DerivedData folder: $ddp"
   profdata_files=$(find "$ddp" -name '*.profdata')
   if [ "$profdata_files" != "" ];
   then
-    say "${e}==>${x} Swift in $ddp"
     # xcode via profdata
     if [ "$xp" = "" ];
     then
       # xp=$(xcodebuild -showBuildSettings 2>/dev/null | grep -i "^\s*PRODUCT_NAME" | sed -e 's/.*= \(.*\)/\1/')
       # say " ${e}->${x} Speed up XCode processing by adding ${e}-J '$xp'${x}"
-      say "    ${e}->${x} Speed up xcode processing by using use -J 'AppName' (accepting regexp)"
+      say "    ${g}*${x} Speed up Swift processing by using use -J 'AppName' (accepting regexp)"
     fi
     while read -r profdata;
     do
@@ -718,6 +723,8 @@ then
         swiftcov "$profdata" "$xp"
       fi
     done <<< "$profdata_files"
+  else
+    say "    ${e}->${x} No Swift coverage round"
   fi
 
   if [ "$ft_gcov" = "1" ];
@@ -1005,7 +1012,8 @@ done <<< "$(echo -e "$files")"
 if [ "$fr" = "0" ];
 then
   say "${r}-->${x} No coverage data found."
-  say "    Please visit https://github.com/codecov and search for your projects language to learn how to collect reports."
+  say "    Please visit ${b}http://docs.codecov.io/docs/supported-languages${x}"
+  say "    search for your projects language to learn how to collect reports."
   exit ${exit_with};
 fi
 
