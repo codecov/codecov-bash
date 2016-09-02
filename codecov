@@ -39,6 +39,7 @@ ft_gcov="1"
 ft_coveragepy="1"
 ft_fix="1"
 ft_search="1"
+ft_s3="1"
 _git_root=$(git rev-parse --show-toplevel 2>/dev/null || hg root 2>/dev/null || echo $PWD)
 git_root="$_git_root"
 if [ "$git_root" = "$PWD" ];
@@ -1085,31 +1086,34 @@ else
   # now add token to query
   query=$(echo "package=bash-$VERSION&token=$token&$query" | tr -d ' ')
 
-  say "    ${e}->${x} Pinging Codecov"
-  res=$(curl -sX $cacert POST "$url/upload/v4?$query" -H 'Accept: text/plain' || true)
-  # a good replay is "https://codecov.io" + "\n" + "https://codecov.s3.amazonaws.com/..."
-  status=$(echo "$res" | head -1 | grep 'HTTP ' | cut -d' ' -f2)
-  if [ "$status" = "" ];
+  if [ "$ft_s3" = "1" ];
   then
-    s3target=$(echo "$res" | sed -n 2p)
-    say "    ${e}->${x} Uploading to S3 $(echo "$s3target" | cut -c1-32)"
-    s3=$(curl -fisX PUT --data-binary @$upload_file \
-              -H 'Content-Type: text/plain' \
-              -H 'x-amz-acl: public-read' \
-              -H 'x-amz-storage-class: REDUCED_REDUNDANCY' \
-              "$s3target" || true)
-    if [ "$s3" != "" ];
+    say "    ${e}->${x} Pinging Codecov"
+    res=$(curl -sX $cacert POST "$url/upload/v4?$query" -H 'Accept: text/plain' || true)
+    # a good replay is "https://codecov.io" + "\n" + "https://codecov.s3.amazonaws.com/..."
+    status=$(echo "$res" | head -1 | grep 'HTTP ' | cut -d' ' -f2)
+    if [ "$status" = "" ];
     then
-      say "    ${g}->${x} View reports at ${b}$(echo "$res" | sed -n 1p)${x}"
-      exit 0
-    else
-      say "    ${r}X> Failed to upload to S3${n}"
+      s3target=$(echo "$res" | sed -n 2p)
+      say "    ${e}->${x} Uploading to S3 $(echo "$s3target" | cut -c1-32)"
+      s3=$(curl -fisX PUT --data-binary @$upload_file \
+                -H 'Content-Type: text/plain' \
+                -H 'x-amz-acl: public-read' \
+                -H 'x-amz-storage-class: REDUCED_REDUNDANCY' \
+                "$s3target" || true)
+      if [ "$s3" != "" ];
+      then
+        say "    ${g}->${x} View reports at ${b}$(echo "$res" | sed -n 1p)${x}"
+        exit 0
+      else
+        say "    ${r}X>${x} Failed to upload to S3"
+      fi
+    elif [ "$status" = "400" ];
+    then
+        # 400 Error
+        say "${g}${res}${x}"
+        exit ${exit_with}
     fi
-  elif [ "$status" = "400" ];
-  then
-      # 400 Error
-      say "${g}${res}${x}"
-      exit ${exit_with}
   fi
 
   say "    ${e}->${x} Uploading to Codecov"
