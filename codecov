@@ -790,6 +790,7 @@ then
                     -not -name '*.profdata' \
                     -not -name 'coverage-summary.json' \
                     -not -name 'phpunit-code-coverage.xml' \
+                    -not -name 'remapInstanbul.coverage*.json' \
                     -not -name '*codecov.yml' \
                     -not -name '*.serialized' \
                     -not -name '.coverage*' \
