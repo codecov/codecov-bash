@@ -775,6 +775,7 @@ then
                      -or -name '*.codecov.*' \
                      -or -name 'codecov.*' \
                      -or -name 'cobertura.xml' \
+                     -or -name 'excoveralls.json' \
                      -or -name 'luacov.report.out' \
                      -or -name 'coverage-final.json' \
                      -or -name 'naxsi.info' \
