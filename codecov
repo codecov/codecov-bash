@@ -970,10 +970,6 @@ cleanup() {
 
 trap cleanup INT ABRT TERM
 
-
-echo "$network
-<<<<<< network" > $upload_file
-
 if [ "$env" != "" ];
 then
   inc_env=""
@@ -990,6 +986,9 @@ then
 
 echo "$inc_env<<<<<< ENV" >> $upload_file
 fi
+
+echo "$network
+<<<<<< network" > $upload_file
 
 fr=0
 say "${e}==>${x} Reading reports"
