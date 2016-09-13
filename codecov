@@ -43,6 +43,7 @@ ft_s3="1"
 ft_xcode="1"
 _git_root=$(git rev-parse --show-toplevel 2>/dev/null || hg root 2>/dev/null || echo $PWD)
 git_root="$_git_root"
+remote_addr=""
 if [ "$git_root" = "$PWD" ];
 then
   git_root="."
@@ -422,7 +423,7 @@ then
   else
     commit="$BUILD_VCS_NUMBER"
   fi
-  slug=$(echo "$TEAMCITY_BUILD_REPOSITORY" | cut -d'/' -f4-5 | sed -e 's/\.git//')
+  remove_addr="$TEAMCITY_BUILD_REPOSITORY"
 
 elif [ "$CI" = "true" ] && [ "$CIRCLECI" = "true" ];
 then
@@ -459,7 +460,7 @@ then
   branch="${bamboo_planRepository_branch}"
   build="${bamboo_buildNumber}"
   build_url="${bamboo_buildResultsUrl}"
-  slug=$(echo "${bamboo_planRepository_repositoryUrl}" | cut -d / -f 4,5 | cut -d . -f 1)
+  remote_addr="${bamboo_planRepository_repositoryUrl}"
 
 elif [ "$CI" = "true" ] && [ "$BITRISE_IO" = "true" ];
 then
@@ -579,7 +580,7 @@ then
   service="gitlab"
   branch="$CI_BUILD_REF_NAME"
   build="$CI_BUILD_ID"
-  slug=$(echo "$CI_BUILD_REPO" | cut -d'/' -f4-5 | sed -e 's/\.git//')
+  remove_addr="$CI_BUILD_REPO"
   commit="$CI_BUILD_REF"
 
 else
@@ -647,6 +648,27 @@ if [ "$CODECOV_SLUG" != "" ];
 then
   say "${e}-->${x} slug set from env"
   slug_o="$CODECOV_SLUG"
+
+elif [ "$slug" = "" ];
+then
+  if [ "$remote_addr" = "" ];
+  then
+    remote_addr=$(git config --get remote.origin.url || hg paths default || echo '')
+  fi
+  if [ "$remote_addr" != "" ];
+  then
+    if echo "$remote_addr" | grep -q "//"; then
+      # https
+      slug=$(echo "$remote_addr" | cut -d / -f 4,5 | sed -e 's/\.git$//')
+    else
+      # ssh
+      slug=$(echo "$remote_addr" | cut -d : -f 2 | sed -e 's/\.git$//')
+    fi
+  fi
+  if [ "$slug" = "/" ];
+  then
+    slug=""
+  fi
 fi
 
 
@@ -694,7 +716,7 @@ query="branch=$branch\
        &build=$([ "$build_o" = "" ] && echo "$build" || echo "$build_o")\
        &build_url=$build_url\
        &tag=$([ "$tag_o" = "" ] && echo "$tag" || echo "$tag_o")\
-       &slug=$([ "$slug_o" = "" ] && echo "$slug" || echo "$slug_o")\
+       &slug=$([ "$slug_o" = "" ] && urlencode "$slug" || urlencode "$slug_o")\
        &yaml=$(urlencode "$yaml")\
        &service=$service\
        &flags=$flags\
