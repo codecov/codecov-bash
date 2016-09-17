@@ -821,6 +821,18 @@ then
                     -not -name '*.sh' \
                     -not -name '*.bat' \
                     -not -name '*.ps1' \
+                    -not -name '*.sbt' \
+                    -not -name '*.gz' \
+                    -not -name '*.conf' \
+                    -not -name '*.p12' \
+                    -not -name '*.csv' \
+                    -not -name '*.rsp' \
+                    -not -name '*.m4' \
+                    -not -name '*.am' \
+                    -not -name '*.template' \
+                    -not -name '*.cp' \
+                    -not -name '*.bw' \
+                    -not -name '*.crt' \
                     -not -name '*.log' \
                     -not -name '*.cmake' \
                     -not -name '*.pth' \
