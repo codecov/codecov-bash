@@ -748,9 +748,10 @@ then
     # xcode via profdata
     if [ "$xp" = "" ];
     then
-      # xp=$(xcodebuild -showBuildSettings 2>/dev/null | grep -i "^\s*PRODUCT_NAME" | sed -e 's/.*= \(.*\)/\1/')
+      xp=$(xcodebuild -showBuildSettings 2>/dev/null | grep -i "^\s*PRODUCT_NAME" | sed -e 's/.*= \(.*\)/\1/')
+      say "    Detected project as $xp"
       # say " ${e}->${x} Speed up XCode processing by adding ${e}-J '$xp'${x}"
-      say "    ${g}hint${x} Speed up Swift processing by using use -J 'AppName' (accepting regexp)"
+      say "    ${g}hint${x} Choose your project(s) using -J 'AppName' or -J '^AppName$'"
     fi
     while read -r profdata;
     do
