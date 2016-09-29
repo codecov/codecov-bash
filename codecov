@@ -825,6 +825,7 @@ then
                     -not -name '*.sh' \
                     -not -name '*.bat' \
                     -not -name '*.ps1' \
+                    -not -name '*.rst' \
                     -not -name '*.sbt' \
                     -not -name '*.gz' \
                     -not -name '*.conf' \
