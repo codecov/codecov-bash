@@ -173,9 +173,10 @@ swiftcov() {
       if [ "$2" = "" ] || [ "$(echo "$_proj" | grep -i "$2")" != "" ];
       then
         say "    $g+$x Building reports for $_proj $_type"
+        dest=$([ -d "$f/$_proj" ] && echo "$f/$_proj" || echo "$f/Contents/MacOS/$_proj")
         _proj_name=$(echo "$_proj" | sed -e 's/[[:space:]]//g')
-        xcrun llvm-cov show -instr-profile "$1" "$f/$_proj" > "$_proj_name.$_type.coverage.txt" \
-         || say "    ${r}x>${x} llvm-cov failed to produce results for $f/$_proj"
+        xcrun llvm-cov show -instr-profile "$1" "$dest" > "$_proj_name.$_type.coverage.txt" \
+         || say "    ${r}x>${x} llvm-cov failed to produce results for $dest"
       fi
     done
   done
