@@ -9,8 +9,14 @@ Codecov Global Uploader
 > ```bash
 # All CI
 bash <(curl -s https://codecov.io/bash)
+
 # Jenkins
 curl -s https://codecov.io/bash | bash
+
+# No bash method
+curl -s https://codecov.io/bash > .codecov
+chmod +x .codecov
+./.codecov
 ```
 
 ------
