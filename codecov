@@ -909,11 +909,11 @@ then
                     -not -path '*/$bower_components/*' \
                     -not -path '*/node_modules/*' \
                     -not -path '*/conftest_*.c.gcov' 2>/dev/null"
-  files=$(eval "$patterns")
+  files=$(eval "$patterns" || echo '')
 
 elif [ "$include_cov" != "" ];
 then
-  files=$(eval "find $search_in -type f \( ${include_cov:5} \)$exclude_cov 2>/dev/null")
+  files=$(eval "find $search_in -type f \( ${include_cov:5} \)$exclude_cov 2>/dev/null" || echo '')
 fi
 
 num_of_files=$(echo "$files" | wc -l | tr -d ' ')
@@ -998,7 +998,7 @@ then
                  -not -path '*/js/generated/coverage/*' \
                  -not -path '*/__pycache__/*' \
                  -not -path '*/node_modules/*' \
-                 -not -path "*/$bower_components/*")
+                 -not -path "*/$bower_components/*" 2>/dev/null || echo '')
 fi
 
 upload_file=`mktemp /tmp/codecov.XXXXXX`
