@@ -6,7 +6,7 @@ Codecov Global Uploader
 
 ------
 
-> ```bash
+```bash
 # All CI
 bash <(curl -s https://codecov.io/bash)
 
