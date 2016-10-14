@@ -100,7 +100,7 @@ bash <(curl -s https://codecov.io/bash) -B ${env.BRANCH_NAME}
 Bash does not respect multiple spaces with arguments
 
 ```diff
-# FAILES because of double space here:
+# FAILS because of double space here:
 #                                                      v
 - bash <(curl -s https://codecov.io/bash) -X coveragepy  -B master
 + bash <(curl -s https://codecov.io/bash) -X coveragepy -B master
