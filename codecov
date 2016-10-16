@@ -741,7 +741,7 @@ fi
 
 if [ "$ft_xcode" = "1" ] && [ -d "$ddp" ];
 then
-  say "${e}==>${x} Processing XCode reports"
+  say "${e}==>${x} Processing Xcode reports"
   say "    DerivedData folder: $ddp"
   profdata_files=$(find "$ddp" -name '*.profdata' 2>/dev/null || echo '')
   if [ "$profdata_files" != "" ];
@@ -750,7 +750,7 @@ then
     if [ "$xp" = "" ];
     then
       # xp=$(xcodebuild -showBuildSettings 2>/dev/null | grep -i "^\s*PRODUCT_NAME" | sed -e 's/.*= \(.*\)/\1/')
-      # say " ${e}->${x} Speed up XCode processing by adding ${e}-J '$xp'${x}"
+      # say " ${e}->${x} Speed up Xcode processing by adding ${e}-J '$xp'${x}"
       say "    ${g}hint${x} Speed up Swift processing by using use -J 'AppName' (accepting regexp)"
     fi
     while read -r profdata;
