@@ -330,10 +330,10 @@ $OPTARG"
         if [ "$OPTARG" = "gcov" ];
         then
           ft_gcov="0"
-        elif [ "$OPTARG" = "coveragepy" ];
+        elif [ "$OPTARG" = "coveragepy" ] || [ "$OPTARG" = "py" ];
         then
           ft_coveragepy="0"
-        elif [ "$OPTARG" = "fix" ];
+        elif [ "$OPTARG" = "fix" ] || [ "$OPTARG" = "fixes" ];
         then
           ft_fix="0"
         elif [ "$OPTARG" = "xcode" ];
@@ -676,7 +676,11 @@ then
 fi
 
 
-yaml=$(cd "$proj_root" && git ls-files "*codecov.yml" 2>/dev/null || hg locate "*codecov.yml" 2>/dev/null || find . -name "*codecov.yml" 2>/dev/null || echo '')
+yaml=$(cd "$proj_root" && \
+       git ls-files "*codecov.yml" "*codecov.yaml" 2>/dev/null \
+       || hg locate "*codecov.yml" "*codecov.yaml" 2>/dev/null \
+       || find . -name "*codecov.yml" -or -name "*codecov.yaml" 2>/dev/null \
+       || echo '')
 yaml=$(echo "$yaml" | head -1)
 
 if [ "$yaml" != "" ];
@@ -827,6 +831,7 @@ then
                     -not -name '*.ps1' \
                     -not -name '*.rst' \
                     -not -name '*.sbt' \
+                    -not -name '*.xcoverage.*' \
                     -not -name '*.gz' \
                     -not -name '*.conf' \
                     -not -name '*.p12' \
@@ -866,6 +871,7 @@ then
                     -not -name '*.ru' \
                     -not -name '*.css' \
                     -not -name '*.less' \
+                    -not -name '*.pyo' \
                     -not -name '*.whl' \
                     -not -name '*.html' \
                     -not -name '*.ftl' \
@@ -885,6 +891,7 @@ then
                     -not -name 'createdFiles.lst' \
                     -not -name 'scoverage.measurements.*' \
                     -not -name 'test_*_coverage.txt' \
+                    -not -name 'testrunner-coverage*' \
                     -not -path '*/vendor/*' \
                     -not -path '*/htmlcov/*' \
                     -not -path '*/home/cainus/*' \
