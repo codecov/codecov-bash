@@ -565,6 +565,16 @@ then
   slug="$REPO_FULL_NAME"
   commit="$COMMIT"
 
+elif [ "$TDDIUM" = "true" ];
+then
+  say "Solano CI detected."
+  # http://docs.solanolabs.com/Setup/tddium-set-environment-variables/
+  service="solano"
+  commit="$TDDIUM_CURRENT_COMMIT"
+  branch="$TDDIUM_CURRENT_BRANCH"
+  build="$TDDIUM_TID"
+  pr="$TDDIUM_PR_ID"
+
 elif [ "$GREENHOUSE" = "true" ];
 then
   say "$e==>$x Greenhouse CI detected."

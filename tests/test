@@ -303,6 +303,16 @@ function test_buildkite (){
     assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=8.1&build_url=http%3A%2F%2Fbuildkite&tag=&slug=myowner%2Fmyrepo&yaml=&service=buildkite&flags=&pr=&job="
 }
 
+function test_solano (){
+    reset
+    export TDDIUM="true"
+    export TDDIUM_CURRENT_BRANCH="develop"
+    export TDDIUM_TID="12311"
+    export TDDIUM_PR_ID="false"
+    export TDDIUM_CURRENT_COMMIT="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
+    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=12311&build_url=&tag=&slug=codecov%2Fcodecov-bash&yaml=&service=solano&flags=&pr=false&job="
+}
+
 function test_drone (){
     reset
     export CI="true"
