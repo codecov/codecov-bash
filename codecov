@@ -812,6 +812,7 @@ then
                      -or -name 'lcov.info' \
                      -or -name 'lcov.dat' \
                      -or -name '*.lcov' \
+                     -or -name '*.clover' \
                      -or -name 'cover.out' \
                      -or -name 'gcov.info' \
                      -or -name '*.gcov' \
