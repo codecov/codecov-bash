@@ -105,3 +105,13 @@ Bash does not respect multiple spaces with arguments
 - bash <(curl -s https://codecov.io/bash) -X coveragepy  -B master
 + bash <(curl -s https://codecov.io/bash) -X coveragepy -B master
 ```
+
+#### Fastlane
+
+```
+# fastlane no arguments
+sh("cd .. && curl -s http://codecov.io/bash | bash")
+
+# fastlane with arguments
+"curl -s http://codecov.io/bash | bash -s -- -J 'App1'")
+```
