@@ -686,7 +686,7 @@ then
 fi
 
 
-yaml=$(cd "$proj_root" && \
+yaml=$(cd "$git_root" && \
        git ls-files "*codecov.yml" "*codecov.yaml" 2>/dev/null \
        || hg locate "*codecov.yml" "*codecov.yaml" 2>/dev/null \
        || find . -name "*codecov.yml" -or -name "*codecov.yaml" 2>/dev/null \
