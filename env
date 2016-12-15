@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Documentation at https://github.com/codecov/support/wiki/Docker-Integration
+# Documentation at http://docs.codecov.io/docs/testing-with-docker
 
 set -e +o pipefail
 
