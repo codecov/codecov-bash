@@ -183,6 +183,10 @@ then
   add "CI_BUILD_ID"
   add "CI_BUILD_REPO"
   add "CI_BUILD_REF"
+  add "CI_BUILD_TAG"
+  add "CI_PIPELINE_ID"
+  add "CI_PROJECT_PATH"
+  add "CI_PROJECT_URL"
 
 else
   add "VCS_COMMIT_ID"
