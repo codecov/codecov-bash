@@ -590,13 +590,17 @@ then
 elif [ "$GITLAB_CI" != "" ];
 then
   say "$e==>$x GitLab CI detected."
-  # http://doc.gitlab.com/ce/ci/variables/README.html
+  # https://docs.gitlab.com/ce/ci/variables/
   service="gitlab"
   branch="$CI_BUILD_REF_NAME"
   build="$CI_BUILD_ID"
-  remove_addr="$CI_BUILD_REPO"
+  if [ -n "$CI_PROJECT_URL" ] ; then
+    build_url="$CI_PROJECT_URL/builds/$CI_BUILD_ID"
+  fi
+  tag="$CI_BUILD_TAG"
   commit="$CI_BUILD_REF"
-
+  slug="$CI_PROJECT_PATH"
+  job="$CI_PIPELINE_ID"
 else
   say "${r}x>${x} No CI provider detected."
 
