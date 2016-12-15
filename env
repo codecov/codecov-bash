@@ -61,6 +61,7 @@ then
 
 elif [ "$CI" = "true" ] && [ "$CIRCLECI" = "true" ];
 then
+  add "CI"
   add "CIRCLECI"
   add "CIRCLE_BRANCH"
   add "CIRCLE_BUILD_NUM"
