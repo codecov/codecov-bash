@@ -436,7 +436,7 @@ then
   slug="$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
   pr="$CIRCLE_PR_NUMBER"
   commit="$CIRCLE_SHA1"
-  search_in="$search_in $CIRCLE_ARTIFACTS"
+  search_in="$search_in $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS"
 
 elif [ "$BUDDYBUILD_BRANCH" != "" ];
 then
