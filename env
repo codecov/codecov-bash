@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Documentation at http://docs.codecov.io/docs/testing-with-docker
 
