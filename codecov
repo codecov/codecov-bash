@@ -434,7 +434,7 @@ then
   branch="$CIRCLE_BRANCH"
   build="$CIRCLE_BUILD_NUM.$CIRCLE_NODE_INDEX"
   slug="$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
-  pr="$CIRCLE_PR_NUMBER"
+  pr=$(echo "$CI_PULL_REQUEST" | grep -Eow "[0-9]+")
   commit="$CIRCLE_SHA1"
   search_in="$search_in $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS"
 
