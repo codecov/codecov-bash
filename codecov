@@ -685,7 +685,6 @@ then
   fi
 fi
 
-
 yaml=$(cd "$git_root" && \
        git ls-files "*codecov.yml" "*codecov.yaml" 2>/dev/null \
        || hg locate "*codecov.yml" "*codecov.yaml" 2>/dev/null \
@@ -1044,7 +1043,7 @@ echo "$inc_env<<<<<< ENV" >> $upload_file
 fi
 
 echo "$network
-<<<<<< network" > $upload_file
+<<<<<< network" >> $upload_file
 
 fr=0
 say "${e}==>${x} Reading reports"
