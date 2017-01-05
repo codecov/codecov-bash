@@ -388,6 +388,13 @@ then
   job="$TRAVIS_JOB_ID"
   slug="$TRAVIS_REPO_SLUG"
   tag="$TRAVIS_TAG"
+  env="$env,TRAVIS_OS_NAME"
+
+  language=$(printenv | grep "TRAVIS_.*_VERSION" | head -1)
+  if [ "$language" != "" ];
+  then
+    env="$env,${language%=*}"
+  fi
 
 elif [ "$CI" = "true" ] && [ "$CI_NAME" = "codeship" ];
 then
