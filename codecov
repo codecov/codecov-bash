@@ -946,7 +946,7 @@ then
 fi
 
 # Python coveragepy generation
-if [ "$ft_coveragepy" = "1" ];
+if [ "$ft_coveragepy" = "1" ] && [ "$ft_search" = "1" ];
 then
   if [ ! -f coverage.xml ];
   then
