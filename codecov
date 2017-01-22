@@ -439,7 +439,8 @@ then
   # https://circleci.com/docs/environment-variables
   service="circleci"
   branch="$CIRCLE_BRANCH"
-  build="$CIRCLE_BUILD_NUM.$CIRCLE_NODE_INDEX"
+  build="$CIRCLE_BUILD_NUM"
+  job="$CIRCLE_NODE_INDEX"
   slug="$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
   pr="$CIRCLE_PR_NUMBER"
   commit="$CIRCLE_SHA1"
