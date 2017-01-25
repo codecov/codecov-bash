@@ -41,6 +41,7 @@ ft_fix="1"
 ft_search="1"
 ft_s3="1"
 ft_xcode="1"
+ft_network="1"
 _git_root=$(git rev-parse --show-toplevel 2>/dev/null || hg root 2>/dev/null || echo $PWD)
 git_root="$_git_root"
 remote_addr=""
@@ -96,6 +97,7 @@ cat << EOF
                  -X fix           Disable report fixing
                  -X search        Disable searching for reports
                  -X xcode         Disable xcode processing
+                 -X network       Disable uploading the file network
 
     -R root dir  Used when not in git/hg project to identify project root directory
     -F flag      Flag the upload to group coverage metrics
@@ -342,6 +344,9 @@ $OPTARG"
         elif [ "$OPTARG" = "search" ];
         then
           ft_search="0"
+        elif [ "$OPTARG" = "network" ];
+        then
+          ft_network="0"
         fi
         ;;
       "Z")
@@ -992,37 +997,40 @@ then
   exit ${exit_with};
 fi
 
-say "${e}==>${x} Detecting git/mercurial file structure"
-network=$(cd "$git_root" && git ls-files 2>/dev/null || hg locate 2>/dev/null || echo "")
-if [ "$network" = "" ];
+if [ "$ft_network" == "1" ];
 then
-  network=$(find "$git_root" -type f \
-                 -not -path '*/virtualenv/*' \
-                 -not -path '*/.virtualenv/*' \
-                 -not -path '*/virtualenvs/*' \
-                 -not -path '*/.virtualenvs/*' \
-                 -not -path '*.png' \
-                 -not -path '*.gif' \
-                 -not -path '*.jpg' \
-                 -not -path '*.jpeg' \
-                 -not -path '*.md' \
-                 -not -path '*/.env/*' \
-                 -not -path '*/.envs/*' \
-                 -not -path '*/env/*' \
-                 -not -path '*/envs/*' \
-                 -not -path '*/.venv/*' \
-                 -not -path '*/.venvs/*' \
-                 -not -path '*/venv/*' \
-                 -not -path '*/venvs/*' \
-                 -not -path '*/build/lib/*' \
-                 -not -path '*/.git/*' \
-                 -not -path '*/.egg-info/*' \
-                 -not -path '*/shunit2-2.1.6/*' \
-                 -not -path '*/vendor/*' \
-                 -not -path '*/js/generated/coverage/*' \
-                 -not -path '*/__pycache__/*' \
-                 -not -path '*/node_modules/*' \
-                 -not -path "*/$bower_components/*" 2>/dev/null || echo '')
+  say "${e}==>${x} Detecting git/mercurial file structure"
+  network=$(cd "$git_root" && git ls-files 2>/dev/null || hg locate 2>/dev/null || echo "")
+  if [ "$network" = "" ];
+  then
+    network=$(find "$git_root" -type f \
+                   -not -path '*/virtualenv/*' \
+                   -not -path '*/.virtualenv/*' \
+                   -not -path '*/virtualenvs/*' \
+                   -not -path '*/.virtualenvs/*' \
+                   -not -path '*.png' \
+                   -not -path '*.gif' \
+                   -not -path '*.jpg' \
+                   -not -path '*.jpeg' \
+                   -not -path '*.md' \
+                   -not -path '*/.env/*' \
+                   -not -path '*/.envs/*' \
+                   -not -path '*/env/*' \
+                   -not -path '*/envs/*' \
+                   -not -path '*/.venv/*' \
+                   -not -path '*/.venvs/*' \
+                   -not -path '*/venv/*' \
+                   -not -path '*/venvs/*' \
+                   -not -path '*/build/lib/*' \
+                   -not -path '*/.git/*' \
+                   -not -path '*/.egg-info/*' \
+                   -not -path '*/shunit2-2.1.6/*' \
+                   -not -path '*/vendor/*' \
+                   -not -path '*/js/generated/coverage/*' \
+                   -not -path '*/__pycache__/*' \
+                   -not -path '*/node_modules/*' \
+                   -not -path "*/$bower_components/*" 2>/dev/null || echo '')
+  fi
 fi
 
 upload_file=`mktemp /tmp/codecov.XXXXXX`
@@ -1050,8 +1058,11 @@ then
 echo "$inc_env<<<<<< ENV" >> $upload_file
 fi
 
-echo "$network
+if [ "$ft_network" == "1" ];
+then
+  echo "$network
 <<<<<< network" >> $upload_file
+fi
 
 fr=0
 say "${e}==>${x} Reading reports"
