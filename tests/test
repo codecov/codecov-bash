@@ -247,7 +247,7 @@ function test_bitrise (){
     export CI="true"
     export BITRISE_IO="true"
     export BITRISE_GIT_BRANCH="develop"
-    export BITRISE_GIT_COMMIT="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
+    export GIT_CLONE_COMMIT_HASH="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
     export BITRISE_BUILD_NUMBER="15.1"
     export BITRISE_PULL_REQUEST="1"
     export BITRISE_BUILD_URL="http://endpoint"
