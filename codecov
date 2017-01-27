@@ -478,13 +478,17 @@ then
 
 elif [ "$CI" = "true" ] && [ "$BITRISE_IO" = "true" ];
 then
+  # http://devcenter.bitrise.io/faq/available-environment-variables/
   say "$e==>$x Bitrise CI detected."
   service="bitrise"
   branch="$BITRISE_GIT_BRANCH"
   build="$BITRISE_BUILD_NUMBER"
   build_url=$(urlencode "$BITRISE_BUILD_URL")
   pr="$BITRISE_PULL_REQUEST"
-  commit=$([ "$BITRISE_GIT_COMMIT" != "" ] && echo "$BITRISE_GIT_COMMIT" || echo $(git rev-parse HEAD 2>/dev/null || hg id -i --debug 2>/dev/null | tr -d '+'))
+  if [ "$GIT_CLONE_COMMIT_HASH" != "" ];
+  then
+    commit="$GIT_CLONE_COMMIT_HASH"
+  fi
 
 elif [ "$CI" = "true" ] && [ "$SEMAPHORE" = "true" ];
 then
