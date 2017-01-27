@@ -522,7 +522,6 @@ then
   branch="$DRONE_BRANCH"
   build="$DRONE_BUILD_NUMBER"
   build_url=$(urlencode "${DRONE_BUILD_URL:-$CI_BUILD_URL}")
-  commit=$(git rev-parse HEAD 2>/dev/null || hg id -i --debug 2>/dev/null | tr -d '+')
   pr="$DRONE_PULL_REQUEST"
   job="$DRONE_JOB_NUMBER"
   tag="$DRONE_TAG"
@@ -657,7 +656,7 @@ then
     commit="$GIT_COMMIT"
   elif [ "$commit" = "" ];
   then
-    commit=$(git rev-parse HEAD 2>/dev/null || hg id -i --debug 2>/dev/null | tr -d '+' || echo "")
+    commit=$(git log -1 --format="%H" 2>/dev/null || hg id -i --debug 2>/dev/null | tr -d '+' || echo "")
   fi
 else
   commit="$commit_o"
