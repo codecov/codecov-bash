@@ -1117,6 +1117,7 @@ then
     then
       adjustments="$adjustments
 $(find "$git_root" -type f -name '*.kt' -exec wc -l {} \; | while read l; do echo "EOF: $l"; done 2>/dev/null || echo '')
+$(find "$git_root" -type f -name '*.kt' -exec grep -nIH '^[[:space:]]*}$' {} \; 2>/dev/null || echo '')
 $(find "$git_root" -type f -name '*.kt' -exec grep -nIH '^/\*' {} \; 2>/dev/null || echo '')"
     fi
     if [[ $(echo "$network" | grep '.go$') != '' ]];
