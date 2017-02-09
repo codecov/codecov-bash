@@ -1154,24 +1154,25 @@ $(find "$git_root" -type f -not -path '*/vendor/*' -name '*.php' -exec grep -nIH
       -e '^[[:space:]]*][[:space:]]*$' \
       {} \; | cut -f1-2 -d: 2>/dev/null || echo '')"
     fi
-    if [[ $(echo "$network" | grep '\(.cpp\|.h\|.cxx\|.c\|.hpp\|.m\)$') != '' ]];
-    then
-      adjustments="$adjustments
-$(find "$git_root" -type f \( -name '*.h' -or -name '*.cpp' -or -name '*.cxx' -or -name '*.m' -or -name '*.c' -or -name '*.hpp' \) -exec grep -nIH '^[[:space:]]*}' {} \; | cut -f1-2 -d: 2>/dev/null || echo '')
-$(find "$git_root" -type f \( -name '*.h' -or -name '*.cpp' -or -name '*.cxx' -or -name '*.m' -or -name '*.c' -or -name '*.hpp' \) -exec grep -nIH '// LCOV_EXCL' {} \; 2>/dev/null || echo '')"
-    fi
+
     found=$(echo "$adjustments" | wc -l | tr -d ' ')
-    adjustments_pluck=$(echo "$adjustments" | grep '//' 2>/dev/null || echo '')
     adjustments=$(echo "$adjustments" | awk 'BEGIN { FS=":" }
                                              $1!=key { if (key!="") print out ; key=$1 ; out=$0 ; next }
                                              { out=out","$2 }
                                              END { print out }')
+
+    if [[ $(echo "$network" | grep '\(.cpp\|.h\|.cxx\|.c\|.hpp\|.m\)$') != '' ]];
+    then
+     adjustments="$adjustments
+$(find "$git_root" -type f \( -name '*.h' -or -name '*.cpp' -or -name '*.cxx' -or -name '*.m' -or -name '*.c' -or -name '*.hpp' \) -exec grep -nIH '^[[:space:]]*}' {} \; | cut -f1-2 -d: 2>/dev/null || echo '')
+$(find "$git_root" -type f \( -name '*.h' -or -name '*.cpp' -or -name '*.cxx' -or -name '*.m' -or -name '*.c' -or -name '*.hpp' \) -exec grep -nIH '// LCOV_EXCL' {} \; 2>/dev/null || echo '')"
+    fi
+
     if [ "$found" != "1" ];
     then
       say "    ${g}+${x} Found $found adjustments"
       echo "# path=fixes
 $adjustments
-$adjustments_pluck
 <<<<<< EOF" >> $upload_file
     else
       say "    ${e}->${x} Found 0 adjustments"
