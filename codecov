@@ -755,72 +755,113 @@ query="branch=$branch\
        &pr=$([ "$pr_o" = "" ] && echo "$pr" || echo "$pr_o")\
        &job=$job"
 
-# detect bower comoponents location
-bower_components="bower_components"
-bower_rc=$(cd "$git_root" && cat .bowerrc 2>/dev/null || echo "")
-if [ "$bower_rc" != "" ];
-then
-  bower_components=$(echo "$bower_rc" | tr -d '\n' | grep '"directory"' | cut -d'"' -f4 | sed -e 's/\/$//')
-  if [ "$bower_components" = "" ];
-  then
-    bower_components="bower_components"
-  fi
-fi
-
-if [ "$ft_xcode" = "1" ] && [ -d "$ddp" ];
-then
-  say "${e}==>${x} Processing Xcode reports"
-  say "    DerivedData folder: $ddp"
-  profdata_files=$(find "$ddp" -name '*.profdata' 2>/dev/null || echo '')
-  if [ "$profdata_files" != "" ];
-  then
-    # xcode via profdata
-    if [ "$xp" = "" ];
-    then
-      # xp=$(xcodebuild -showBuildSettings 2>/dev/null | grep -i "^\s*PRODUCT_NAME" | sed -e 's/.*= \(.*\)/\1/')
-      # say " ${e}->${x} Speed up Xcode processing by adding ${e}-J '$xp'${x}"
-      say "    ${g}hint${x} Speed up Swift processing by using use -J 'AppName' (accepting regexp)"
-    fi
-    while read -r profdata;
-    do
-      if [ "$profdata" != "" ];
-      then
-        swiftcov "$profdata" "$xp"
-      fi
-    done <<< "$profdata_files"
-  else
-    say "    ${e}->${x} No Swift coverage found"
-  fi
-
-  if [ "$ft_gcov" = "1" ];
-  then
-    say "    ${e}->${x} Running $gcov_exe for Obj-C"
-    bash -c "find $ddp -type f -name '*.gcda' $gcov_include $gcov_ignore -exec $gcov_exe -pbcu $gcov_arg {} +" || true
-  fi
-fi
-
-if [ "$ft_gcov" = "1" ];
-then
-  say "${e}==>${x} Running gcov in $proj_root ${e}(disable via -X gcov)${x}"
-  bash -c "find $proj_root -type f -name '*.gcno' $gcov_include $gcov_ignore -exec $gcov_exe -pb $gcov_arg {} +" || true
-else
-  say "${e}==>${x} gcov disabled"
-fi
-
-if [ "$search_in_o" != "" ];
-then
-  # location override
-  search_in="$search_in_o"
-fi
-
-say "$e==>$x Searching for coverage reports in:"
-for _path in $search_in
-do
-  say "    ${g}+${x} $_path"
-done
-
 if [ "$ft_search" = "1" ];
 then
+  # detect bower comoponents location
+  bower_components="bower_components"
+  bower_rc=$(cd "$git_root" && cat .bowerrc 2>/dev/null || echo "")
+  if [ "$bower_rc" != "" ];
+  then
+    bower_components=$(echo "$bower_rc" | tr -d '\n' | grep '"directory"' | cut -d'"' -f4 | sed -e 's/\/$//')
+    if [ "$bower_components" = "" ];
+    then
+      bower_components="bower_components"
+    fi
+  fi
+
+  # Swift Coverage
+  if [ "$ft_xcode" = "1" ] && [ -d "$ddp" ];
+  then
+    say "${e}==>${x} Processing Xcode reports"
+    say "    DerivedData folder: $ddp"
+    profdata_files=$(find "$ddp" -name '*.profdata' 2>/dev/null || echo '')
+    if [ "$profdata_files" != "" ];
+    then
+      # xcode via profdata
+      if [ "$xp" = "" ];
+      then
+        # xp=$(xcodebuild -showBuildSettings 2>/dev/null | grep -i "^\s*PRODUCT_NAME" | sed -e 's/.*= \(.*\)/\1/')
+        # say " ${e}->${x} Speed up Xcode processing by adding ${e}-J '$xp'${x}"
+        say "    ${g}hint${x} Speed up Swift processing by using use -J 'AppName' (accepting regexp)"
+      fi
+      while read -r profdata;
+      do
+        if [ "$profdata" != "" ];
+        then
+          swiftcov "$profdata" "$xp"
+        fi
+      done <<< "$profdata_files"
+    else
+      say "    ${e}->${x} No Swift coverage found"
+    fi
+
+    # Obj-C Gcov Coverage
+    if [ "$ft_gcov" = "1" ];
+    then
+      say "    ${e}->${x} Running $gcov_exe for Obj-C"
+      bash -c "find $ddp -type f -name '*.gcda' $gcov_include $gcov_ignore -exec $gcov_exe -pbcu $gcov_arg {} +" || true
+    fi
+  fi
+
+  # Gcov Coverage
+  if [ "$ft_gcov" = "1" ];
+  then
+    say "${e}==>${x} Running gcov in $proj_root ${e}(disable via -X gcov)${x}"
+    bash -c "find $proj_root -type f -name '*.gcno' $gcov_include $gcov_ignore -exec $gcov_exe -pb $gcov_arg {} +" || true
+  else
+    say "${e}==>${x} gcov disabled"
+  fi
+
+  # Python Coverage
+  if [ "$ft_coveragepy" = "1" ];
+  then
+    if [ ! -f coverage.xml ];
+    then
+      if which coverage >/dev/null 2>&1;
+      then
+        say "${e}==>${x} Python coveragepy exists ${e}disable via -X coveragepy${x}"
+
+        dotcoverage=$(find "$git_root" -name '.coverage' -or -name '.coverage.*' | head -1 || echo '')
+        if [ "$dotcoverage" != "" ];
+        then
+          cd "$(dirname "$dotcoverage")"
+          if [ ! -f .coverage ];
+          then
+            say "    ${e}->${x} Running coverage combine"
+            coverage combine
+          fi
+          say "    ${e}->${x} Running coverage xml"
+          if [ "$(coverage xml -i)" != "No data to report." ];
+          then
+            files="$files
+$PWD/coverage.xml"
+          else
+            say "    ${r}No data to report.${x}"
+          fi
+          cd "$proj_root"
+        else
+          say "    ${r}No .coverage file found.${x}"
+        fi
+      else
+        say "${e}==>${x} Python coveragepy not found"
+      fi
+    fi
+  else
+    say "${e}==>${x} Python coveragepy disabled"
+  fi
+
+  if [ "$search_in_o" != "" ];
+  then
+    # location override
+    search_in="$search_in_o"
+  fi
+
+  say "$e==>$x Searching for coverage reports in:"
+  for _path in $search_in
+  do
+    say "    ${g}+${x} $_path"
+  done
+
   patterns="find $search_in -type f \( -name '*coverage*.*' \
                      -or -name 'nosetests.xml' \
                      -or -name 'jacoco*.xml' \
@@ -952,44 +993,6 @@ num_of_files=$(echo "$files" | wc -l | tr -d ' ')
 if [ "$num_of_files" != '' ] && [ "$files" != '' ];
 then
   say "    ${e}->${x} Found $num_of_files reports"
-fi
-
-# Python coveragepy generation
-if [ "$ft_coveragepy" = "1" ] && [ "$ft_search" = "1" ];
-then
-  if [ ! -f coverage.xml ];
-  then
-    if which coverage >/dev/null 2>&1;
-    then
-      say "${e}==>${x} Python coveragepy exists ${e}disable via -X coveragepy${x}"
-
-      dotcoverage=$(find "$git_root" -name '.coverage' -or -name '.coverage.*' | head -1 || echo '')
-      if [ "$dotcoverage" != "" ];
-      then
-        cd "$(dirname "$dotcoverage")"
-        if [ ! -f .coverage ];
-        then
-          say "    ${e}->${x} Running coverage combine"
-          coverage combine
-        fi
-        say "    ${e}->${x} Running coverage xml"
-        if [ "$(coverage xml -i)" != "No data to report." ];
-        then
-          files="$files
-$PWD/coverage.xml"
-        else
-          say "    ${r}No data to report.${x}"
-        fi
-        cd "$proj_root"
-      else
-        say "    ${r}No .coverage file found.${x}"
-      fi
-    else
-      say "${e}==>${x} Python coveragepy not found"
-    fi
-  fi
-else
-  say "${e}==>${x} Python coveragepy disabled"
 fi
 
 # no files found
