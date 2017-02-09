@@ -1111,21 +1111,22 @@ fi
 
 if [ "$ft_fix" = "1" ];
 then
-  if [ "$(find "$git_root" -name '*.go' -or -name '*.php' -or -name '*.kt' -or -name '*.swift' -or -name '*.m' -or -name '*.jsx' -or -name '*.cpp' -or -name '*.h' -or -name '*.cxx' -or -name '*.c' -or -name '*.hpp' 2>/dev/null || echo '')" != "" ];
+  say "${e}==>${x} Appending adjustments"
+  say "    ${b}http://docs.codecov.io/docs/fixing-reports${x}"
+  adjustments=""
+
+  if echo "$network" | grep -m1 '.kt$' 1>/dev/null;
   then
-    say "${e}==>${x} Appending adjustments"
-    say "    ${b}http://docs.codecov.io/docs/fixing-reports${x}"
-    adjustments=""
-    if [[ $(echo "$network" | grep '.kt$') != '' ]];
-    then
-      adjustments="$adjustments
-$(find "$git_root" -type f -name '*.kt' -exec wc -l {} \; | while read l; do echo "EOF: $l"; done 2>/dev/null || echo '')
+    # skip brackets and comments
+    adjustments="$adjustments
 $(find "$git_root" -type f -name '*.kt' -exec grep -nIH '^[[:space:]]*}$' {} \; | cut -f1-2 -d: 2>/dev/null || echo '')
-$(find "$git_root" -type f -name '*.kt' -exec grep -nIH '^/\*' {} \; 2>/dev/null || echo '')"
-    fi
-    if [[ $(echo "$network" | grep '.go$') != '' ]];
-    then
-      adjustments="$adjustments
+$(find "$git_root" -type f -name '*.kt' -exec grep -nIH '^/\*' {} \; | cut -f1-2 -d: 2>/dev/null || echo '')"
+  fi
+
+  if echo "$network" | grep -m1 '.go$' 1>/dev/null;
+  then
+    # skip empty lines, comments, and brackets
+    adjustments="$adjustments
 $(find "$git_root" -type f -not -path '*/vendor/*' -name '*.go' -exec grep -nIH \
       -e '^[[:space:]]*$' \
       -e '^[[:space:]]*//.*' \
@@ -1133,10 +1134,12 @@ $(find "$git_root" -type f -not -path '*/vendor/*' -name '*.go' -exec grep -nIH 
       -e '^[[:space:]]*\*/' \
       -e '^[[:space:]]*}$' \
       {} \; | cut -f1-2 -d: 2>/dev/null || echo '')"
-    fi
-    if [[ $(echo "$network" | grep '.jsx$') != '' ]];
-    then
-      adjustments="$adjustments
+  fi
+
+  if echo "$network" | grep -m1 '.jsx$' 1>/dev/null;
+  then
+    # skip empty lines, comments, and brackets
+    adjustments="$adjustments
 $(find "$git_root" -type f -name '*.jsx' -exec grep -nIH \
       -e '^[[:space:]]*$' \
       -e '^[[:space:]]*//.*' \
@@ -1144,39 +1147,55 @@ $(find "$git_root" -type f -name '*.jsx' -exec grep -nIH \
       -e '^[[:space:]]*\*/' \
       -e '^[[:space:]]*}$' \
       {} \; | cut -f1-2 -d: 2>/dev/null || echo '')"
-    fi
-    if [[ $(echo "$network" | grep '.php$') != '' ]];
-    then
-      adjustments="$adjustments
+  fi
+
+  if echo "$network" | grep -m1 '.php$' 1>/dev/null;
+  then
+    # skip empty lines, comments, and brackets
+    adjustments="$adjustments
 $(find "$git_root" -type f -not -path '*/vendor/*' -name '*.php' -exec grep -nIH \
       -e '^[[:space:]]*[\{\}\\[][[:space:]]*$' \
       -e '^[[:space:]]*);[[:space:]]*$' \
       -e '^[[:space:]]*][[:space:]]*$' \
       {} \; | cut -f1-2 -d: 2>/dev/null || echo '')"
-    fi
+  fi
 
-    found=$(echo "$adjustments" | wc -l | tr -d ' ')
-    adjustments=$(echo "$adjustments" | awk 'BEGIN { FS=":" }
-                                             $1!=key { if (key!="") print out ; key=$1 ; out=$0 ; next }
-                                             { out=out","$2 }
-                                             END { print out }')
+  if echo "$network" | grep -m1 '\(.cpp\|.h\|.cxx\|.c\|.hpp\|.m\)$' 1>/dev/null;
+  then
+    # skip brackets
+    adjustments="$adjustments
+$(find "$git_root" -type f \( -name '*.h' -or -name '*.cpp' -or -name '*.cxx' -or -name '*.m' -or -name '*.c' -or -name '*.hpp' \) -exec grep -nIH '^[[:space:]]*}' {} \; | cut -f1-2 -d: 2>/dev/null || echo '')"
+  fi
 
-    if [[ $(echo "$network" | grep '\(.cpp\|.h\|.cxx\|.c\|.hpp\|.m\)$') != '' ]];
-    then
-     adjustments="$adjustments
-$(find "$git_root" -type f \( -name '*.h' -or -name '*.cpp' -or -name '*.cxx' -or -name '*.m' -or -name '*.c' -or -name '*.hpp' \) -exec grep -nIH '^[[:space:]]*}' {} \; | cut -f1-2 -d: 2>/dev/null || echo '')
+  # join files into single line
+  found=$(echo "$adjustments" | wc -l | tr -d ' ')
+  adjustments=$(echo "$adjustments" | awk 'BEGIN { FS=":" }
+                                           $1!=key { if (key!="") print out ; key=$1 ; out=$0 ; next }
+                                           { out=out","$2 }
+                                           END { print out }')
+
+  if echo "$network" | grep -m1 '\(.cpp\|.h\|.cxx\|.c\|.hpp\|.m\)$' 1>/dev/null;
+  then
+    # skip LCOV_EXCL
+    adjustments="$adjustments
 $(find "$git_root" -type f \( -name '*.h' -or -name '*.cpp' -or -name '*.cxx' -or -name '*.m' -or -name '*.c' -or -name '*.hpp' \) -exec grep -nIH '// LCOV_EXCL' {} \; 2>/dev/null || echo '')"
-    fi
+  fi
 
-    if [ "$found" != "1" ];
-    then
-      say "    ${g}+${x} Found $found adjustments"
-      echo "# path=fixes
+  if echo "$network" | grep -m1 '.kt$' 1>/dev/null;
+  then
+    # last line in file
+    adjustments="$adjustments
+$(find "$git_root" -type f -name '*.kt' -exec wc -l {} \; | while read l; do echo "EOF: $l"; done 2>/dev/null || echo '')"
+  fi
+
+  if [ "$found" != "1" ];
+  then
+    say "    ${g}+${x} Found $found adjustments"
+    echo "# path=fixes
 $adjustments
 <<<<<< EOF" >> $upload_file
-    else
-      say "    ${e}->${x} Found 0 adjustments"
-    fi
+  else
+    say "    ${e}->${x} Found 0 adjustments"
   fi
 fi
 
