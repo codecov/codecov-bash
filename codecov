@@ -66,6 +66,7 @@ cat << EOF
                 Codecov Bash $VERSION
 
           Global report uploading tool for Codecov
+       Documentation at https://docs.codecov.io/docs
     Contribute at https://github.com/codecov/codecov-bash
 
 
@@ -615,6 +616,8 @@ then
 
 else
   say "${r}x>${x} No CI provider detected."
+  say "    Testing inside Docker? ${b}http://docs.codecov.io/docs/testing-with-docker${x}"
+  say "    Testing with Tox? ${b}https://docs.codecov.io/docs/python#section-testing-with-tox${x}"
 
   commit="$VCS_COMMIT_ID"
   branch="$VCS_BRANCH_NAME"
@@ -782,7 +785,8 @@ then
       then
         # xp=$(xcodebuild -showBuildSettings 2>/dev/null | grep -i "^\s*PRODUCT_NAME" | sed -e 's/.*= \(.*\)/\1/')
         # say " ${e}->${x} Speed up Xcode processing by adding ${e}-J '$xp'${x}"
-        say "    ${g}hint${x} Speed up Swift processing by using use -J 'AppName' (accepting regexp)"
+        say "    ${g}hint${x} Speed up Swift processing by using use ${g}-J 'AppName'${x} (regexp accepted)"
+        say "    ${g}hint${x} This will remove Pods/ from your report. Also ${b}https://docs.codecov.io/docs/ignoring-paths${x}"
       fi
       while read -r profdata;
       do
@@ -960,7 +964,6 @@ $PWD/coverage.xml"
                     -not -name 'testrunner-coverage*' \
                     -not -path '*/vendor/*' \
                     -not -path '*/htmlcov/*' \
-                    -not -path '*/home/cainus/*' \
                     -not -path '*/virtualenv/*' \
                     -not -path '*/js/generated/coverage/*' \
                     -not -path '*/.virtualenv/*' \
