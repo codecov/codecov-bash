@@ -26,6 +26,7 @@ slug_o=""
 dump="0"
 clean="0"
 branch=""
+name="$CODECOV_NAME"
 commit=""
 include_cov=""
 exclude_cov=""
@@ -85,6 +86,8 @@ cat << EOF
 
                  -t @/path/to/token_file
                  -t uuid
+
+    -n NAME      Custom defined name of the upload. Visible in Codecov UI
 
     -e ENV       Specify environment variables to be included with this build
                  Also accepting environment variables: CODECOV_ENV=VAR,VAR2
@@ -206,7 +209,7 @@ parse_yaml() {
 
 if [ $# != 0 ];
 then
-  while getopts "a:b:B:cC:dD:e:f:F:g:G:hJ:Kp:P:r:R:s:S:t:T:u:vx:X:Z" o
+  while getopts "a:b:B:cC:dD:e:f:F:g:G:hJ:Kn:p:P:r:R:s:S:t:T:u:vx:X:Z" o
   do
     case "$o" in
       "a")
@@ -285,6 +288,9 @@ $OPTARG"
         r=""
         e=""
         x=""
+        ;;
+      "n")
+        name="$OPTARG"
         ;;
       "p")
         proj_root="$OPTARG"
@@ -750,6 +756,7 @@ query="branch=$branch\
        &commit=$commit\
        &build=$([ "$build_o" = "" ] && echo "$build" || echo "$build_o")\
        &build_url=$build_url\
+       &name=$(urlencode "$name")\
        &tag=$([ "$tag_o" = "" ] && echo "$tag" || echo "$tag_o")\
        &slug=$([ "$slug_o" = "" ] && urlencode "$slug" || urlencode "$slug_o")\
        &yaml=$(urlencode "$yaml")\
