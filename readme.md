@@ -10,8 +10,9 @@ Codecov Global Uploader
 # All CI
 bash <(curl -s https://codecov.io/bash)
 
-# Jenkins
-curl -s https://codecov.io/bash | bash
+# Pipe to bash (Jenkins)
+curl -s https://codecov.io/bash | bash -s - -t token
+                                            ^ add your extra config here
 
 # No bash method
 curl -s https://codecov.io/bash > .codecov
