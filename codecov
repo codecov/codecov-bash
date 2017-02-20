@@ -661,7 +661,6 @@ then
   mc=$(git log -1 --pretty=%B 2>/dev/null | tr -d '[[:space:]]' || true)
   if [[ "$mc" =~ ^Merge[[:space:]][a-z0-9]{40}[[:space:]]into[[:space:]][a-z0-9]{40}$ ]];
   then
-    say "    (DEPRECIATING SOON) Learn more at http://docs.codecov.io/docs/merge-commits"
     # Merge xxx into yyy
     say "    Fixing merge commit sha"
     commit=$(echo "$mc" | cut -d' ' -f2)
@@ -920,6 +919,8 @@ $PWD/coverage.xml"
                     -not -name '*.csv' \
                     -not -name '*.rsp' \
                     -not -name '*.m4' \
+                    -not -name '*.pem' \
+                    -not -name '*~' \
                     -not -name '*.am' \
                     -not -name '*.template' \
                     -not -name '*.cp' \
