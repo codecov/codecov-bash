@@ -516,7 +516,8 @@ then
   # https://semaphoreapp.com/docs/available-environment-variables.html
   service="semaphore"
   branch="$BRANCH_NAME"
-  build="$SEMAPHORE_BUILD_NUMBER.$SEMAPHORE_CURRENT_THREAD"
+  build="$SEMAPHORE_BUILD_NUMBER"
+  job="$SEMAPHORE_CURRENT_THREAD"
   pr="$PULL_REQUEST_NUMBER"
   slug="$SEMAPHORE_REPO_SLUG"
   commit="$REVISION"
@@ -528,7 +529,8 @@ then
   # https://buildkite.com/docs/guides/environment-variables
   service="buildkite"
   branch="$BUILDKITE_BRANCH"
-  build="$BUILDKITE_BUILD_NUMBER.$BUILDKITE_JOB_ID"
+  build="$BUILDKITE_BUILD_NUMBER"
+  job="$BUILDKITE_JOB_ID"
   build_url=$(urlencode "$BUILDKITE_BUILD_URL")
   slug="$BUILDKITE_PROJECT_SLUG"
   commit="$BUILDKITE_COMMIT"
