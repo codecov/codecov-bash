@@ -774,7 +774,7 @@ query="branch=$branch\
        &yaml=$(urlencode "$yaml")\
        &service=$service\
        &flags=$flags\
-       &pr=$([ "$pr_o" = "" ] && echo "$pr" || echo "$pr_o")\
+       &pr=$([ "$pr_o" = "" ] && echo "${pr##\#}" || echo "${pr_o##\#}")\
        &job=$job"
 
 if [ "$ft_search" = "1" ];
