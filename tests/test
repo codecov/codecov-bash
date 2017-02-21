@@ -278,7 +278,7 @@ function test_codeship (){
 }
 
 
-function test_semaphore (){
+semaphore (){
     reset
     export CI="true"
     export SEMAPHORE="true"
@@ -287,7 +287,7 @@ function test_semaphore (){
     export SEMAPHORE_BUILD_NUMBER="8"
     export SEMAPHORE_CURRENT_THREAD="2"
     export REVISION="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
-    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=8.2&build_url=&name=&tag=&slug=myowner%2Fmyrepo&yaml=&service=semaphore&flags=&pr=&job="
+    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=8&build_url=&name=&tag=&slug=myowner%2Fmyrepo&yaml=&service=semaphore&flags=&pr=&job=2"
 }
 
 function test_buildkite (){
@@ -300,7 +300,7 @@ function test_buildkite (){
     export BUILDKITE_JOB_ID="1"
     export BUILDKITE_BUILD_URL="http://buildkite"
     export BUILDKITE_COMMIT="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
-    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=8.1&build_url=http%3A%2F%2Fbuildkite&name=&tag=&slug=myowner%2Fmyrepo&yaml=&service=buildkite&flags=&pr=&job="
+    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=8&build_url=http%3A%2F%2Fbuildkite&name=&tag=&slug=myowner%2Fmyrepo&yaml=&service=buildkite&flags=&pr=&job=1"
 }
 
 function test_solano (){
