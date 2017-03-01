@@ -733,7 +733,7 @@ yaml=$(echo "$yaml" | head -1)
 if [ "$yaml" != "" ];
 then
   say "    ${e}Yaml found at:${x} $yaml"
-  config=$(parse_yaml $yaml || echo '')
+  config=$(parse_yaml "$git_root/$yaml" || echo '')
 
   # TODO validate the yaml here
 
