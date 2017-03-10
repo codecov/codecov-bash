@@ -452,7 +452,7 @@ then
 
 elif [ "$CI" = "true" ] && [ "$CIRCLECI" = "true" ];
 then
-  say "$e==>$x CircleCI detected."
+  say "$e==>$x Circle CI detected."
   # https://circleci.com/docs/environment-variables
   service="circleci"
   branch="$CIRCLE_BRANCH"
@@ -931,6 +931,7 @@ $PWD/coverage.xml"
                     -not -name '*.m4' \
                     -not -name '*.pem' \
                     -not -name '*~' \
+                    -not -name '*.exe' \
                     -not -name '*.am' \
                     -not -name '*.template' \
                     -not -name '*.cp' \
