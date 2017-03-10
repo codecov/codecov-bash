@@ -8,9 +8,6 @@ url="https://codecov.io"
 url_o=""
 env="$CODECOV_ENV"
 pr_o=""
-pr=""
-job=""
-build_url=""
 service=""
 build_o=""
 token=""
@@ -26,9 +23,7 @@ slug_o=""
 curlargs=""
 dump="0"
 clean="0"
-branch=""
 name="$CODECOV_NAME"
-commit=""
 include_cov=""
 exclude_cov=""
 ddp="$(echo ~)/Library/Developer/Xcode/DerivedData"
@@ -51,6 +46,14 @@ if [ "$git_root" = "$PWD" ];
 then
   git_root="."
 fi
+
+commit="$VCS_COMMIT_ID"
+branch="$VCS_BRANCH_NAME"
+pr="$VCS_PULL_REQUEST"
+slug="$VCS_SLUG"
+build_url="$CI_BUILD_URL"
+build="$CI_BUILD_ID"
+job="$CI_JOB_ID"
 
 proj_root="$git_root"
 gcov_exe="gcov"
@@ -639,13 +642,6 @@ else
   say "${r}x>${x} No CI provider detected."
   say "    Testing inside Docker? ${b}http://docs.codecov.io/docs/testing-with-docker${x}"
   say "    Testing with Tox? ${b}https://docs.codecov.io/docs/python#section-testing-with-tox${x}"
-
-  commit="$VCS_COMMIT_ID"
-  branch="$VCS_BRANCH_NAME"
-  pr="$VCS_PULL_REQUEST"
-  slug="$VCS_SLUG"
-  build_url="$CI_BUILD_URL"
-  build="$CI_BUILD_ID"
 
 fi
 
