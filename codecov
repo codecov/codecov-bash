@@ -12,6 +12,7 @@ search_in=""
 flags=""
 exit_with=0
 curlargs=""
+curlawsargs=""
 dump="0"
 clean="0"
 name="$CODECOV_NAME"
@@ -157,7 +158,8 @@ cat << EOF
                  (option) set in your codecov.yml "codecov.slug"
     -S PATH      File path to your cacert.pem file used to verify ssl with Codecov Enterprise (optional)
                  (option) Set environment variable: CODECOV_CA_BUNDLE="/path/to/ca.pem"
-    -U curlargs  Extra curl arguments. e.g., -U "--proxy http://http-proxy"
+    -U curlargs  Extra curl arguments to communicate with Codecov. e.g., -U "--proxy http://http-proxy"
+    -A curlargs  Extra curl arguments to communicate with AWS.
 
     -- Debugging --
     -d           Dont upload and dump to stdin
@@ -219,11 +221,14 @@ parse_yaml() {
 
 if [ $# != 0 ];
 then
-  while getopts "a:b:B:cC:dD:e:f:F:g:G:hJ:Kn:p:P:r:R:s:S:t:T:u:U:vx:X:Z" o
+  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:Kn:p:P:r:R:s:S:t:T:u:U:vx:X:Z" o
   do
     case "$o" in
       "a")
         gcov_arg=$OPTARG
+        ;;
+      "A")
+        curlawsargs="$OPTARG"
         ;;
       "b")
         build_o="$OPTARG"
@@ -1253,14 +1258,15 @@ else
   if [ "$ft_s3" = "1" ];
   then
     say "    ${e}->${x} Pinging Codecov"
-    res=$(curl -sX $curlargs $cacert POST "$url/upload/v4?$query" -H 'Accept: text/plain' || true)
+    res=$(curl -sX POST $curlargs $cacert "$url/upload/v4?$query" -H 'Accept: text/plain' || true)
     # a good replay is "https://codecov.io" + "\n" + "https://codecov.s3.amazonaws.com/..."
     status=$(echo "$res" | head -1 | grep 'HTTP ' | cut -d' ' -f2)
     if [ "$status" = "" ];
     then
       s3target=$(echo "$res" | sed -n 2p)
       say "    ${e}->${x} Uploading to S3 $(echo "$s3target" | cut -c1-32)"
-      s3=$(curl -fisX PUT --data-binary @$upload_file \
+      s3=$(curl -fisX PUT $curlawsargs \
+                --data-binary @$upload_file \
                 -H 'Content-Type: text/plain' \
                 -H 'x-amz-acl: public-read' \
                 -H 'x-amz-storage-class: REDUCED_REDUNDANCY' \
