@@ -58,6 +58,8 @@ build_url="$CI_BUILD_URL"
 build="$CI_BUILD_ID"
 job="$CI_JOB_ID"
 
+beta_xcode_partials=""
+
 proj_root="$git_root"
 gcov_exe="gcov"
 gcov_arg=""
@@ -189,7 +191,7 @@ swiftcov() {
         say "    $g+$x Building reports for $_proj $_type"
         dest=$([ -f "$f/$_proj" ] && echo "$f/$_proj" || echo "$f/Contents/MacOS/$_proj")
         _proj_name=$(echo "$_proj" | sed -e 's/[[:space:]]//g')
-        xcrun llvm-cov show -use-color -instr-profile "$1" "$dest" > "$_proj_name.$_type.coverage.txt" \
+        xcrun llvm-cov show $beta_xcode_partials -instr-profile "$1" "$dest" > "$_proj_name.$_type.coverage.txt" \
          || say "    ${r}x>${x} llvm-cov failed to produce results for $dest"
       fi
     done
@@ -362,6 +364,9 @@ $OPTARG"
         elif [ "$OPTARG" = "search" ];
         then
           ft_search="0"
+        elif [ "$OPTARG" = "xcodepartials" ];
+        then
+          beta_xcode_partials="-use-color"
         elif [ "$OPTARG" = "network" ];
         then
           ft_network="0"
