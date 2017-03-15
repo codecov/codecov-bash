@@ -7,7 +7,10 @@ set -e +o pipefail
 VERSION="tbd"
 
 add(){
-  echo -n " -e $1"
+  if [ ! -z "$1" ];
+  then
+    echo -n "-e $1 "
+  fi
 }
 
 add "CODECOV_ENV"
@@ -68,6 +71,7 @@ then
   add "CIRCLE_NODE_INDEX"
   add "CIRCLE_PROJECT_USERNAME"
   add "CIRCLE_PROJECT_REPONAME"
+  add "CIRCLE_REPOSITORY_URL"
   add "CIRCLE_PR_NUMBER"
   add "CIRCLE_SHA1"
   add "CIRCLE_ARTIFACTS"
