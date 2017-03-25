@@ -118,7 +118,7 @@ cat << EOF
 
                  -F unittests        This upload is only unittests
                  -F integration      This upload is only integration tests
-                 -F ui,chrome        This uplaod is Chrome - UI tests
+                 -F ui,chrome        This upload is Chrome - UI tests
 
     -c           Move discovered coverage reports to the trash
     -Z           Exit with 1 if not successful. Default will Exit with 0
@@ -403,8 +403,11 @@ then
   # https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project
   # https://wiki.jenkins-ci.org/display/JENKINS/GitHub+pull+request+builder+plugin#GitHubpullrequestbuilderplugin-EnvironmentVariables
   service="jenkins"
-  branch=$([ ! -z "$ghprbSourceBranch" ] && echo "$ghprbSourceBranch" || echo "$GIT_BRANCH")
-  commit=$([ ! -z "$ghprbActualCommit" ] && echo "$ghprbActualCommit" || echo "$GIT_COMMIT")
+  branch=$([ ! -z "$ghprbSourceBranch" ] && echo "$ghprbSourceBranch" || \
+           [ ! -z "$GIT_BRANCH" ] && echo "$GIT_BRANCH" || \
+           [ ! -z "${env.BRANCH_NAME}" ] && echo "${env.BRANCH_NAME}")
+  commit=$([ ! -z "$ghprbActualCommit" ] && echo "$ghprbActualCommit" || \
+           echo "$GIT_COMMIT")
   build="$BUILD_NUMBER"
   pr="$ghprbPullId"
   build_url=$(urlencode "$BUILD_URL")
@@ -1239,10 +1242,10 @@ if [ "$url_o" != "" ];
 then
   url="$url_o"
 fi
-# trim whitespace from query
 
 if [ "$dump" != "0" ];
 then
+  # trim whitespace from query
   echo "$url/upload/v4?$(echo "package=bash-$VERSION&token=$token&$query" | tr -d ' ')"
   cat $upload_file
 else
