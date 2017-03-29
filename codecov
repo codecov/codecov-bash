@@ -15,6 +15,7 @@ curlargs=""
 curlawsargs=""
 dump="0"
 clean="0"
+curl_s="-s"
 name="$CODECOV_NAME"
 include_cov=""
 exclude_cov=""
@@ -118,7 +119,7 @@ cat << EOF
 
                  -F unittests        This upload is only unittests
                  -F integration      This upload is only integration tests
-                 -F ui,chrome        This uplaod is Chrome - UI tests
+                 -F ui,chrome        This upload is Chrome - UI tests
 
     -c           Move discovered coverage reports to the trash
     -Z           Exit with 1 if not successful. Default will Exit with 0
@@ -349,6 +350,7 @@ $OPTARG"
         ;;
       "v")
         set -x
+        curl_s=""
         ;;
       "x")
         gcov_exe=$OPTARG
@@ -403,8 +405,11 @@ then
   # https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project
   # https://wiki.jenkins-ci.org/display/JENKINS/GitHub+pull+request+builder+plugin#GitHubpullrequestbuilderplugin-EnvironmentVariables
   service="jenkins"
-  branch=$([ ! -z "$ghprbSourceBranch" ] && echo "$ghprbSourceBranch" || echo "$GIT_BRANCH")
-  commit=$([ ! -z "$ghprbActualCommit" ] && echo "$ghprbActualCommit" || echo "$GIT_COMMIT")
+  branch=$([ ! -z "$ghprbSourceBranch" ] && echo "$ghprbSourceBranch" || \
+           [ ! -z "$GIT_BRANCH" ] && echo "$GIT_BRANCH" || \
+           [ ! -z "${env.BRANCH_NAME}" ] && echo "${env.BRANCH_NAME}")
+  commit=$([ ! -z "$ghprbActualCommit" ] && echo "$ghprbActualCommit" || \
+           echo "$GIT_COMMIT")
   build="$BUILD_NUMBER"
   pr="$ghprbPullId"
   build_url=$(urlencode "$BUILD_URL")
@@ -922,6 +927,7 @@ $PWD/coverage.xml"
                     -not -name 'coverage-summary.json' \
                     -not -name 'phpunit-code-coverage.xml' \
                     -not -name 'remapInstanbul.coverage*.json' \
+                    -not -name 'phpunit-coverage.xml' \
                     -not -name '*codecov.yml' \
                     -not -name '*.serialized' \
                     -not -name '.coverage*' \
@@ -929,7 +935,14 @@ $PWD/coverage.xml"
                     -not -name '*.sh' \
                     -not -name '*.bat' \
                     -not -name '*.ps1' \
+                    -not -name '*.cmake' \
+                    -not -name '*.dox' \
+                    -not -name '*.ec' \
                     -not -name '*.rst' \
+                    -not -name '*.h' \
+                    -not -name '*.scss' \
+                    -not -name '*.o' \
+                    -not -name '*.proto' \
                     -not -name '*.sbt' \
                     -not -name '*.xcoverage.*' \
                     -not -name '*.gz' \
@@ -1076,9 +1089,10 @@ then
 fi
 
 upload_file=`mktemp /tmp/codecov.XXXXXX`
+adjustments_file=`mktemp /tmp/codecov.adjustments.XXXXXX`
 
 cleanup() {
-    rm -f $upload_file
+    rm -f $upload_file $adjustments_file
 }
 
 trap cleanup INT ABRT TERM
@@ -1149,89 +1163,130 @@ if [ "$ft_fix" = "1" ];
 then
   say "${e}==>${x} Appending adjustments"
   say "    ${b}http://docs.codecov.io/docs/fixing-reports${x}"
-  adjustments=""
+
+  empty_line='^[[:space:]]*$'
+  # //
+  syntax_comment='^[[:space:]]*//.*'
+  # /* or */
+  syntax_comment_block='^[[:space:]]*\/\*|\*\/[[:space:]]*$'
+  # { or }
+  syntax_bracket='^[[:space:]]*[\{\}][[:space:]]*(//.*)?$'
+  # [ or ]
+  syntax_list='^[[:space:]]*\[|\][[:space:]]*(//.*)?$'
+
+  cut_and_join() {
+    awk 'BEGIN { FS=":" }
+         $3 ~ /\/\*/ || $3 ~ /\*\// { print $0 ; next }
+         $1!=key { if (key!="") print out ; key=$1 ; out=$1":"$2 ; next }
+         { out=out","$2 }
+         END { print out }' 2>/dev/null
+  }
 
   if echo "$network" | grep -m1 '.kt$' 1>/dev/null;
   then
     # skip brackets and comments
-    adjustments="$adjustments
-$(find "$git_root" -type f -name '*.kt' -exec grep -nIH '^[[:space:]]*}$' {} \; | cut -f1-2 -d: 2>/dev/null || echo '')
-$(find "$git_root" -type f -name '*.kt' -exec grep -nIH '^/\*' {} \; | cut -f1-2 -d: 2>/dev/null || echo '')"
+    find "$git_root" -type f \
+                     -name '*.kt' \
+                     -exec \
+      grep -nIHE -e $syntax_bracket \
+                 -e $syntax_comment_block {} \; \
+      | cut_and_join \
+      >> $adjustments_file \
+      || echo ''
+
+    # last line in file
+    find "$git_root" -type f \
+                     -name '*.kt' -exec \
+      wc -l {} \; \
+      | while read l; do echo "EOF: $l"; done \
+      2>/dev/null \
+      >> $adjustments_file \
+      || echo ''
+
   fi
 
   if echo "$network" | grep -m1 '.go$' 1>/dev/null;
   then
     # skip empty lines, comments, and brackets
-    adjustments="$adjustments
-$(find "$git_root" -type f -not -path '*/vendor/*' -name '*.go' -exec grep -nIH \
-      -e '^[[:space:]]*$' \
-      -e '^[[:space:]]*//.*' \
-      -e '^[[:space:]]*/\*' \
-      -e '^[[:space:]]*\*/' \
-      -e '^[[:space:]]*}$' \
-      {} \; | cut -f1-2 -d: 2>/dev/null || echo '')"
+    find "$git_root" -type f \
+                     -not -path '*/vendor/*' \
+                     -name '*.go' \
+                     -exec \
+      grep -nIHE \
+           -e $empty_line \
+           -e $syntax_comment \
+           -e $syntax_comment_block \
+           -e $syntax_bracket \
+           {} \; \
+      | cut_and_join \
+      >> $adjustments_file \
+      || echo ''
   fi
 
   if echo "$network" | grep -m1 '.jsx$' 1>/dev/null;
   then
     # skip empty lines, comments, and brackets
-    adjustments="$adjustments
-$(find "$git_root" -type f -name '*.jsx' -exec grep -nIH \
-      -e '^[[:space:]]*$' \
-      -e '^[[:space:]]*//.*' \
-      -e '^[[:space:]]*/\*' \
-      -e '^[[:space:]]*\*/' \
-      -e '^[[:space:]]*}$' \
-      {} \; | cut -f1-2 -d: 2>/dev/null || echo '')"
+    find "$git_root" -type f \
+                     -name '*.jsx' \
+                     -exec \
+      grep -nIHE \
+           -e '^[[:space:]]*$' \
+           -e $syntax_comment \
+           -e $syntax_bracket \
+           {} \; \
+      | cut_and_join \
+      >> $adjustments_file \
+      || echo ''
   fi
 
   if echo "$network" | grep -m1 '.php$' 1>/dev/null;
   then
     # skip empty lines, comments, and brackets
-    adjustments="$adjustments
-$(find "$git_root" -type f -not -path '*/vendor/*' -name '*.php' -exec grep -nIH \
-      -e '^[[:space:]]*[\{\}\\[][[:space:]]*$' \
-      -e '^[[:space:]]*);[[:space:]]*$' \
-      -e '^[[:space:]]*][[:space:]]*$' \
-      {} \; | cut -f1-2 -d: 2>/dev/null || echo '')"
+    find "$git_root" -type f \
+                     -not -path '*/vendor/*' \
+                     -name '*.php' \
+                     -exec \
+      grep -nIHE \
+           -e $syntax_list \
+           -e $syntax_bracket \
+           -e '^[[:space:]]*);[[:space:]]*(//.*)?$' \
+           {} \; \
+      | cut_and_join \
+      >> $adjustments_file \
+      || echo ''
   fi
 
   if echo "$network" | grep -m1 '\(.cpp\|.h\|.cxx\|.c\|.hpp\|.m\)$' 1>/dev/null;
   then
     # skip brackets
-    adjustments="$adjustments
-$(find "$git_root" -type f \( -name '*.h' -or -name '*.cpp' -or -name '*.cxx' -or -name '*.m' -or -name '*.c' -or -name '*.hpp' \) -exec grep -nIH '^[[:space:]]*}' {} \; | cut -f1-2 -d: 2>/dev/null || echo '')"
+    find "$git_root" -type f \
+         \( \
+           -name '*.h' \
+           -or -name '*.cpp' \
+           -or -name '*.cxx' \
+           -or -name '*.m' \
+           -or -name '*.c' \
+           -or -name '*.hpp' \
+         \) -exec \
+      grep -nIHE -e $syntax_bracket \
+                 -e '// LCOV_EXCL' {} \; \
+      | cut_and_join \
+      >> $adjustments_file \
+      || echo ''
+
   fi
 
-  # join files into single line
-  found=$(echo "$adjustments" | wc -l | tr -d ' ')
-  adjustments=$(echo "$adjustments" | awk 'BEGIN { FS=":" }
-                                           $1!=key { if (key!="") print out ; key=$1 ; out=$0 ; next }
-                                           { out=out","$2 }
-                                           END { print out }')
+  found=$(cat $adjustments_file | tr -d ' ')
 
-  if echo "$network" | grep -m1 '\(.cpp\|.h\|.cxx\|.c\|.hpp\|.m\)$' 1>/dev/null;
+  if [ "$found" != "" ];
   then
-    # skip LCOV_EXCL
-    adjustments="$adjustments
-$(find "$git_root" -type f \( -name '*.h' -or -name '*.cpp' -or -name '*.cxx' -or -name '*.m' -or -name '*.c' -or -name '*.hpp' \) -exec grep -nIH '// LCOV_EXCL' {} \; 2>/dev/null || echo '')"
-  fi
-
-  if echo "$network" | grep -m1 '.kt$' 1>/dev/null;
-  then
-    # last line in file
-    adjustments="$adjustments
-$(find "$git_root" -type f -name '*.kt' -exec wc -l {} \; | while read l; do echo "EOF: $l"; done 2>/dev/null || echo '')"
-  fi
-
-  if [ "$found" != "1" ];
-  then
-    say "    ${g}+${x} Found $found adjustments"
-    echo "# path=fixes
-$adjustments
-<<<<<< EOF" >> $upload_file
+    say "    ${g}+${x} Found adjustments"
+    echo "# path=fixes" >> $upload_file
+    cat $adjustments_file >> $upload_file
+    echo "<<<<<< EOF" >> $upload_file
+    rm -rf $adjustments_file
   else
-    say "    ${e}->${x} Found 0 adjustments"
+    say "    ${e}->${x} No adjustments found"
   fi
 fi
 
@@ -1239,10 +1294,10 @@ if [ "$url_o" != "" ];
 then
   url="$url_o"
 fi
-# trim whitespace from query
 
 if [ "$dump" != "0" ];
 then
+  # trim whitespace from query
   echo "$url/upload/v4?$(echo "package=bash-$VERSION&token=$token&$query" | tr -d ' ')"
   cat $upload_file
 else
@@ -1257,33 +1312,39 @@ else
 
   if [ "$ft_s3" = "1" ];
   then
-    say "    ${e}->${x} Pinging Codecov"
-    res=$(curl -sX POST $curlargs $cacert "$url/upload/v4?$query" -H 'Accept: text/plain' || true)
-    # a good replay is "https://codecov.io" + "\n" + "https://codecov.s3.amazonaws.com/..."
-    status=$(echo "$res" | head -1 | grep 'HTTP ' | cut -d' ' -f2)
-    if [ "$status" = "" ];
-    then
-      s3target=$(echo "$res" | sed -n 2p)
-      say "    ${e}->${x} Uploading to S3 $(echo "$s3target" | cut -c1-32)"
-      s3=$(curl -fisX PUT $curlawsargs \
-                --data-binary @$upload_file \
-                -H 'Content-Type: text/plain' \
-                -H 'x-amz-acl: public-read' \
-                -H 'x-amz-storage-class: REDUCED_REDUNDANCY' \
-                "$s3target" || true)
-      if [ "$s3" != "" ];
+    while [ $i -lt 4 ]
+    do
+      i=$[$i+1]
+      say "    ${e}->${x} Pinging Codecov"
+      res=$(curl $curl_s -X POST $curlargs $cacert "$url/upload/v4?$query" -H 'Accept: text/plain' || true)
+      # a good replay is "https://codecov.io" + "\n" + "https://codecov.s3.amazonaws.com/..."
+      status=$(echo "$res" | head -1 | grep 'HTTP ' | cut -d' ' -f2)
+      if [ "$status" = "" ];
       then
-        say "    ${g}->${x} View reports at ${b}$(echo "$res" | sed -n 1p)${x}"
-        exit 0
-      else
-        say "    ${r}X>${x} Failed to upload to S3"
+        s3target=$(echo "$res" | sed -n 2p)
+        say "    ${e}->${x} Uploading to S3 $(echo "$s3target" | cut -c1-32)"
+        s3=$(curl $curl_s -fiX PUT $curlawsargs \
+                  --data-binary @$upload_file \
+                  -H 'Content-Type: text/plain' \
+                  -H 'x-amz-acl: public-read' \
+                  -H 'x-amz-storage-class: REDUCED_REDUNDANCY' \
+                  "$s3target" || true)
+        if [ "$s3" != "" ];
+        then
+          say "    ${g}->${x} View reports at ${b}$(echo "$res" | sed -n 1p)${x}"
+          exit 0
+        else
+          say "    ${r}X>${x} Failed to upload to S3"
+        fi
+      elif [ "$status" = "400" ];
+      then
+          # 400 Error
+          say "${g}${res}${x}"
+          exit ${exit_with}
       fi
-    elif [ "$status" = "400" ];
-    then
-        # 400 Error
-        say "${g}${res}${x}"
-        exit ${exit_with}
-    fi
+      say "    ${e}->${x} Sleeping for 30s and trying again..."
+      sleep 30
+    done
   fi
 
   say "    ${e}->${x} Uploading to Codecov"
@@ -1292,7 +1353,7 @@ else
   do
     i=$[$i+1]
 
-    res=$(curl -sX POST $curlargs $cacert --data-binary @$upload_file "$url/upload/v2?$query" -H 'Accept: text/plain' || echo 'HTTP 500')
+    res=$(curl $curl_s -X POST $curlargs $cacert --data-binary @$upload_file "$url/upload/v2?$query" -H 'Accept: text/plain' || echo 'HTTP 500')
     # HTTP 200
     # http://....
     status=$(echo "$res" | head -1 | cut -d' ' -f2)
@@ -1303,8 +1364,8 @@ else
 
     elif [ "${status:0:1}" = "5" ];
     then
-      say "    ${e}->${x} Sleeping for 10s and trying again..."
-      sleep 10
+      say "    ${e}->${x} Sleeping for 30s and trying again..."
+      sleep 30
 
     else
       say "    ${g}${res}${x}"
