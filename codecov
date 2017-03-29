@@ -927,6 +927,7 @@ $PWD/coverage.xml"
                     -not -name 'coverage-summary.json' \
                     -not -name 'phpunit-code-coverage.xml' \
                     -not -name 'remapInstanbul.coverage*.json' \
+                    -not -name 'phpunit-coverage.xml' \
                     -not -name '*codecov.yml' \
                     -not -name '*.serialized' \
                     -not -name '.coverage*' \
@@ -934,7 +935,14 @@ $PWD/coverage.xml"
                     -not -name '*.sh' \
                     -not -name '*.bat' \
                     -not -name '*.ps1' \
+                    -not -name '*.cmake' \
+                    -not -name '*.dox' \
+                    -not -name '*.ec' \
                     -not -name '*.rst' \
+                    -not -name '*.h' \
+                    -not -name '*.scss' \
+                    -not -name '*.o' \
+                    -not -name '*.proto' \
                     -not -name '*.sbt' \
                     -not -name '*.xcoverage.*' \
                     -not -name '*.gz' \
