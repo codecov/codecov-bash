@@ -464,7 +464,7 @@ then
   else
     commit="$BUILD_VCS_NUMBER"
   fi
-  remove_addr="$TEAMCITY_BUILD_REPOSITORY"
+  remote_addr="$TEAMCITY_BUILD_REPOSITORY"
 
 elif [ "$CI" = "true" ] && [ "$CIRCLECI" = "true" ];
 then
@@ -648,7 +648,7 @@ then
   service="gitlab"
   branch="$CI_BUILD_REF_NAME"
   build="$CI_BUILD_ID"
-  remove_addr="$CI_BUILD_REPO"
+  remote_addr="$CI_BUILD_REPO"
   commit="$CI_BUILD_REF"
 
 else
