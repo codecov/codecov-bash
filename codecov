@@ -15,6 +15,7 @@ curlargs=""
 curlawsargs=""
 dump="0"
 clean="0"
+curl_s="-s"
 name="$CODECOV_NAME"
 include_cov=""
 exclude_cov=""
@@ -349,6 +350,7 @@ $OPTARG"
         ;;
       "v")
         set -x
+        curl_s=""
         ;;
       "x")
         gcov_exe=$OPTARG
@@ -1337,7 +1339,7 @@ else
   do
     i=$[$i+1]
 
-    res=$(curl -sX POST $curlargs $cacert --data-binary @$upload_file "$url/upload/v2?$query" -H 'Accept: text/plain' || echo 'HTTP 500')
+    res=$(curl $curl_s -X POST $curlargs $cacert --data-binary @$upload_file "$url/upload/v2?$query" -H 'Accept: text/plain' || echo 'HTTP 500')
     # HTTP 200
     # http://....
     status=$(echo "$res" | head -1 | cut -d' ' -f2)
