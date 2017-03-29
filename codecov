@@ -1304,33 +1304,39 @@ else
 
   if [ "$ft_s3" = "1" ];
   then
-    say "    ${e}->${x} Pinging Codecov"
-    res=$(curl -sX POST $curlargs $cacert "$url/upload/v4?$query" -H 'Accept: text/plain' || true)
-    # a good replay is "https://codecov.io" + "\n" + "https://codecov.s3.amazonaws.com/..."
-    status=$(echo "$res" | head -1 | grep 'HTTP ' | cut -d' ' -f2)
-    if [ "$status" = "" ];
-    then
-      s3target=$(echo "$res" | sed -n 2p)
-      say "    ${e}->${x} Uploading to S3 $(echo "$s3target" | cut -c1-32)"
-      s3=$(curl -fisX PUT $curlawsargs \
-                --data-binary @$upload_file \
-                -H 'Content-Type: text/plain' \
-                -H 'x-amz-acl: public-read' \
-                -H 'x-amz-storage-class: REDUCED_REDUNDANCY' \
-                "$s3target" || true)
-      if [ "$s3" != "" ];
+    while [ $i -lt 4 ]
+    do
+      i=$[$i+1]
+      say "    ${e}->${x} Pinging Codecov"
+      res=$(curl $curl_s -X POST $curlargs $cacert "$url/upload/v4?$query" -H 'Accept: text/plain' || true)
+      # a good replay is "https://codecov.io" + "\n" + "https://codecov.s3.amazonaws.com/..."
+      status=$(echo "$res" | head -1 | grep 'HTTP ' | cut -d' ' -f2)
+      if [ "$status" = "" ];
       then
-        say "    ${g}->${x} View reports at ${b}$(echo "$res" | sed -n 1p)${x}"
-        exit 0
-      else
-        say "    ${r}X>${x} Failed to upload to S3"
+        s3target=$(echo "$res" | sed -n 2p)
+        say "    ${e}->${x} Uploading to S3 $(echo "$s3target" | cut -c1-32)"
+        s3=$(curl $curl_s -fiX PUT $curlawsargs \
+                  --data-binary @$upload_file \
+                  -H 'Content-Type: text/plain' \
+                  -H 'x-amz-acl: public-read' \
+                  -H 'x-amz-storage-class: REDUCED_REDUNDANCY' \
+                  "$s3target" || true)
+        if [ "$s3" != "" ];
+        then
+          say "    ${g}->${x} View reports at ${b}$(echo "$res" | sed -n 1p)${x}"
+          exit 0
+        else
+          say "    ${r}X>${x} Failed to upload to S3"
+        fi
+      elif [ "$status" = "400" ];
+      then
+          # 400 Error
+          say "${g}${res}${x}"
+          exit ${exit_with}
       fi
-    elif [ "$status" = "400" ];
-    then
-        # 400 Error
-        say "${g}${res}${x}"
-        exit ${exit_with}
-    fi
+      say "    ${e}->${x} Sleeping for 30s and trying again..."
+      sleep 30
+    done
   fi
 
   say "    ${e}->${x} Uploading to Codecov"
@@ -1350,8 +1356,8 @@ else
 
     elif [ "${status:0:1}" = "5" ];
     then
-      say "    ${e}->${x} Sleeping for 10s and trying again..."
-      sleep 10
+      say "    ${e}->${x} Sleeping for 30s and trying again..."
+      sleep 30
 
     else
       say "    ${g}${res}${x}"
