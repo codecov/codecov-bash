@@ -407,11 +407,22 @@ then
   service="jenkins"
   branch=$([ ! -z "$ghprbSourceBranch" ] && echo "$ghprbSourceBranch" || \
            [ ! -z "$GIT_BRANCH" ] && echo "$GIT_BRANCH" || \
-           [ ! -z "${env.BRANCH_NAME}" ] && echo "${env.BRANCH_NAME}")
-  commit=$([ ! -z "$ghprbActualCommit" ] && echo "$ghprbActualCommit" || \
-           echo "$GIT_COMMIT")
+           [ ! -z "$BRANCH_NAME" ] && echo "$BRANCH_NAME")
+  if [ "$ghprbActualCommit" != "" ];
+  then
+    commit="$ghprbActualCommit"
+  elif [ "$GIT_COMMIT" != "" ];
+  then
+    commit="$GIT_COMMIT"
+  fi
   build="$BUILD_NUMBER"
-  pr="$ghprbPullId"
+  if [ "$ghprbPullId" != "" ];
+  then
+    pr="$ghprbPullId"
+  elif [ "$CHANGE_ID" != "" ];
+  then
+    pr="$CHANGE_ID"
+  fi
   build_url=$(urlencode "$BUILD_URL")
 
 elif [ "$CI" = "true" ] && [ "$TRAVIS" = "true" ] && [ "$SHIPPABLE" != "true" ];

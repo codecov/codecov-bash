@@ -242,6 +242,17 @@ function test_jenkins (){
     assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=15.1&build_url=http%3A%2F%2Fendpoint&name=&tag=&slug=codecov%2Fcodecov-bash&yaml=&service=jenkins&flags=&pr=&job="
 }
 
+function test_jenkins_blue_ocean (){
+    reset
+    export JENKINS_URL="something"
+    export BRANCH_NAME="develop"
+    export BUILD_NUMBER="15.1"
+    export BUILD_URL="http://endpoint"
+    export WORKSPACE="."
+    export CHANGE_ID="5"
+    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=$_SHA&build=15.1&build_url=http%3A%2F%2Fendpoint&name=&tag=&slug=codecov%2Fcodecov-bash&yaml=&service=jenkins&flags=&pr=5&job="
+}
+
 function test_bitrise (){
     reset
     export CI="true"
