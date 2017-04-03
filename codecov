@@ -87,8 +87,11 @@ cat << EOF
 
                  -f "path/to/file"     only upload this file
                                        skips searching unless provided patterns below
-                 -f "!*.bar"           ignore all files at pattern *.bar
-                 -f "*.foo"            include all files at pattern *.foo
+
+                 -f '!*.bar'           ignore all files at pattern *.bar
+                 -f '*.foo'            include all files at pattern *.foo
+                 Must use single quotes.
+                 This is non-exclusive, use -s "*.foo" to match specific paths.
 
     -s DIR       Directory to search for coverage reports.
                  Already searches project root and artifact folders.
