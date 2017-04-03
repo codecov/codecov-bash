@@ -1119,8 +1119,12 @@ fi
 
 if [ "$ft_network" == "1" ];
 then
-  echo "$network
-<<<<<< network" >> $upload_file
+  i="woff|eot|otf"  # fonts
+  i="$i|gif|png|jpg|jpeg|psd"  # images
+  i="$i|ptt|pptx|numbers|pages|md|txt|xlsx|docx|doc|pdf"  # docs
+  i="$i|yml|yaml|.gitignore|"  # supporting docs
+  echo "$network" | grep -vwE "($i)$" >> $upload_file
+  echo "<<<<<< network" >> $upload_file
 fi
 
 fr=0
