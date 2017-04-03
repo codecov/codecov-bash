@@ -1324,6 +1324,7 @@ else
 
   if [ "$ft_s3" = "1" ];
   then
+    i="0"
     while [ $i -lt 4 ]
     do
       i=$[$i+1]
