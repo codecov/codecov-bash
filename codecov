@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+
 set -e +o pipefail
 
 VERSION="tbd"
@@ -33,6 +34,7 @@ ft_search="1"
 ft_s3="1"
 ft_xcode="1"
 ft_network="1"
+ft_xcodeplist="0"
 
 _git_root=$(git rev-parse --show-toplevel 2>/dev/null || hg root 2>/dev/null || echo $PWD)
 git_root="$_git_root"
@@ -365,6 +367,10 @@ $OPTARG"
         elif [ "$OPTARG" = "coveragepy" ] || [ "$OPTARG" = "py" ];
         then
           ft_coveragepy="0"
+        elif [ "$OPTARG" = "xcodeplist" ];
+        then
+          ft_xcodeplist="1"
+          ft_xcode="0"
         elif [ "$OPTARG" = "fix" ] || [ "$OPTARG" = "fixes" ];
         then
           ft_fix="0"
@@ -843,6 +849,20 @@ then
       say "    ${e}->${x} Running $gcov_exe for Obj-C"
       bash -c "find $ddp -type f -name '*.gcda' $gcov_include $gcov_ignore -exec $gcov_exe -pbcu $gcov_arg {} +" || true
     fi
+  fi
+
+  if [ "$ft_xcodeplist" = "1" ] && [ -d "$ddp" ];
+  then
+    say "${e}==>${x} Processing Xcode plists"
+    plists_files=$(find "$ddp" -name '*.xccoverage' 2>/dev/null || echo '')
+    while read -r plist;
+    do
+      if [ "$plist" != "" ];
+      then
+        name=$(basename "$plist")
+        plutil -convert xml1 -o "${x/.*/}.coverage.plist" -- $plist
+      fi
+    done <<< "$plists_files"
   fi
 
   # Gcov Coverage

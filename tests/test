@@ -1,7 +1,12 @@
 #!/bin/bash
 
-export _SHA=$(git rev-parse HEAD)
-export _BRANCH=$(git rev-parse --abbrev-ref HEAD)
+urlencode() {
+  echo "$1" | curl -Gso /dev/null -w %{url_effective} --data-urlencode @- "" | cut -c 3- | sed -e 's/%0A//'
+}
+
+_SHA=$(git rev-parse HEAD)
+_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+_BRANCH=$(urlencode $_BRANCH)
 if [ "$_BRANCH" = "HEAD" ];
 then
   _BRANCH=""
