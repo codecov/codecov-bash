@@ -32,15 +32,27 @@ function assertDiff () {
 }
 
 function assertContains () {
-    if [ "$(echo "$1" | grep "$2")" = "" ];
-    then
-        echo "$1 does not contain $2"
-    fi
+    python -c "import sys; assert sys.argv[2] in sys.argv[1]" "$1" "$2" 2>/dev/null
+    assertTrue ">>>>>> $1 <<<<<< does not contain $2" $?
+}
+
+function assertNotContains () {
+    python -c "import sys; assert sys.argv[2] not in sys.argv[1]" "$1" "$2" 2>/dev/null
+    assertTrue ">>>>>> $1 <<<<<< does contain $2" $?
 }
 
 function test_help () {
     reset
-    assertContains "$(./codecov -h)" "Upload reports to Codecov"
+    assertContains "$(./codecov -h)" "Global report uploading tool for Codecov"
+    assertNotContains "$(./codecov -h)" "Searching for coverage reports"
+}
+
+function test_fixes () {
+    reset
+    res=$(./codecov -d)
+    while read l; do
+      assertContains "$res" "$l"
+    done <ignores/results.txt
 }
 
 # ------------
@@ -179,7 +191,7 @@ function test_gcov () {
 
 function test_file_opt () {
     reset
-    assertContains "$(./codecov -df temp/coverage.json -K)" "+ temp/coverage.json bytes=25"
+    assertContains "$(./codecov -df temp/coverage.json -K)" "+ temp/coverage.json bytes=2"
 }
 
 function test_token_opt () {
@@ -197,21 +209,21 @@ function test_token_env () {
     assertTrue 'Expected output differs.' $?
 }
 
-function test_upload () {
-    reset
-    export CI="true"
-    export TRAVIS_JOB_ID="33116958"
-    export TRAVIS="true"
-    export TRAVIS_BRANCH="master"
-    export TRAVIS_COMMIT="c739768fcac68144a3a6d82305b9c4106934d31a"
-    export TRAVIS_REPO_SLUG='codecov/ci-repo'
-    export TRAVIS_JOB_ID="33116958"
-    export TRAVIS_PULL_REQUEST="false"
-    export TRAVIS_JOB_NUMBER="4.1"
-    res=$(./codecov | grep "http://codecov.io")
-    assertContains "$res" "Reports queued to"
-    assertContains "$res" "http://codecov.io/github/codecov/ci-repo?ref=c739768fcac68144a3a6d82305b9c4106934d31a"
-}
+# function test_upload () {
+#     reset
+#     export CI="true"
+#     export TRAVIS_JOB_ID="33116958"
+#     export TRAVIS="true"
+#     export TRAVIS_BRANCH="master"
+#     export TRAVIS_COMMIT="c739768fcac68144a3a6d82305b9c4106934d31a"
+#     export TRAVIS_REPO_SLUG='codecov/ci-repo'
+#     export TRAVIS_JOB_ID="33116958"
+#     export TRAVIS_PULL_REQUEST="false"
+#     export TRAVIS_JOB_NUMBER="4.1"
+#     res=$(./codecov)
+#     assertContains "$res" "Reports queued to"
+#     assertContains "$res" "http://codecov.io/github/codecov/ci-repo?ref=c739768fcac68144a3a6d82305b9c4106934d31a"
+# }
 
 # -----------------
 # Test CI Companies

@@ -1199,7 +1199,7 @@ then
   # { or }
   syntax_bracket='^[[:space:]]*[\{\}][[:space:]]*(//.*)?$'
   # [ or ]
-  syntax_list='^[[:space:]]*\[|\][[:space:]]*(//.*)?$'
+  syntax_list='^[[:space:]]*[][][[:space:]]*(//.*)?$'
 
   skip_dirs="-not -path '*/$bower_components/*' \
              -not -path '*/node_modules/*'"
@@ -1261,7 +1261,7 @@ then
                      $skip_dirs \
                      -exec \
       grep -nIHE \
-           -e '^[[:space:]]*$' \
+           -e $empty_line \
            -e $syntax_comment \
            -e $syntax_bracket \
            {} \; \
@@ -1280,7 +1280,7 @@ then
       grep -nIHE \
            -e $syntax_list \
            -e $syntax_bracket \
-           -e '^[[:space:]]*);[[:space:]]*(//.*)?$' \
+           -e '^[[:space:]]*\);[[:space:]]*(//.*)?$' \
            {} \; \
       | cut_and_join \
       >> $adjustments_file \
@@ -1305,6 +1305,22 @@ then
            -e '// LCOV_EXCL' \
            {} \; \
       | cut_and_join \
+      >> $adjustments_file \
+      || echo ''
+
+    # skip brackets
+    find "$git_root" -type f \
+                     $skip_dirs \
+         \( \
+           -name '*.h' \
+           -or -name '*.cpp' \
+           -or -name '*.cxx' \
+           -or -name '*.m' \
+           -or -name '*.c' \
+           -or -name '*.hpp' \
+         \) -exec \
+      grep -nIH '// LCOV_EXCL' \
+           {} \; \
       >> $adjustments_file \
       || echo ''
 
