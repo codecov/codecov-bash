@@ -1142,7 +1142,7 @@ then
   i="woff|eot|otf"  # fonts
   i="$i|gif|png|jpg|jpeg|psd"  # images
   i="$i|ptt|pptx|numbers|pages|md|txt|xlsx|docx|doc|pdf"  # docs
-  i="$i|yml|yaml|.gitignore|"  # supporting docs
+  i="$i|yml|yaml|.gitignore"  # supporting docs
   echo "$network" | grep -vwE "($i)$" >> $upload_file
   echo "<<<<<< network" >> $upload_file
 fi
@@ -1300,8 +1300,10 @@ then
            -or -name '*.c' \
            -or -name '*.hpp' \
          \) -exec \
-      grep -nIHE -e $syntax_bracket \
-                 -e '// LCOV_EXCL' {} \; \
+      grep -nIHE \
+           -e $syntax_bracket \
+           -e '// LCOV_EXCL' \
+           {} \; \
       | cut_and_join \
       >> $adjustments_file \
       || echo ''
