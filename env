@@ -33,6 +33,8 @@ then
   add "GIT_BRANCH"
   add "ghprbActualCommit"
   add "GIT_COMMIT"
+  add "CHANGE_ID"
+  add "BRANCH_NAME"
   add "BUILD_NUMBER"
   add "ghprbPullId"
   add "BUILD_URL"
