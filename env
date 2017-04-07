@@ -36,6 +36,8 @@ then
   add "BUILD_NUMBER"
   add "ghprbPullId"
   add "BUILD_URL"
+  add "BRANCH_NAME"
+  add "CHANGE_ID"
 
 elif [ "$CI" = "true" ] && [ "$TRAVIS" = "true" ] && [ "$SHIPPABLE" != "true" ];
 then
