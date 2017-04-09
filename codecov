@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 set -e +o pipefail
 
 VERSION="tbd"
@@ -855,14 +854,17 @@ then
   then
     say "${e}==>${x} Processing Xcode plists"
     plists_files=$(find "$ddp" -name '*.xccoverage' 2>/dev/null || echo '')
-    while read -r plist;
-    do
-      if [ "$plist" != "" ];
-      then
-        name=$(basename "$plist")
-        plutil -convert xml1 -o "${x/.*/}.coverage.plist" -- $plist
-      fi
-    done <<< "$plists_files"
+    if [ "$plists_files" != "" ];
+    then
+      while read -r plist;
+      do
+        if [ "$plist" != "" ];
+        then
+          say "    ${g}Found${x} plist file at $plist"
+          plutil -convert xml1 -o "$(basename "$plist").plist" -- $plist
+        fi
+      done <<< "$plists_files"
+    fi
   fi
 
   # Gcov Coverage
