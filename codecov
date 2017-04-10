@@ -1197,7 +1197,7 @@ then
   # //
   syntax_comment='^[[:space:]]*//.*'
   # /* or */
-  syntax_comment_block='^[[:space:]]*\/\*|\*\/[[:space:]]*$'
+  syntax_comment_block='^[[:space:]]*(\/\*|\*\/)[[:space:]]*$'
   # { or }
   syntax_bracket='^[[:space:]]*[\{\}][[:space:]]*(//.*)?$'
   # [ or ]
