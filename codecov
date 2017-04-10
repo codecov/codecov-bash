@@ -1303,6 +1303,7 @@ then
            -or -name '*.hpp' \
          \) -exec \
       grep -nIHE \
+           -e $empty_line \
            -e $syntax_bracket \
            -e '// LCOV_EXCL' \
            {} \; \
