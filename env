@@ -148,6 +148,11 @@ then
   add "DRONE_TAG"
   add "CI_BUILD_URL"
 
+elif [ "$HEROKU_TEST_RUN_BRANCH" != "" ];
+then
+  add "HEROKU_TEST_RUN_BRANCH"
+  add "HEROKU_TEST_RUN_ID"
+
 elif [ "$CI" = "True" ] && [ "$APPVEYOR" = "True" ];
 then
   add "CI"
