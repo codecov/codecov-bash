@@ -669,7 +669,7 @@ then
   service="gitlab"
   branch="$CI_BUILD_REF_NAME"
   build="$CI_BUILD_ID"
-  remote_addr="$CI_BUILD_REPO"
+  remote_addr="${CI_BUILD_REPO:-$CI_REPOSITORY_URL}"
   commit="$CI_BUILD_REF"
 
 else
