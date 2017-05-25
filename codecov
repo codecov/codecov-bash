@@ -1265,23 +1265,6 @@ then
       || echo ''
   fi
 
-  if echo "$network" | grep -m1 '.jsx$' 1>/dev/null;
-  then
-    # skip empty lines, comments, and brackets
-    find "$git_root" -type f \
-                     -name '*.jsx' \
-                     $skip_dirs \
-                     -exec \
-      grep -nIHE \
-           -e $empty_line \
-           -e $syntax_comment \
-           -e $syntax_bracket \
-           {} \; \
-      | cut_and_join \
-      >> $adjustments_file \
-      || echo ''
-  fi
-
   if echo "$network" | grep -m1 '.php$' 1>/dev/null;
   then
     # skip empty lines, comments, and brackets
