@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+
 set -e +o pipefail
 
 VERSION="tbd"
@@ -959,6 +960,7 @@ $PWD/coverage.xml"
                     -not -name '*.profdata' \
                     -not -name 'coverage-summary.json' \
                     -not -name 'phpunit-code-coverage.xml' \
+                    -not -name '*/classycle/report.xml' \
                     -not -name 'remapInstanbul.coverage*.json' \
                     -not -name 'phpunit-coverage.xml' \
                     -not -name '*codecov.yml' \
