@@ -32,9 +32,9 @@ ft_coveragepy="1"
 ft_fix="1"
 ft_search="1"
 ft_s3="1"
-ft_xcode="1"
 ft_network="1"
-ft_xcodeplist="0"
+ft_xcodellvm="0"
+ft_xcodeplist="1"
 
 _git_root=$(git rev-parse --show-toplevel 2>/dev/null || hg root 2>/dev/null || echo $PWD)
 git_root="$_git_root"
@@ -367,16 +367,17 @@ $OPTARG"
         elif [ "$OPTARG" = "coveragepy" ] || [ "$OPTARG" = "py" ];
         then
           ft_coveragepy="0"
-        elif [ "$OPTARG" = "xcodeplist" ];
+        elif [ "$OPTARG" = "xcodellvm" ];
         then
-          ft_xcodeplist="1"
-          ft_xcode="0"
+          ft_xcodellvm="1"
+          ft_xcodeplist="0"
         elif [ "$OPTARG" = "fix" ] || [ "$OPTARG" = "fixes" ];
         then
           ft_fix="0"
         elif [ "$OPTARG" = "xcode" ];
         then
-          ft_xcode="0"
+          ft_xcodellvm="0"
+          ft_xcodeplist="0"
         elif [ "$OPTARG" = "search" ];
         then
           ft_search="0"
@@ -835,9 +836,9 @@ then
   fi
 
   # Swift Coverage
-  if [ "$ft_xcode" = "1" ] && [ -d "$ddp" ];
+  if [ "$ft_xcodellvm" = "1" ] && [ -d "$ddp" ];
   then
-    say "${e}==>${x} Processing Xcode reports"
+    say "${e}==>${x} Processing Xcode reports via llvm-cov"
     say "    DerivedData folder: $ddp"
     profdata_files=$(find "$ddp" -name '*.profdata' 2>/dev/null || echo '')
     if [ "$profdata_files" != "" ];
