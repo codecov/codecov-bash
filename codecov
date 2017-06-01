@@ -1063,6 +1063,7 @@ $PWD/coverage.xml"
                     -not -path '*/.env/*' \
                     -not -path '*/.envs/*' \
                     -not -path '*/env/*' \
+                    -not -path '*/.yarn-cache/*' \
                     -not -path '*/envs/*' \
                     -not -path '*/.venv/*' \
                     -not -path '*/.venvs/*' \
