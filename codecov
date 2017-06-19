@@ -981,6 +981,7 @@ $PWD/coverage.xml"
                     -not -name '*.sh' \
                     -not -name '*.bat' \
                     -not -name '*.ps1' \
+                    -not -name '*.env' \
                     -not -name '*.cmake' \
                     -not -name '*.dox' \
                     -not -name '*.ec' \
