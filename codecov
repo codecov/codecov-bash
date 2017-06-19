@@ -1264,7 +1264,7 @@ then
   then
     # skip empty lines, comments, and brackets
     find "$git_root" -type f \
-                     -not -path '*/vendor/*' \
+                     -not -path 'vendor/*' \
                      -name '*.go' \
                      -exec \
       grep -nIHE \
@@ -1282,7 +1282,7 @@ then
   then
     # skip empty lines, comments, and brackets
     find "$git_root" -type f \
-                     -not -path '*/vendor/*' \
+                     -not -path 'vendor/*' \
                      -name '*.php' \
                      -exec \
       grep -nIHE \
