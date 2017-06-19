@@ -1394,7 +1394,7 @@ else
           say "    ${g}->${x} View reports at ${b}$(echo "$res" | sed -n 1p)${x}"
           exit 0
         else
-          say "    ${r}X>${x} Failed to upload to S3"
+          say "    ${r}X>${x} Failed to upload"
         fi
       elif [ "$status" = "400" ];
       then
