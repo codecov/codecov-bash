@@ -1276,6 +1276,17 @@ then
       | cut_and_join \
       >> $adjustments_file \
       || echo ''
+    # Exclude open brackets at end of line from coverage
+    for src in $(find "$git_root" -type f \
+                                  -not -path '*/vendor/*' \
+                                  -name '*.go'); do
+      sexp=$(awk "{
+             where = match(\$0, /{[[:space:]]*(\/\/.*)?\$/)
+             if (where != 0)
+                print \"s\|${src#.}:\" NR \".\" where \",\|${src#.}:\" (NR + 1) \".\" 1 \",\|\"
+           }" $src)
+      sed -i -e "$sexp" $upload_file
+    done
   fi
 
   if echo "$network" | grep -m1 '.php$' 1>/dev/null;
