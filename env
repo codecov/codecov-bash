@@ -7,13 +7,24 @@ set -e +o pipefail
 VERSION="tbd"
 
 add(){
-  echo -n " -e $1"
+  if [ ! -z "$1" ];
+  then
+    echo -n "-e $1 "
+  fi
 }
 
 add "CODECOV_ENV"
 add "CODECOV_TOKEN"
 add "CODECOV_URL"
 add "CODECOV_SLUG"
+add "VCS_COMMIT_ID"
+add "VCS_BRANCH_NAME"
+add "VCS_PULL_REQUEST"
+add "VCS_SLUG"
+add "VCS_TAG"
+add "CI_BUILD_URL"
+add "CI_BUILD_ID"
+add "CI_JOB_ID"
 
 if [ "$JENKINS_URL" != "" ];
 then
@@ -22,6 +33,8 @@ then
   add "GIT_BRANCH"
   add "ghprbActualCommit"
   add "GIT_COMMIT"
+  add "CHANGE_ID"
+  add "BRANCH_NAME"
   add "BUILD_NUMBER"
   add "ghprbPullId"
   add "BUILD_URL"
@@ -38,6 +51,7 @@ then
   add "TRAVIS_JOB_ID"
   add "TRAVIS_REPO_SLUG"
   add "TRAVIS_TAG"
+  add "TRAVIS_OS_NAME"
 
 elif [ "$CI" = "true" ] && [ "$CI_NAME" = "codeship" ];
 then
@@ -68,9 +82,26 @@ then
   add "CIRCLE_NODE_INDEX"
   add "CIRCLE_PROJECT_USERNAME"
   add "CIRCLE_PROJECT_REPONAME"
+  add "CIRCLE_REPOSITORY_URL"
   add "CIRCLE_PR_NUMBER"
   add "CIRCLE_SHA1"
   add "CIRCLE_ARTIFACTS"
+  add "CIRCLE_TEST_REPORTS"
+
+elif [ "$BUDDYBUILD_BRANCH" != "" ];
+then
+  add "BUDDYBUILD_BRANCH"
+  add "BUDDYBUILD_BUILD_NUMBER"
+  add "BUDDYBUILD_BUILD_ID"
+  add "BUDDYBUILD_APP_ID"
+
+elif [ "${bamboo_planRepository_revision}" != "" ];
+then
+  add "bamboo_planRepository_revision"
+  add "bamboo_planRepository_branch"
+  add "bamboo_buildNumber"
+  add "bamboo_buildResultsUrl"
+  add "bamboo_planRepository_repositoryUrl"
 
 elif [ "$CI" = "true" ] && [ "$BITRISE_IO" = "true" ];
 then
@@ -112,6 +143,15 @@ then
   add "DRONE_BRANCH"
   add "DRONE_BUILD_NUMBER"
   add "DRONE_BUILD_URL"
+  add "DRONE_PULL_REQUEST"
+  add "DRONE_JOB_NUMBER"
+  add "DRONE_TAG"
+  add "CI_BUILD_URL"
+
+elif [ "$HEROKU_TEST_RUN_BRANCH" != "" ];
+then
+  add "HEROKU_TEST_RUN_BRANCH"
+  add "HEROKU_TEST_RUN_ID"
 
 elif [ "$CI" = "True" ] && [ "$APPVEYOR" = "True" ];
 then
@@ -167,6 +207,14 @@ then
   add "REPO_FULL_NAME"
   add "COMMIT"
 
+elif [ "$TDDIUM" != "" ];
+then
+  add "TDDIUM"
+  add "TDDIUM_CURRENT_COMMIT"
+  add "TDDIUM_CURRENT_BRANCH"
+  add "TDDIUM_TID"
+  add "TDDIUM_PR_ID"
+
 elif [ "$GREENHOUSE" = "true" ];
 then
   add "GREENHOUSE"
@@ -184,13 +232,5 @@ then
   add "CI_BUILD_ID"
   add "CI_BUILD_REPO"
   add "CI_BUILD_REF"
-
-else
-  add "VCS_COMMIT_ID"
-  add "VCS_BRANCH_NAME"
-  add "VCS_PULL_REQUEST"
-  add "VCS_SLUG"
-  add "CI_BUILD_URL"
-  add "CI_BUILD_ID"
 
 fi

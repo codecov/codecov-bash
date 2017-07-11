@@ -10,8 +10,9 @@ Codecov Global Uploader
 # All CI
 bash <(curl -s https://codecov.io/bash)
 
-# Jenkins
-curl -s https://codecov.io/bash | bash
+# Pipe to bash (Jenkins)
+curl -s https://codecov.io/bash | bash -s - -t token
+                                            ^ add your extra config here
 
 # No bash method
 curl -s https://codecov.io/bash > .codecov
@@ -85,23 +86,3 @@ bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverag
 | [Bitrise](https://bitrise.io/)                      | `coming soon`                                                                                                                                    |                  |
 
 > Using **Travis CI**? Uploader is compatible with `sudo: false` which can speed up your builds. :+1:
-
-### Caveats
-
-#### Jenkins 2 and Pipelines
-The branch environment variable is not presented and needs to be included manually :frown:
-
-```
-bash <(curl -s https://codecov.io/bash) -B ${env.BRANCH_NAME}
-```
-> Failure to do this results in every commit being on the master branch
-
-#### Strange bash behavior
-Bash does not respect multiple spaces with arguments
-
-```diff
-# FAILS because of double space here:
-#                                                      v
-- bash <(curl -s https://codecov.io/bash) -X coveragepy  -B master
-+ bash <(curl -s https://codecov.io/bash) -X coveragepy -B master
-```
