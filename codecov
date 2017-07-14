@@ -1293,7 +1293,7 @@ then
   if echo "$network" | grep -m1 '.go$' 1>/dev/null;
   then
     # skip empty lines, comments, and brackets
-    find "$git_root" -not -path ./vendor/* \
+    find "$git_root" -path "$git_root/vendor" -prune -or \
                      -type f \
                      -name '*.go' \
                      -exec \
@@ -1311,7 +1311,7 @@ then
   if echo "$network" | grep -m1 '.php$' 1>/dev/null;
   then
     # skip empty lines, comments, and brackets
-    find "$git_root" -not -path ./vendor/* \
+    find "$git_root" -path "$git_root/vendor" -prune -or \
                      -type f \
                      -name '*.php' \
                      -exec \
