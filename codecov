@@ -946,7 +946,33 @@ $PWD/coverage.xml"
     say "    ${g}+${x} $_path"
   done
 
-  patterns="find $search_in -type f \( -name '*coverage*.*' \
+  patterns="find $search_in \( \
+                        -name vendor \
+                        -or -name htmlcov \
+                        -or -name virtualenv \
+                        -or -name js/generated/coverage \
+                        -or -name .virtualenv \
+                        -or -name virtualenvs \
+                        -or -name .virtualenvs \
+                        -or -name .env \
+                        -or -name .envs \
+                        -or -name env \
+                        -or -name .yarn-cache \
+                        -or -name envs \
+                        -or -name .venv \
+                        -or -name .venvs \
+                        -or -name venv \
+                        -or -name venvs \
+                        -or -name .git \
+                        -or -name .hg \
+                        -or -name .tox \
+                        -or -name __pycache__ \
+                        -or -name '.egg-info*' \
+                        -or -name '$bower_components' \
+                        -or -name node_modules \
+                        -or -name 'conftest_*.c.gcov' \
+                    \) -prune -or \
+                    -type f \( -name '*coverage*.*' \
                      -or -name 'nosetests.xml' \
                      -or -name 'jacoco*.xml' \
                      -or -name 'clover.xml' \
@@ -1055,30 +1081,7 @@ $PWD/coverage.xml"
                     -not -name 'scoverage.measurements.*' \
                     -not -name 'test_*_coverage.txt' \
                     -not -name 'testrunner-coverage*' \
-                    -not -path '*/vendor/*' \
-                    -not -path '*/htmlcov/*' \
-                    -not -path '*/virtualenv/*' \
-                    -not -path '*/js/generated/coverage/*' \
-                    -not -path '*/.virtualenv/*' \
-                    -not -path '*/virtualenvs/*' \
-                    -not -path '*/.virtualenvs/*' \
-                    -not -path '*/.env/*' \
-                    -not -path '*/.envs/*' \
-                    -not -path '*/env/*' \
-                    -not -path '*/.yarn-cache/*' \
-                    -not -path '*/envs/*' \
-                    -not -path '*/.venv/*' \
-                    -not -path '*/.venvs/*' \
-                    -not -path '*/venv/*' \
-                    -not -path '*/venvs/*' \
-                    -not -path '*/.git/*' \
-                    -not -path '*/.hg/*' \
-                    -not -path '*/.tox/*' \
-                    -not -path '*/__pycache__/*' \
-                    -not -path '*/.egg-info*' \
-                    -not -path '*/$bower_components/*' \
-                    -not -path '*/node_modules/*' \
-                    -not -path '*/conftest_*.c.gcov' 2>/dev/null"
+                    -print 2>/dev/null"
   files=$(eval "$patterns" || echo '')
 
 elif [ "$include_cov" != "" ];
@@ -1106,33 +1109,35 @@ then
   network=$(cd "$git_root" && git ls-files 2>/dev/null || hg locate 2>/dev/null || echo "")
   if [ "$network" = "" ];
   then
-    network=$(find "$git_root" -type f \
-                   -not -path '*/virtualenv/*' \
-                   -not -path '*/.virtualenv/*' \
-                   -not -path '*/virtualenvs/*' \
-                   -not -path '*/.virtualenvs/*' \
-                   -not -path '*.png' \
-                   -not -path '*.gif' \
-                   -not -path '*.jpg' \
-                   -not -path '*.jpeg' \
-                   -not -path '*.md' \
-                   -not -path '*/.env/*' \
-                   -not -path '*/.envs/*' \
-                   -not -path '*/env/*' \
-                   -not -path '*/envs/*' \
-                   -not -path '*/.venv/*' \
-                   -not -path '*/.venvs/*' \
-                   -not -path '*/venv/*' \
-                   -not -path '*/venvs/*' \
-                   -not -path '*/build/lib/*' \
-                   -not -path '*/.git/*' \
-                   -not -path '*/.egg-info/*' \
-                   -not -path '*/shunit2-2.1.6/*' \
-                   -not -path '*/vendor/*' \
-                   -not -path '*/js/generated/coverage/*' \
-                   -not -path '*/__pycache__/*' \
-                   -not -path '*/node_modules/*' \
-                   -not -path "*/$bower_components/*" 2>/dev/null || echo '')
+    network=$(find "$git_root" \( \
+                   -name virtualenv \
+                   -name .virtualenv \
+                   -name virtualenvs \
+                   -name .virtualenvs \
+                   -name '*.png' \
+                   -name '*.gif' \
+                   -name '*.jpg' \
+                   -name '*.jpeg' \
+                   -name '*.md' \
+                   -name .env \
+                   -name .envs \
+                   -name env \
+                   -name envs \
+                   -name .venv \
+                   -name .venvs \
+                   -name venv \
+                   -name venvs \
+                   -name build/lib \
+                   -name .git \
+                   -name .egg-info \
+                   -name shunit2-2.1.6 \
+                   -name vendor \
+                   -name js/generated/coverage \
+                   -name __pycache__ \
+                   -name node_modules \
+                   -name '$bower_components' \
+                    \) -prune -or \
+                    -type f -print 2>/dev/null || echo '')
   fi
 fi
 
@@ -1263,7 +1268,7 @@ then
   if echo "$network" | grep -m1 '.go$' 1>/dev/null;
   then
     # skip empty lines, comments, and brackets
-    find "$git_root" -not -path ./vendor/* \
+    find "$git_root" -path "$git_root/vendor" -prune -or \
                      -type f \
                      -name '*.go' \
                      -exec \
@@ -1281,7 +1286,7 @@ then
   if echo "$network" | grep -m1 '.php$' 1>/dev/null;
   then
     # skip empty lines, comments, and brackets
-    find "$git_root" -not -path ./vendor/* \
+    find "$git_root" -path "$git_root/vendor" -prune -or \
                      -type f \
                      -name '*.php' \
                      -exec \
