@@ -327,9 +327,6 @@ $OPTARG"
       "R")
         git_root="$OPTARG"
         ;;
-      "y")
-        codecov_yml="$OPTARG"
-        ;;
       "s")
         if [ "$search_in_o" = "" ];
         then
@@ -393,6 +390,9 @@ $OPTARG"
         then
           ft_network="0"
         fi
+        ;;
+      "y")
+        codecov_yml="$OPTARG"
         ;;
       "Z")
         exit_with=1
@@ -821,7 +821,6 @@ query="branch=$branch\
        &name=$(urlencode "$name")\
        &tag=$([ "$tag_o" = "" ] && echo "$tag" || echo "$tag_o")\
        &slug=$([ "$slug_o" = "" ] && urlencode "$slug" || urlencode "$slug_o")\
-       &yaml=$(urlencode "$yaml")\
        &service=$service\
        &flags=$flags\
        &pr=$([ "$pr_o" = "" ] && echo "${pr##\#}" || echo "${pr_o##\#}")\
@@ -1168,6 +1167,9 @@ then
 echo "$inc_env<<<<<< ENV" >> $upload_file
 fi
 
+# Append git file list
+# write discovered yaml location
+echo "$yaml" >> $upload_file
 if [ "$ft_network" == "1" ];
 then
   i="woff|eot|otf"  # fonts
@@ -1175,8 +1177,8 @@ then
   i="$i|ptt|pptx|numbers|pages|md|txt|xlsx|docx|doc|pdf|html|csv"  # docs
   i="$i|yml|yaml|.gitignore"  # supporting docs
   echo "$network" | grep -vwE "($i)$" >> $upload_file
-  echo "<<<<<< network" >> $upload_file
 fi
+echo "<<<<<< network" >> $upload_file
 
 fr=0
 say "${e}==>${x} Reading reports"
