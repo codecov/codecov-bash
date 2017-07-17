@@ -420,13 +420,35 @@ then
   # https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project
   # https://wiki.jenkins-ci.org/display/JENKINS/GitHub+pull+request+builder+plugin#GitHubpullrequestbuilderplugin-EnvironmentVariables
   service="jenkins"
-  branch=$([ ! -z "$ghprbSourceBranch" ] && echo "$ghprbSourceBranch" || \
-           [ ! -z "$GIT_BRANCH" ] && echo "$GIT_BRANCH" || \
-           [ ! -z "$BRANCH_NAME" ] && echo "$BRANCH_NAME")
-  commit=$([ ! -z "$ghprbActualCommit" ] && echo "$ghprbActualCommit" || \
-           echo "$GIT_COMMIT")
+
+  if [ "$ghprbSourceBranch" != "" ];
+  then
+     branch="$ghprbSourceBranch"
+  elif [ "$GIT_BRANCH" != "" ];
+  then
+     branch="$GIT_BRANCH"
+  elif [ "$BRANCH_NAME" != "" ];
+  then
+    branch="$BRANCH_NAME"
+  fi
+
+  if [ "$ghprbActualCommit" != "" ];
+  then
+    commit="$ghprbActualCommit"
+  elif [ "$GIT_COMMIT" != "" ];
+  then
+    commit="$GIT_COMMIT"
+  fi
+
+  if [ "$ghprbPullId" != "" ];
+  then
+    pr="$ghprbPullId"
+  elif [ "$CHANGE_ID" != "" ];
+  then
+    pr="$CHANGE_ID"
+  fi
+
   build="$BUILD_NUMBER"
-  pr="${ghprbPullId:=$CHANGE_ID}"
   build_url=$(urlencode "$BUILD_URL")
 
 elif [ "$CI" = "true" ] && [ "$TRAVIS" = "true" ] && [ "$SHIPPABLE" != "true" ];
