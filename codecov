@@ -457,7 +457,7 @@ then
   # http://docs.travis-ci.com/user/ci-environment/#Environment-variables
   service="travis"
   branch="$TRAVIS_BRANCH"
-  commit="$TRAVIS_COMMIT"
+  commit="${TRAVIS_PULL_REQUEST_SHA:-$TRAVIS_COMMIT}"
   build="$TRAVIS_JOB_NUMBER"
   pr="$TRAVIS_PULL_REQUEST"
   job="$TRAVIS_JOB_ID"
