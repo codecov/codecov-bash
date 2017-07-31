@@ -1412,7 +1412,7 @@ else
       if [ "$status" = "" ];
       then
         s3target=$(echo "$res" | sed -n 2p)
-        say "    ${e}->${x} Uploading to S3 $(echo "$s3target" | cut -c1-32)"
+        say "    ${e}->${x} Uploading"
         s3=$(curl $curl_s -fiX PUT $curlawsargs \
                   --data-binary @$upload_file \
                   -H 'Content-Type: text/plain' \
