@@ -1313,6 +1313,20 @@ then
       || echo ''
   fi
 
+  if echo "$network" | grep -m1 '.dart$' 1>/dev/null;
+  then
+    # skip brackets
+    find "$git_root" -type f \
+                     -name '*.dart' \
+                     -exec \
+      grep -nIHE \
+           -e $syntax_bracket \
+           {} \; \
+      | cut_and_join \
+      >> $adjustments_file \
+      || echo ''
+  fi
+
   if echo "$network" | grep -m1 '.php$' 1>/dev/null;
   then
     # skip empty lines, comments, and brackets
