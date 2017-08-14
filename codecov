@@ -170,7 +170,7 @@ cat << EOF
     -A curlargs  Extra curl arguments to communicate with AWS.
 
     -- Debugging --
-    -d           Dont upload and dump to stdout
+    -d           Don't upload, but dump upload file to stdout
     -K           Remove color from the output
     -v           Verbose mode
 
