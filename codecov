@@ -1392,6 +1392,7 @@ fi
 if [ "$dump" != "0" ];
 then
   # trim whitespace from query
+  say "    ${e}->${x} Dumping upload file (no upload)"
   echo "$url/upload/v4?$(echo "package=bash-$VERSION&token=$token&$query" | tr -d ' ')"
   cat $upload_file
 else
@@ -1470,9 +1471,9 @@ else
 
   done
 
+  say "    ${r}X> Failed to upload coverage reports${x}"
 fi
 
-say "    ${r}X> Failed to upload coverage reports${x}"
 exit ${exit_with}
 
 # EOF
