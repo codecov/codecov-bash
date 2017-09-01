@@ -603,7 +603,7 @@ then
   slug="$BUILDKITE_PROJECT_SLUG"
   commit="$BUILDKITE_COMMIT"
   if [[ "$BUILDKITE_PULL_REQUEST" != "false" ]]; then
-    pr="${BUILDKITE_PULL_REQUEST}"
+    pr="$BUILDKITE_PULL_REQUEST"
   fi
   tag="$BUILDKITE_TAG"
 
