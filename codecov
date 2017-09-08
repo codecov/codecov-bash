@@ -471,6 +471,17 @@ then
     env="$env,${language%=*}"
   fi
 
+elif [ "$DOCKER_REPO" != "" ];
+then
+  say "$e==>$x Docker detected."
+  # https://docs.docker.com/docker-cloud/builds/advanced/
+  service="docker"
+  branch="$SOURCE_BRANCH"
+  commit="$SOURCE_COMMIT"
+  slug="$DOCKER_REPO"
+  tag="$CACHE_TAG"
+  env="$env,IMAGE_NAME"
+
 elif [ "$CI" = "true" ] && [ "$CI_NAME" = "codeship" ];
 then
   say "$e==>$x Codeship CI detected."
