@@ -1172,15 +1172,16 @@ then
                    -name .venvs \
                    -name venv \
                    -name venvs \
-                   -name build/lib \
                    -name .git \
                    -name .egg-info \
                    -name shunit2-2.1.6 \
                    -name vendor \
-                   -name js/generated/coverage \
                    -name __pycache__ \
                    -name node_modules \
-                   -name '$bower_components' \
+                   -path '*/$bower_components/*' \
+                   -path '*/target/delombok/*' \
+                   -path '*/build/lib/*' \
+                   -path '*/js/generated/coverage/*' \
                     \) -prune -or \
                     -type f -print 2>/dev/null || echo '')
   fi
