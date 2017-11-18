@@ -1191,7 +1191,7 @@ upload_file=`mktemp /tmp/codecov.XXXXXX`
 adjustments_file=`mktemp /tmp/codecov.adjustments.XXXXXX`
 
 cleanup() {
-    rm -f $upload_file $adjustments_file
+    rm -f $upload_file $adjustments_file $upload_file.gz
 }
 
 trap cleanup INT ABRT TERM
@@ -1415,6 +1415,9 @@ then
   cat $upload_file
 else
 
+  say "${e}==>${x} Gzipping contents"
+  gzip -nf9 $upload_file
+
   query=$(echo "${query}" | tr -d ' ')
   say "${e}==>${x} Uploading reports"
   say "    ${e}url:${x} $url"
@@ -1430,7 +1433,10 @@ else
     do
       i=$[$i+1]
       say "    ${e}->${x} Pinging Codecov"
-      res=$(curl $curl_s -X POST $curlargs $cacert "$url/upload/v4?$query" -H 'Accept: text/plain' || true)
+      res=$(curl $curl_s -X POST $curlargs $cacert \
+            -H 'X-Reduced-Redundancy: false' \
+            -H 'X-Content-Type: application/x-gzip' \
+            "$url/upload/v4?$query" || true)
       # a good replay is "https://codecov.io" + "\n" + "https://codecov.s3.amazonaws.com/..."
       status=$(echo "$res" | head -1 | grep 'HTTP ' | cut -d' ' -f2)
       if [ "$status" = "" ];
@@ -1438,10 +1444,10 @@ else
         s3target=$(echo "$res" | sed -n 2p)
         say "    ${e}->${x} Uploading"
         s3=$(curl $curl_s -fiX PUT $curlawsargs \
-                  --data-binary @$upload_file \
-                  -H 'Content-Type: text/plain' \
+                  --data-binary @$upload_file.gz \
+                  -H 'Content-Type: application/x-gzip' \
+                  -H 'Content-Encoding: gzip' \
                   -H 'x-amz-acl: public-read' \
-                  -H 'x-amz-storage-class: REDUCED_REDUNDANCY' \
                   "$s3target" || true)
         if [ "$s3" != "" ];
         then
@@ -1467,7 +1473,12 @@ else
   do
     i=$[$i+1]
 
-    res=$(curl $curl_s -X POST $curlargs $cacert --data-binary @$upload_file "$url/upload/v2?$query" -H 'Accept: text/plain' || echo 'HTTP 500')
+    res=$(curl $curl_s -X POST $curlargs $cacert \
+          --data-binary @$upload_file.gz \
+          -H 'Content-Type: text/plain' \
+          -H 'Content-Encoding: gzip' \
+          -H 'Accept: text/plain' \
+          "$url/upload/v2?$query" || echo 'HTTP 500')
     # HTTP 200
     # http://....
     status=$(echo "$res" | head -1 | cut -d' ' -f2)
