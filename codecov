@@ -1239,7 +1239,7 @@ do
       if [ "$report_len" -ne 0 ];
       then
         say "    ${g}+${x} $file ${e}bytes=$(echo "$report_len" | tr -d ' ')${x}"
-        # append to to upload
+        # Append to upload
         echo "# path=$(echo "$file" | sed "s|^$git_root/||")" >> $upload_file
         cat "$file" >> $upload_file
         echo "<<<<<< EOF" >> $upload_file
