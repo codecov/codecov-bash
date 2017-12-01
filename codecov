@@ -1244,11 +1244,15 @@ do
         if [ "${_filename##*.}" = 'gcov' ];
         then
           echo "# path=$(echo "$file.reduced" | sed "s|^$git_root/||")" >> $upload_file
+          # TEMP for detection
+          echo "0:Source:" >> $upload_file
           # 1. remove source code
-          # 2. remove whitespace
-          # 3. remove contextual lines
-          # 4. remove function names
-          awk -F': *' '{print $1"="$2}' $file \
+          # 2. remove ending bracket lines
+          # 3. remove whitespace
+          # 4. remove contextual lines
+          # 5. remove function names
+          awk -F': *' '{print $1":"$2":"}' $file \
+            | sed '\/: *} *$/d' \
             | sed 's/^ *//' \
             | sed '/^-/d' \
             | sed 's/^function.*/func/' >> $upload_file
