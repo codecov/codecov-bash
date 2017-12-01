@@ -1244,8 +1244,8 @@ do
         if [ "${_filename##*.}" = 'gcov' ];
         then
           echo "# path=$(echo "$file.reduced" | sed "s|^$git_root/||")" >> $upload_file
-          # TEMP for detection
-          echo "0:Source:" >> $upload_file
+          # get file name
+          head -1 $file >> $upload_file
           # 1. remove source code
           # 2. remove ending bracket lines
           # 3. remove whitespace
