@@ -1241,7 +1241,20 @@ do
         say "    ${g}+${x} $file ${e}bytes=$(echo "$report_len" | tr -d ' ')${x}"
         # append to to upload
         echo "# path=$(echo "$file" | sed "s|^$git_root/||")" >> $upload_file
-        cat "$file" >> $upload_file
+        _filename=`basename $file`
+        if [ "${_filename##*.}" = 'gcov' ];
+        then
+          # 1. remove source code
+          # 2. remove whitespace
+          # 3. remove contextual lines
+          # 4. remove function names
+          awk -F': *' '{print $1"="$2}' $file \
+            | sed 's/^ *//' \
+            | sed '/^-/d' \
+            | sed 's/^function.*/func/' >> $upload_file
+        else
+          cat "$file" >> $upload_file
+        fi
         echo "<<<<<< EOF" >> $upload_file
         fr=1
         if [ "$clean" = "1" ];
