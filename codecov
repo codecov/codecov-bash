@@ -911,7 +911,7 @@ then
     if [ "$ft_gcov" = "1" ];
     then
       say "    ${e}->${x} Running $gcov_exe for Obj-C"
-      bash -c "find $ddp -type f -name '*.gcda' $gcov_include $gcov_ignore -exec $gcov_exe -pbcu $gcov_arg {} +" || true
+      bash -c "find $ddp -type f -name '*.gcda' $gcov_include $gcov_ignore -exec $gcov_exe -p $gcov_arg {} +" || true
     fi
   fi
 
@@ -1240,10 +1240,10 @@ do
       then
         say "    ${g}+${x} $file ${e}bytes=$(echo "$report_len" | tr -d ' ')${x}"
         # append to to upload
-        echo "# path=$(echo "$file" | sed "s|^$git_root/||")" >> $upload_file
         _filename=`basename $file`
         if [ "${_filename##*.}" = 'gcov' ];
         then
+          echo "# path=$(echo "$file.reduced" | sed "s|^$git_root/||")" >> $upload_file
           # 1. remove source code
           # 2. remove whitespace
           # 3. remove contextual lines
@@ -1253,6 +1253,7 @@ do
             | sed '/^-/d' \
             | sed 's/^function.*/func/' >> $upload_file
         else
+          echo "# path=$(echo "$file" | sed "s|^$git_root/||")" >> $upload_file
           cat "$file" >> $upload_file
         fi
         echo "<<<<<< EOF" >> $upload_file
