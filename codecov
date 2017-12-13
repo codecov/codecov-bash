@@ -459,14 +459,17 @@ then
   say "$e==>$x Travis CI detected."
   # http://docs.travis-ci.com/user/ci-environment/#Environment-variables
   service="travis"
-  branch="$TRAVIS_BRANCH"
   commit="${TRAVIS_PULL_REQUEST_SHA:-$TRAVIS_COMMIT}"
   build="$TRAVIS_JOB_NUMBER"
   pr="$TRAVIS_PULL_REQUEST"
   job="$TRAVIS_JOB_ID"
   slug="$TRAVIS_REPO_SLUG"
-  tag="$TRAVIS_TAG"
   env="$env,TRAVIS_OS_NAME"
+  tag="$TRAVIS_TAG"
+  if [ "$TRAVIS_BRANCH" != "$TRAVIS_TAG" ];
+  then
+    branch="$TRAVIS_BRANCH"
+  fi
 
   language=$(printenv | grep "TRAVIS_.*_VERSION" | head -1)
   if [ "$language" != "" ];
