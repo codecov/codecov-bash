@@ -301,6 +301,8 @@ $OPTARG"
         exit 0;
         ;;
       "J")
+        ft_xcodellvm="1"
+        ft_xcodeplist="0"
         if [ "$xp" = "" ];
         then
           xp="$OPTARG"
