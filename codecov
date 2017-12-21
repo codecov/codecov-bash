@@ -760,7 +760,7 @@ fi
 if [ "$commit_o" = "" ];
 then
   # merge commit -> actual commit
-  mc=$(git show --no-patch --format="%P" 2>/dev/null)
+  mc=$(git show --no-patch --format="%P" 2>/dev/null || echo '')
   if [[ "$mc" =~ ^[a-z0-9]{40}[[:space:]][a-z0-9]{40}$ ]];
   then
     say "    Fixing merge commit SHA"
