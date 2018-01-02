@@ -137,13 +137,12 @@ then
   add "BUILDKITE_PROJECT_SLUG"
   add "BUILDKITE_COMMIT"
 
-elif [ "$CI" = "true" ] && [ "$DRONE" = "true" ];
+elif [ "$CI" = "drone" ];
 then
-  add "DRONE"
   add "CI"
   add "DRONE_BRANCH"
   add "DRONE_BUILD_NUMBER"
-  add "DRONE_BUILD_URL"
+  add "DRONE_BUILD_LINK"
   add "DRONE_PULL_REQUEST"
   add "DRONE_JOB_NUMBER"
   add "DRONE_TAG"

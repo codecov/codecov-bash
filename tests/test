@@ -344,11 +344,10 @@ function test_solano (){
 
 function test_drone (){
     reset
-    export CI="true"
-    export DRONE="true"
+    export CI="drone"
     export DRONE_BRANCH="develop"
     export DRONE_BUILD_NUMBER="7.5"
-    export DRONE_BUILD_URL="http://drone"
+    export DRONE_BUILD_LINK="http://drone"
     assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=$_SHA&build=7.5&build_url=http%3A%2F%2Fdrone&name=&tag=&slug=codecov%2Fcodecov-bash&yaml=&service=drone.io&flags=&pr=&job="
 }
 

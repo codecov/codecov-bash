@@ -626,7 +626,7 @@ then
   fi
   tag="$BUILDKITE_TAG"
 
-elif [ "$CI" = "true" ] && [ "$DRONE" = "true" ];
+elif [ "$CI" = "drone" ];
 then
   say "$e==>$x Drone CI detected."
   # http://docs.drone.io/env.html
@@ -634,7 +634,7 @@ then
   service="drone.io"
   branch="$DRONE_BRANCH"
   build="$DRONE_BUILD_NUMBER"
-  build_url=$(urlencode "${DRONE_BUILD_URL:-$CI_BUILD_URL}")
+  build_url=$(urlencode "${DRONE_BUILD_LINK}")
   pr="$DRONE_PULL_REQUEST"
   job="$DRONE_JOB_NUMBER"
   tag="$DRONE_TAG"
