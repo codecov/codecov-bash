@@ -388,17 +388,6 @@ function test_magnum (){
     assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=12311&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&yaml=&service=magnum&flags=&pr=&job="
 }
 
-function test_snap_ci (){
-    reset
-    export CI="true"
-    export SNAP_CI="true"
-    export SNAP_BRANCH="develop"
-    export SNAP_PIPELINE_COUNTER="12311"
-    export SNAP_PULL_REQUEST_NUMBER="1"
-    export SNAP_COMMIT="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
-    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=12311&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&yaml=&service=snap&flags=&pr=1&job="
-}
-
 function test_shippable (){
     reset
     export SHIPPABLE="true"

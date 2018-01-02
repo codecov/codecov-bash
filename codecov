@@ -678,18 +678,6 @@ then
   build="$CI_BUILD_NUMBER"
   commit="$CI_COMMIT"
 
-elif [ "$CI" = "true" ] && [ "$SNAP_CI" = "true" ];
-then
-  say "$e==>$x Snap CI detected."
-  # https://docs.snap-ci.com/environment-variables/
-  service="snap"
-  branch=$([ "$SNAP_BRANCH" != "" ] && echo "$SNAP_BRANCH" || echo "$SNAP_UPSTREAM_BRANCH")
-  build="$SNAP_PIPELINE_COUNTER"
-  job="$SNAP_STAGE_NAME"
-  pr="$SNAP_PULL_REQUEST_NUMBER"
-  commit=$([ "$SNAP_COMMIT" != "" ] && echo "$SNAP_COMMIT" || echo "$SNAP_UPSTREAM_COMMIT")
-  env="$env,DISPLAY"
-
 elif [ "$SHIPPABLE" = "true" ];
 then
   say "$e==>$x Shippable CI detected."

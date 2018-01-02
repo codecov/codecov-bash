@@ -184,19 +184,6 @@ then
   add "CI_BUILD_NUMBER"
   add "CI_COMMIT"
 
-elif [ "$CI" = "true" ] && [ "$SNAP_CI" = "true" ];
-then
-  add "SNAP_CI"
-  add "CI"
-  add "SNAP_BRANCH"
-  add "SNAP_UPSTREAM_BRANCH"
-  add "SNAP_PIPELINE_COUNTER"
-  add "SNAP_STAGE_NAME"
-  add "SNAP_PULL_REQUEST_NUMBER"
-  add "SNAP_COMMIT"
-  add "SNAP_UPSTREAM_COMMIT"
-  add "DISPLAY"
-
 elif [ "$SHIPPABLE" = "true" ];
 then
   add "SHIPPABLE"
