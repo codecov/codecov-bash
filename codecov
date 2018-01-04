@@ -751,7 +751,7 @@ then
   mc=
   if [ -n "$pr" ] && [ "$pr" != false ];
   then
-    mc=$(git show --no-patch --format="%P" 2>/dev/null || echo '')
+    mc=$(git show --no-patch --format="%P" 2>/dev/null | tr -d '[[:space:]]' || echo "")
   fi
   if [[ "$mc" =~ ^[a-z0-9]{40}[[:space:]][a-z0-9]{40}$ ]];
   then
