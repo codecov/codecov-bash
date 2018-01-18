@@ -954,7 +954,7 @@ then
           if [ ! -f .coverage ];
           then
             say "    ${e}->${x} Running coverage combine"
-            coverage combine
+            coverage combine -a
           fi
           say "    ${e}->${x} Running coverage xml"
           if [ "$(coverage xml -i)" != "No data to report." ];
