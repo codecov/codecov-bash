@@ -85,3 +85,9 @@ bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverag
 | [Bitrise](https://bitrise.io/)                      | `coming soon`                                                                                                                                    |                  |
 
 > Using **Travis CI**? Uploader is compatible with `sudo: false` which can speed up your builds. :+1:
+
+
+## Caveat
+
+1. **Jenkins**: Unable to find reports? Try `PWD=WORKSPACE bash <(curl -s https://codecov.io/bash)`
+  - Please let us know if this works for you. More at #112
