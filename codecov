@@ -56,6 +56,7 @@ search_in_o=""
 tag_o=""
 branch_o=""
 slug_o=""
+prefix_o=""
 
 commit="$VCS_COMMIT_ID"
 branch="$VCS_BRANCH_NAME"
@@ -148,6 +149,7 @@ cat << EOF
     -G GLOB      Paths to include during gcov gathering
     -p dir       Project root directory
                  Also used when preparing gcov
+    -P prefix    Prefix filepaths to help resolve path fixing: https://github.com/codecov/support/issues/472
     -x gcovexe   gcov executable to run. Defaults to 'gcov'
     -a gcovargs  extra arguments to pass to gcov
 
@@ -322,6 +324,9 @@ $OPTARG"
         ;;
       "p")
         proj_root="$OPTARG"
+        ;;
+      "P")
+        prefix_o=$(echo "$OPTARG" | sed -e 's:^/*::' -e 's:/*$::')
         ;;
       "P")
         pr_o="$OPTARG"
@@ -1181,6 +1186,11 @@ then
                    -path '*/js/generated/coverage/*' \
                     \) -prune -or \
                     -type f -print 2>/dev/null || echo '')
+  fi
+
+  if [ "$prefix_o" != "" ];
+  then
+      network=$(echo "$network" | awk "{print \"$prefix_o/\"\$0}")
   fi
 fi
 
