@@ -149,7 +149,7 @@ cat << EOF
     -G GLOB      Paths to include during gcov gathering
     -p dir       Project root directory
                  Also used when preparing gcov
-    -P prefix    Prefix filepaths to help resolve path fixing: https://github.com/codecov/support/issues/472
+    -k prefix    Prefix filepaths to help resolve path fixing: https://github.com/codecov/support/issues/472
     -x gcovexe   gcov executable to run. Defaults to 'gcov'
     -a gcovargs  extra arguments to pass to gcov
 
