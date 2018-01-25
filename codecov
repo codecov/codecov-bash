@@ -234,7 +234,7 @@ parse_yaml() {
 
 if [ $# != 0 ];
 then
-  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:Kn:p:P:r:R:y:s:S:t:T:u:U:vx:X:Z" o
+  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:k:Kn:p:P:r:R:y:s:S:t:T:u:U:vx:X:Z" o
   do
     case "$o" in
       "a")
@@ -312,6 +312,9 @@ $OPTARG"
           xp="$xp\|$OPTARG"
         fi
         ;;
+      "k")
+        prefix_o=$(echo "$OPTARG" | sed -e 's:^/*::' -e 's:/*$::')
+        ;;
       "K")
         b=""
         g=""
@@ -324,9 +327,6 @@ $OPTARG"
         ;;
       "p")
         proj_root="$OPTARG"
-        ;;
-      "P")
-        prefix_o=$(echo "$OPTARG" | sed -e 's:^/*::' -e 's:/*$::')
         ;;
       "P")
         pr_o="$OPTARG"
