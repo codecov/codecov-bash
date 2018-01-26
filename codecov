@@ -399,6 +399,9 @@ $OPTARG"
         elif [ "$OPTARG" = "network" ];
         then
           ft_network="0"
+        elif [ "$OPTARG" = "s3" ];
+        then
+          ft_s3="0"
         fi
         ;;
       "y")
