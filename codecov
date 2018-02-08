@@ -1520,6 +1520,7 @@ else
           --data-binary @$upload_file.gz \
           -H 'Content-Type: text/plain' \
           -H 'Content-Encoding: gzip' \
+          -H 'X-Content-Encoding: gzip' \
           -H 'Accept: text/plain' \
           "$url/upload/v2?$query" || echo 'HTTP 500')
     # HTTP 200
