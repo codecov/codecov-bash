@@ -36,8 +36,8 @@ ft_fix="1"
 ft_search="1"
 ft_s3="1"
 ft_network="1"
-ft_xcodellvm="0"
-ft_xcodeplist="1"
+ft_xcodellvm="1"
+ft_xcodeplist="0"
 
 _git_root=$(git rev-parse --show-toplevel 2>/dev/null || hg root 2>/dev/null || echo $PWD)
 git_root="$_git_root"
@@ -634,7 +634,7 @@ then
   fi
   tag="$BUILDKITE_TAG"
 
-elif [ "$CI" = "drone" ];
+elif [ "$CI" = "drone" ] || [ "$DRONE" = "true" ];
 then
   say "$e==>$x Drone CI detected."
   # http://docs.drone.io/env.html
