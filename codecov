@@ -414,6 +414,7 @@ $OPTARG"
   done
 fi
 
+main() {
 say "
   _____          _
  / ____|        | |
@@ -1548,3 +1549,6 @@ else
 fi
 
 exit ${exit_with}
+}
+
+main
