@@ -866,6 +866,7 @@ query="branch=$branch\
        &name=$(urlencode "$name")\
        &tag=$([ "$tag_o" = "" ] && echo "$tag" || echo "$tag_o")\
        &slug=$([ "$slug_o" = "" ] && urlencode "$slug" || urlencode "$slug_o")\
+       &yaml=$yaml\
        &service=$service\
        &flags=$flags\
        &pr=$([ "$pr_o" = "" ] && echo "${pr##\#}" || echo "${pr_o##\#}")\
