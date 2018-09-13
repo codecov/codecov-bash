@@ -39,6 +39,7 @@ ft_network="1"
 ft_xcodellvm="1"
 ft_xcodeplist="0"
 ft_gcovout="1"
+ft_upload="1"
 
 _git_root=$(git rev-parse --show-toplevel 2>/dev/null || hg root 2>/dev/null || echo $PWD)
 git_root="$_git_root"
@@ -125,6 +126,7 @@ cat << EOF
                  -X xcode         Disable xcode processing
                  -X network       Disable uploading the file network
                  -X gcovout       Disable gcov output
+                 -X upload        Disable all data uploading 
 
     -R root dir  Used when not in git/hg project to identify project root directory
     -y conf file Used to specify the location of the .codecov.yml config file
@@ -407,6 +409,9 @@ $OPTARG"
         elif [ "$OPTARG" = "s3" ];
         then
           ft_s3="0"
+        elif [ "$OPTARG" = "upload" ];
+        then
+          ft_upload="0"
         fi
         ;;
       "y")
@@ -1467,6 +1472,9 @@ then
   say "    ${e}->${x} Dumping upload file (no upload)"
   echo "$url/upload/v4?$(echo "package=bash-$VERSION&token=$token&$query" | tr -d ' ')"
   cat $upload_file
+elif [ "$ft_upload" = "0" ];
+then
+  say "Skip uploading"
 else
 
   say "${e}==>${x} Gzipping contents"
