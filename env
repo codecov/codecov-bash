@@ -104,6 +104,16 @@ then
   add "bamboo_buildResultsUrl"
   add "bamboo_planRepository_repositoryUrl"
 
+elif [ "$CI" = "true" ] && [ "$BITBUCKET_CLONE_DIR" != "" ];
+then
+  add "CI"
+  add "BITBUCKET_BRANCH"
+  add "BITBUCKET_BUILD_NUMBER"
+  add "BITBUCKET_COMMIT"
+  add "BITBUCKET_REPO_OWNER"
+  add "BITBUCKET_REPO_SLUG"
+  add "BITBUCKET_TAG"
+
 elif [ "$CI" = "true" ] && [ "$BITRISE_IO" = "true" ];
 then
   add "CI"

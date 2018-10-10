@@ -596,6 +596,17 @@ then
   build_url="${bamboo_buildResultsUrl}"
   remote_addr="${bamboo_planRepository_repositoryUrl}"
 
+elif [ "$CI" = "true" ] && [ "$BITBUCKET_CLONE_DIR" != "" ];
+then
+  say "$e==>$x Bitbucket Pipelines detected"
+  # https://confluence.atlassian.com/bitbucket/environment-variables-794502608.html
+  service="bitbucket"
+  commit="$BITBUCKET_COMMIT"
+  branch="$BITBUCKET_BRANCH"
+  build="$BITBUCKET_BUILD_NUMBER"
+  slug="$BITBUCKET_REPO_OWNER/$BITBUCKET_REPO_SLUG"
+  tag="$BITBUCKET_TAG"
+
 elif [ "$CI" = "true" ] && [ "$BITRISE_IO" = "true" ];
 then
   # http://devcenter.bitrise.io/faq/available-environment-variables/

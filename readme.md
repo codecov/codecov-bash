@@ -81,6 +81,7 @@ bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverag
 | git                                                 | Yes (as a fallback)                                                                                                                              | Public & Private |
 | [Buildbot](http://buildbot.net/)                    | `coming soon` [buildbot/buildbot#1671](https://github.com/buildbot/buildbot/pull/1671)                                                           |                  |
 | [Bamboo](https://www.atlassian.com/software/bamboo) | `coming soon`                                                                                                                                    |                  |
+| [Bitbucket Pipelines](https://bitbucket.org/product/features/pipelines) | Yes                                                                                                                                   | Public & Private                 |
 | [Solano Labs](https://www.solanolabs.com/)          | `coming soon`                                                                                                                                    |                  |
 | [Bitrise](https://bitrise.io/)                      | `coming soon`                                                                                                                                    |                  |
 

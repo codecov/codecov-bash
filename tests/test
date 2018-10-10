@@ -399,6 +399,16 @@ function test_shippable (){
     assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=1.2&build_url=http%3A%2F%2Fshippable&name=&tag=&slug=myowner%2Fmyrepo&yaml=&service=shippable&flags=&pr=2&job="
 }
 
+function test_bitbucket_pipelines (){
+    reset
+    export BITBUCKET_BRANCH="develop"
+    export BITBUCKET_BUILD_NUMBER="19"
+    export BITBUCKET_COMMIT="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
+    export BITBUCKET_REPO_OWNER="myowner"
+    export BITBUCKET_REPO_SLUG="myrepo"
+    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=19&build_url=&name=&tag=&slug=myowner%2Fmyrepo&yaml=&service=bitbucket&flags=&pr=&job="
+}
+
 
 # Call and Run all Tests
 . "shunit2-2.1.6/src/shunit2"
