@@ -372,7 +372,12 @@ $OPTARG"
         curl_s=""
         ;;
       "x")
-        gcov_exe=$OPTARG
+        if [ -z "${OPTARG##*llvm-cov*}" ];
+        then
+          gcov_exe="$OPTARG gcov"
+        else
+          gcov_exe="$OPTARG"
+        fi
         ;;
       "X")
         if [ "$OPTARG" = "gcov" ];
