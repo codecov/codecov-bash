@@ -659,6 +659,7 @@ then
   service="heroku"
   branch="$HEROKU_TEST_RUN_BRANCH"
   build="$HEROKU_TEST_RUN_ID"
+  commit="$HEROKU_TEST_RUN_COMMIT_VERSION"
 
 elif [ "$CI" = "True" ] && [ "$APPVEYOR" = "True" ];
 then
