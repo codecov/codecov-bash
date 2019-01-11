@@ -735,6 +735,22 @@ then
   remote_addr="${CI_BUILD_REPO:-$CI_REPOSITORY_URL}"
   commit="${CI_BUILD_REF:-$CI_COMMIT_SHA}"
 
+elif [ "$SYSTEM_TEAMFOUNDATIONSERVERURI" != "" ];
+then
+  say "$e==>$x Azure Pipelines detected."
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=vsts
+  service="azure_pipelines"
+  commit="$BUILD_SOURCEVERSION"
+  build="$BUILD_BUILDNUMBER"
+  if [ "$PULL_REQUEST_NUMBER" != "$PULL_REQUEST_ID" ];
+  then
+    pr="$PULL_REQUEST_NUMBER"
+  else
+    pr="$PULL_REQUEST_ID"
+  fi
+  job="${BUILD_BUILDID}"
+  branch="$BUILD_SOURCEBRANCHNAME"
+
 else
   say "${r}x>${x} No CI provider detected."
   say "    Testing inside Docker? ${b}http://docs.codecov.io/docs/testing-with-docker${x}"
