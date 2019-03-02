@@ -220,4 +220,17 @@ then
   add "CI_BUILD_REPO"
   add "CI_BUILD_REF"
 
+elif [ "$PROW_JOB_ID" != "" ];
+then
+  add "BUILD_ID"
+  add "JOB_NAME"
+  add "JOB_TYPE"
+  add "PROW_JOB_ID"
+  add "PULL_BASE_REF"
+  add "PULL_BASE_SHA"
+  add "PULL_NUMBER"
+  add "PULL_PULL_SHA"
+  add "REPO_NAME"
+  add "REPO_OWNER"
+
 fi

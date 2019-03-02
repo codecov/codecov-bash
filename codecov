@@ -735,6 +735,19 @@ then
   remote_addr="${CI_BUILD_REPO:-$CI_REPOSITORY_URL}"
   commit="${CI_BUILD_REF:-$CI_COMMIT_SHA}"
 
+elif [ "$PROW_JOB_ID" != "" ];
+then
+  say "$e==>$x Prow CI detected."
+  # https://github.com/kubernetes/test-infra/tree/master/prow
+  service="prow"
+  branch="${PULL_BASE_REF}"
+  build="${BUILD_ID}"
+  commit="${PULL_BASE_SHA}"
+  job="${PROW_JOB_ID}"
+  pr="${PULL_NUMBER}"
+  slug="${REPO_OWNER}/${REPO_NAME}"
+  build_url=$(urlencode "${CI_BUILD_URL}")
+
 else
   say "${r}x>${x} No CI provider detected."
   say "    Testing inside Docker? ${b}http://docs.codecov.io/docs/testing-with-docker${x}"
