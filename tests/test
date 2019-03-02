@@ -406,5 +406,35 @@ function test_shippable (){
     assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=1.2&build_url=http%3A%2F%2Fshippable&name=&tag=&slug=myowner%2Fmyrepo&service=shippable&flags=&pr=2&job="
 }
 
+function test_prow_presubmit (){
+    reset
+    export PROW_JOB_ID=91c3ff58-3a97-11e9-a034-0a58ac105a97
+	export BUILD_ID=1
+	export JOB_TYPE=postsubmit
+	export JOB_NAME=prowpresubmit
+	export PULL_BASE_REF=master
+	export PULL_BASE_SHA=40634e665221384257bd8dd9129145c0fe537916
+	export PULL_NUMBER=1
+	export PULL_PULL_SHA=82eb60d5e6796a330b8b61f9a9d4ae68c108a94a
+	export REPO_NAME=myrepo
+	export REPO_OWNER=owner
+	export CI_BUILD_URL="https://prow"
+    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=master&commit=40634e665221384257bd8dd9129145c0fe537916&build=1&build_url=https%3A%2F%2Fprow&name=&tag=&slug=owner%2Fmyrepo&service=prow&flags=&pr=1&job=91c3ff58-3a97-11e9-a034-0a58ac105a97"
+}
+
+function test_prow_postsubmit (){
+    reset
+    export PROW_JOB_ID=91c3ff58-3a97-11e9-a034-0a58ac105a97
+	export BUILD_ID=1
+	export JOB_TYPE=postsubmit
+	export JOB_NAME=prowpostsubmit
+	export PULL_BASE_REF=master
+	export PULL_BASE_SHA=40634e665221384257bd8dd9129145c0fe537916
+	export REPO_NAME=myrepo
+	export REPO_OWNER=owner
+	export CI_BUILD_URL="https://prow"
+    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=master&commit=40634e665221384257bd8dd9129145c0fe537916&build=1&build_url=https%3A%2F%2Fprow&name=&tag=&slug=owner%2Fmyrepo&service=prow&flags=&pr=&job=91c3ff58-3a97-11e9-a034-0a58ac105a97"
+}
+
 # Call and Run all Tests
 . "shunit2-2.1.6/src/shunit2"
