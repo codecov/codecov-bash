@@ -26,6 +26,7 @@ add "VCS_TAG"
 add "CI_BUILD_URL"
 add "CI_BUILD_ID"
 add "CI_JOB_ID"
+add "CI_SERVICE"
 
 if [ "$JENKINS_URL" != "" ];
 then
@@ -69,7 +70,6 @@ then
   add "TEAMCITY_BUILD_BRANCH"
   add "TEAMCITY_BUILD_ID"
   add "TEAMCITY_BUILD_URL"
-  add "TEAMCITY_BUILD_COMMIT"
   add "TEAMCITY_BUILD_COMMIT"
   add "BUILD_VCS_NUMBER"
   add "TEAMCITY_BUILD_REPOSITORY"

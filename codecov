@@ -10,7 +10,7 @@ VERSION="tbd"
 
 url="https://codecov.io"
 env="$CODECOV_ENV"
-service=""
+service="$CI_SERVICE"
 token=""
 search_in=""
 flags=""
