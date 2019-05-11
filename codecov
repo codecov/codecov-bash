@@ -1036,6 +1036,7 @@ $PWD/coverage.xml"
                     -type f \( -name '*coverage*.*' \
                      -or -name 'nosetests.xml' \
                      -or -name 'jacoco*.xml' \
+                     -or -name '*Jacoco*.xml' \
                      -or -name 'clover.xml' \
                      -or -name 'report.xml' \
                      -or -name '*.codecov.*' \
