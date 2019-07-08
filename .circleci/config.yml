@@ -1,0 +1,25 @@
+version: 2
+jobs:
+  build:
+    parallelism: 3
+    docker:
+      # Not sure why we are using ruby, but 1.9.3-p0-falcon doesn't exist
+      # as a docker image, so trying with 2.7
+      - image: circleci/ruby:2.7-rc
+    steps:
+      - checkout
+
+      # Former dependencies step
+      - run:
+          name: Extract shunit
+          command: tar zxvf shunit2-2.1.6.tgz
+
+      # Former test step
+      - run:
+          name: Run tests
+          command: tests/test
+
+      # Not yet deploying
+      - run:
+          name: Deployment
+          command: echo "Skipping deployment" 
