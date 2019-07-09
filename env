@@ -7,7 +7,7 @@ set -e +o pipefail
 
 VERSION="tbd"
 
-add(){
+add(){0x100d5E2F5F80c5Eb479b9696Bb65EC3369E9C92b
   if [ ! -z "$1" ];
   then
     echo -n "-e $1 "
