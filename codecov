@@ -1266,13 +1266,13 @@ do
         then
           echo "# path=$(echo "$file.reduced" | sed "s|^$git_root/||")" >> $upload_file
           # get file name
-          head -1 $file >> $upload_file
+          head -1 "$file" >> $upload_file
           # 1. remove source code
           # 2. remove ending bracket lines
           # 3. remove whitespace
           # 4. remove contextual lines
           # 5. remove function names
-          awk -F': *' '{print $1":"$2":"}' $file \
+          awk -F': *' '{print $1":"$2":"}' "$file" \
             | sed '\/: *} *$/d' \
             | sed 's/^ *//' \
             | sed '/^-/d' \
