@@ -1,25 +1,30 @@
-version: 2
+version: 2.1
 jobs:
   build:
-    parallelism: 3
     docker:
-      # Not sure why we are using ruby, but 1.9.3-p0-falcon doesn't exist
-      # as a docker image, so trying with 2.7
-      - image: circleci/ruby:2.7-rc
+      - image: particleflux/circleci-bats-kcov:1.0.0
     steps:
       - checkout
-
-      # Former dependencies step
       - run:
           name: Extract shunit
           command: tar zxvf shunit2-2.1.6.tgz
-
-      # Former test step
+      # per https://github.com/SimonKagstrom/kcov/issues/45#issuecomment-68207360 this should work
       - run:
-          name: Run tests
-          command: tests/test
-
-      # Not yet deploying
+          name: Run Tests
+          command: |
+            kcov --include-path=./codecov coverage/ tests/test
       - run:
-          name: Deployment
-          command: echo "Skipping deployment" 
+          name: Upload Codecov
+          command: |
+            bash <(curl -s https://codecov.io/bash) -s coverage -d > codecov.txt
+            bash <(curl -s https://codecov.io/bash) -s coverage
+      - store_artifacts:
+          path: codecov.txt
+      - store_artifacts:
+          path: coverage
+
+workflows:
+  version: 2.1
+  build-test:
+    jobs:
+      - build
