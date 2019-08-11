@@ -19,12 +19,12 @@ jobs:
             bash <(curl -s https://codecov.io/bash) -s coverage -d > upload.txt
             bash <(curl -s https://codecov.io/bash) -s coverage
       - store_artifacts:
-          path: codecov.txt
+          path: upload.txt
       - store_artifacts:
           path: coverage
 
 workflows:
-  version: 2.1
+  version: 2
   build-test:
     jobs:
       - build
