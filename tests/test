@@ -9,6 +9,9 @@ _SHA=$(git log -1 --format="%H")
 _PARENT_SHA=$(echo "$mc" | cut -d' ' -f2)
 echo "Parent SHA: $_PARENT_SHA"
 echo "Head SHA:   $_SHA"
+echo "TRAVIS_PULL_REQUEST_SHA: $TRAVIS_PULL_REQUEST_SHA"
+echo "TRAVIS_COMMIT:           $TRAVIS_COMMIT"
+echo "_TRAVIS_SHA:             ${TRAVIS_PULL_REQUEST_SHA:-$TRAVIS_COMMIT}"
 _BRANCH=$(git rev-parse --abbrev-ref HEAD)
 _BRANCH=$(urlencode $_BRANCH)
 if [ "$_BRANCH" = "HEAD" ];
@@ -244,12 +247,10 @@ function test_travis () {
     export TRAVIS_JOB_ID="33116958"
     export TRAVIS="true"
     export TRAVIS_BRANCH="master"
+
     if [ "$TRAVIS_PULL_REQUEST_SHA" ] && [ "$TRAVIS_COMMIT" ];
     then
-        echo "TRAVIS_PULL_REQUEST_SHA: $TRAVIS_PULL_REQUEST_SHA"
-        echo "TRAVIS_COMMIT:           $TRAVIS_COMMIT"
         export _TRAVIS_SHA="${TRAVIS_PULL_REQUEST_SHA:-$TRAVIS_COMMIT}"
-        echo "_TRAVIS_SHA:             $_TRAVIS_SHA"
     else
         export _TRAVIS_SHA=$_SHA
         export TRAVIS_COMMIT=$_SHA
