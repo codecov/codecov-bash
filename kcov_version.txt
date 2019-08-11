@@ -1,1 +1,0 @@
-kcov built from SHA: https://github.com/SimonKagstrom/kcov/commit/ea3f3c8731754f6f1bf5ec103b498226c92b5c22
