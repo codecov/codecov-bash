@@ -2,7 +2,7 @@
 
 # Install dependencies
 sudo apt update
-sudo apt install -y binutils-dev libcurl4-openssl-dev zlib1g-dev libdw-dev libiberty-dev
+sudo apt install -y binutils-dev libcurl4-openssl-dev zlib1g-dev libdw-dev libiberty-dev libbinutils
 
 # Run Tests
 ./tests/test || echo "Tests failed"
