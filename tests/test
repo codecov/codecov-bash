@@ -7,8 +7,8 @@ urlencode() {
 mc=$(git show --no-patch --format="%P")
 _SHA=$(git log -1 --format="%H")
 _PARENT_SHA=$(echo "$mc" | cut -d' ' -f2)
-echo $_PARENT_SHA
-echo $_SHA
+echo "Parent SHA: $_PARENT_SHA"
+echo "Head SHA:   $_SHA"
 _BRANCH=$(git rev-parse --abbrev-ref HEAD)
 _BRANCH=$(urlencode $_BRANCH)
 if [ "$_BRANCH" = "HEAD" ];
@@ -247,7 +247,7 @@ function test_travis () {
     if [ "$TRAVIS_PULL_REQUEST_SHA" ] && [ "$TRAVIS_COMMIT" ];
     then
         echo $TRAVIS_PULL_REQUEST_SHA
-        echo $TRAVIS_COMMI
+        echo $TRAVIS_COMMIT
         export _TRAVIS_SHA="${TRAVIS_PULL_REQUEST_SHA:-$TRAVIS_COMMIT}"
     else
         export _TRAVIS_SHA=$_SHA
