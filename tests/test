@@ -32,17 +32,17 @@ function reset () {
 
 function assertDiff () {
     diff <(erb "$2") <(echo "$1")
-    ${_ASSERT_TRUE_} 'Expected output differs.' $?
+    assertTrue 'Expected output differs.' $?
 }
 
 function assertContains () {
     python -c "import sys; assert sys.argv[2] in sys.argv[1]" "$1" "$2" 2>/dev/null
-    ${_ASSERT_TRUE_} ">>>>>> $1 <<<<<< does not contain $2" $?
+    assertTrue ">>>>>> $1 <<<<<< does not contain $2" $?
 }
 
 function assertNotContains () {
     python -c "import sys; assert sys.argv[2] not in sys.argv[1]" "$1" "$2" 2>/dev/null
-    ${_ASSERT_TRUE_} ">>>>>> $1 <<<<<< does contain $2" $?
+    assertTrue ">>>>>> $1 <<<<<< does contain $2" $?
 }
 
 function test_help () {
@@ -65,22 +65,22 @@ function test_fixes () {
 function test_url_opt () {
     reset
     res=$(./codecov -d -u http://example.com | grep "http://example.com/")
-    diff <(echo "http://example.com/upload/v4?package=bash-tbd&token=&branch=$_BRANCH&commit=$_SHA&build=&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&yaml=&service=&flags=&pr=&job=") <(echo "$res")
-    ${_ASSERT_TRUE_} 'Expected output differs.' $?
+    diff <(echo "http://example.com/upload/v4?package=bash-tbd&token=&branch=$_BRANCH&commit=$_SHA&build=&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=&flags=&pr=&job=") <(echo "$res")
+    assertTrue 'Expected output differs.' $?
 }
 
 function test_url_env () {
     reset
     res=$(CODECOV_URL="http://other.com" ./codecov -d | grep "http://other.com/")
-    diff <(echo "http://other.com/upload/v4?package=bash-tbd&token=&branch=$_BRANCH&commit=$_SHA&build=&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&yaml=&service=&flags=&pr=&job=") <(echo "$res")
-    ${_ASSERT_TRUE_} 'Expected output differs.' $?
+    diff <(echo "http://other.com/upload/v4?package=bash-tbd&token=&branch=$_BRANCH&commit=$_SHA&build=&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=&flags=&pr=&job=") <(echo "$res")
+    assertTrue 'Expected output differs.' $?
 }
 
 function test_flags_opt () {
     reset
     res=$(./codecov -d -F f1 -F f2 | grep "https://codecov.io/")
-    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=$_BRANCH&commit=$_SHA&build=&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&yaml=&service=&flags=f1,f2&pr=&job=") <(echo "$res")
-    ${_ASSERT_TRUE_} 'Expected output differs.' $?
+    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=$_BRANCH&commit=$_SHA&build=&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=&flags=f1,f2&pr=&job=") <(echo "$res")
+    assertTrue 'Expected output differs.' $?
 }
 
 # function test_yaml_location () {
@@ -92,7 +92,7 @@ function test_flags_opt () {
 # ' > codecov.yml
 #     res=$(./codecov -d | grep "http://other.com/")
 #     diff <(echo "http://other.com/upload/v4?package=bash-tbd&token=abc123&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=owner/repo&yaml=codecov.yml&service=&flags=&pr=&job=") <(echo "$res")
-#     ${_ASSERT_TRUE_} 'Expected output differs.' $?
+#     assertTrue 'Expected output differs.' $?
 # }
 #
 # function test_yaml_location_2 () {
@@ -102,22 +102,22 @@ function test_flags_opt () {
 # ' > tests/.codecov.yml
 #     res=$(./codecov -d | grep "https://codecov.io/")
 #     diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=uuid&branch=$_BRANCH&commit=$_SHA&build=&build_url=&tag=&slug=codecov%2Fcodecov-bash&yaml=tests%2F.codecov.yml&service=&flags=&pr=&job=") <(echo "$res")
-#     ${_ASSERT_TRUE_} 'Expected output differs.' $?
+#     assertTrue 'Expected output differs.' $?
 # }
 
 function test_build_arg () {
     reset
     res=$(./codecov -d -b 1.6 | grep "https://codecov.io/")
-    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=$_BRANCH&commit=$_SHA&build=1.6&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&yaml=&service=&flags=&pr=&job=") <(echo "$res")
-    ${_ASSERT_TRUE_} 'Expected output differs.' $?
+    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=$_BRANCH&commit=$_SHA&build=1.6&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=&flags=&pr=&job=") <(echo "$res")
+    assertTrue 'Expected output differs.' $?
 }
 
 # function test_changes_merge_commit () {
 #     reset
 #     git commit --amend -m 'Merge 5d4123bcb99dd1bc9b5ae8b4271b39dbe4c3928b into 2f85ca252d69d6c52484f0c4b2e8500498228398'
 #     res=$(./codecov -d -b 1.6 | grep "https://codecov.io/")
-#     diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=$_BRANCH&commit=5d4123bcb99dd1bc9b5ae8b4271b39dbe4c3928b&build=&build_url=&tag=&slug=codecov%2Fcodecov-bash&yaml=&service=&flags=&pr=&job=") <(echo "$res")
-#     ${_ASSERT_TRUE_} 'Expected output differs.' $?
+#     diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=$_BRANCH&commit=5d4123bcb99dd1bc9b5ae8b4271b39dbe4c3928b&build=&build_url=&tag=&slug=codecov%2Fcodecov-bash&service=&flags=&pr=&job=") <(echo "$res")
+#     assertTrue 'Expected output differs.' $?
 # }
 
 function test_bowerrc_empty () {
@@ -126,7 +126,7 @@ function test_bowerrc_empty () {
     touch bower_components/file.md
     res=$(./codecov -d | grep "bower_components/file.md")
     rm -rf bower_components
-    ${_ASSERT_EQUALS_} '' "$res"
+    assertEquals '' "$res"
 }
 
 function test_bowerrc () {
@@ -137,7 +137,7 @@ function test_bowerrc () {
     res=$(./codecov -d | grep "bower/file.md")
     rm -rf bower
     rm .bowerrc
-    ${_ASSERT_EQUALS_} '' "$res"
+    assertEquals '' "$res"
 }
 
 function test_bowerrc_2 () {
@@ -150,7 +150,7 @@ function test_bowerrc_2 () {
     res=$(./codecov -d | grep "bower/file.md")
     rm -rf bower
     rm .bowerrc
-    ${_ASSERT_EQUALS_} '' "$res"
+    assertEquals '' "$res"
 }
 
 function test_env_opt () {
@@ -177,8 +177,8 @@ function test_env_env () {
 function test_slug_opt () {
     reset
     res=$(./codecov -dr myowner/myrepo | grep "https://codecov.io/")
-    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=$_BRANCH&commit=$_SHA&build=&build_url=&name=&tag=&slug=myowner%2Fmyrepo&yaml=&service=&flags=&pr=&job=") <(echo "$res")
-    ${_ASSERT_TRUE_} 'Expected output differs.' $?
+    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=$_BRANCH&commit=$_SHA&build=&build_url=&name=&tag=&slug=myowner%2Fmyrepo&service=&flags=&pr=&job=") <(echo "$res")
+    assertTrue 'Expected output differs.' $?
 }
 
 function test_slug_env () {
@@ -190,7 +190,7 @@ function test_slug_env () {
 function test_gcov () {
     reset
     ./codecov -d -X gcov -K | grep '**> gcov disable'
-    ${_ASSERT_TRUE_} 'gcov was disabled' $?
+    assertTrue 'gcov was disabled' $?
 }
 
 function test_file_opt () {
@@ -202,15 +202,15 @@ function test_token_opt () {
     reset
     token="38cd42da-4df4-4760-a998-4ebeca536904"
     res=$(./codecov -d -t "$token" | grep "https://codecov.io/")
-    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=$token&branch=$_BRANCH&commit=$_SHA&build=&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&yaml=&service=&flags=&pr=&job=") <(echo "$res")
-    ${_ASSERT_TRUE_} 'Expected output differs.' $?
+    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=$token&branch=$_BRANCH&commit=$_SHA&build=&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=&flags=&pr=&job=") <(echo "$res")
+    assertTrue 'Expected output differs.' $?
 }
 
 function test_token_env () {
     reset
     res=$(CODECOV_TOKEN="38cd42da-4df4-4760-a998-4ebeca536904" ./codecov -d | grep "https://codecov.io/")
-    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=$token&branch=$_BRANCH&commit=$_SHA&build=&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&yaml=&service=&flags=&pr=&job=") <(echo "$res")
-    ${_ASSERT_TRUE_} 'Expected output differs.' $?
+    diff <(echo "https://codecov.io/upload/v4?package=bash-tbd&token=$token&branch=$_BRANCH&commit=$_SHA&build=&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=&flags=&pr=&job=") <(echo "$res")
+    assertTrue 'Expected output differs.' $?
 }
 
 # function test_upload () {
@@ -235,7 +235,7 @@ function test_token_env () {
 function assertURL () {
     url=$(./codecov -d | grep 'https://codecov.io/')
     diff <(echo "$1") <(echo "$url")
-    ${_ASSERT_TRUE_} 'Expected output differs.' $?
+    assertTrue 'Expected output differs.' $?
 }
 
 function test_travis () {
