@@ -16,7 +16,7 @@ jobs:
       - run:
           name: Upload Codecov
           command: |
-            bash <(curl -s https://codecov.io/bash) -s coverage -d > codecov.txt
+            bash <(curl -s https://codecov.io/bash) -s coverage -d > upload.txt
             bash <(curl -s https://codecov.io/bash) -s coverage
       - store_artifacts:
           path: codecov.txt
