@@ -3,9 +3,11 @@
 urlencode() {
   echo "$1" | curl -Gso /dev/null -w %{url_effective} --data-urlencode @- "" | cut -c 3- | sed -e 's/%0A//'
 }
+mc=$(git show --no-patch --format="%P")
 
 _SHA=$(git log -1 --format="%H")
-echo $_MERGE_SHA
+_PARENT_SHA=$(echo "$mc" | cut -d' ' -f2)
+echo $_PARENT_SHA
 echo $_SHA
 _BRANCH=$(git rev-parse --abbrev-ref HEAD)
 _BRANCH=$(urlencode $_BRANCH)
@@ -304,8 +306,8 @@ function test_codeship (){
     export CI_BRANCH="develop"
     export CI_BUILD_NUMBER="12.1"
     export CI_BUILD_URL="http://endpoint"
-    export CI_COMMIT_ID="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
-    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=12.1&build_url=http%3A%2F%2Fendpoint&name=&tag=&slug=codecov%2Fcodecov-bash&service=codeship&flags=&pr=&job="
+    export CI_COMMIT_ID=$_SHA
+    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=$_SHA&build=12.1&build_url=http%3A%2F%2Fendpoint&name=&tag=&slug=codecov%2Fcodecov-bash&service=codeship&flags=&pr=&job="
 }
 
 
@@ -364,8 +366,8 @@ function test_appveyor (){
     export APPVEYOR_ACCOUNT_NAME="a"
     export APPVEYOR_PROJECT_SLUG="b"
     export APPVEYOR_JOB_ID="9r2qufuu8"
-    export APPVEYOR_REPO_COMMIT=$_SHA
-    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=$_SHA&build=9r2qufuu8&build_url=&name=&tag=&slug=myowner%2Fmyrepo&service=appveyor&flags=&pr=1&job=a%2Fb%2F1.2.3"
+    export APPVEYOR_REPO_COMMIT=$_PARENT_SHA
+    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=$_PARENT_SHA&build=9r2qufuu8&build_url=&name=&tag=&slug=myowner%2Fmyrepo&service=appveyor&flags=&pr=1&job=a%2Fb%2F1.2.3"
 }
 
 function test_wercker (){
