@@ -4,4 +4,6 @@ notifications:
 sudo: false
 before_install:
   - tar zxvf shunit2-2.1.6.tgz
-script: tests/test
+script:
+  - env
+  - env -i PATH="$PATH" tests/test
