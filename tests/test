@@ -3,8 +3,8 @@
 urlencode() {
   echo "$1" | curl -Gso /dev/null -w %{url_effective} --data-urlencode @- "" | cut -c 3- | sed -e 's/%0A//'
 }
-mc=$(git show --no-patch --format="%P")
 
+mc=$(git show --no-patch --format="%P")
 _SHA=$(git log -1 --format="%H")
 _PARENT_SHA=$(echo "$mc" | cut -d' ' -f2)
 echo $_PARENT_SHA
@@ -244,12 +244,20 @@ function test_travis () {
     export TRAVIS_JOB_ID="33116958"
     export TRAVIS="true"
     export TRAVIS_BRANCH="master"
-    export TRAVIS_COMMIT=$_SHA
+    if [ "$TRAVIS_PULL_REQUEST_SHA" ] && [ "$TRAVIS_COMMIT" ];
+    then
+        echo $TRAVIS_PULL_REQUEST_SHA
+        echo $TRAVIS_COMMI
+        export _TRAVIS_SHA="${TRAVIS_PULL_REQUEST_SHA:-$TRAVIS_COMMIT}"
+    else
+        export _TRAVIS_SHA=$_SHA
+        export TRAVIS_COMMIT=$_SHA
+    fi
     export TRAVIS_REPO_SLUG='codecov/ci-repo'
     export TRAVIS_JOB_ID="33116958"
     export TRAVIS_PULL_REQUEST="false"
     export TRAVIS_JOB_NUMBER="4.1"
-    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=master&commit=$_SHA&build=4.1&build_url=&name=&tag=&slug=codecov%2Fci-repo&service=travis&flags=&pr=false&job=33116958"
+    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=master&commit=$_TRAVIS_SHA&build=4.1&build_url=&name=&tag=&slug=codecov%2Fci-repo&service=travis&flags=&pr=false&job=33116958"
 }
 
 function test_jenkins (){
