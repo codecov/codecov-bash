@@ -246,9 +246,10 @@ function test_travis () {
     export TRAVIS_BRANCH="master"
     if [ "$TRAVIS_PULL_REQUEST_SHA" ] && [ "$TRAVIS_COMMIT" ];
     then
-        echo $TRAVIS_PULL_REQUEST_SHA
-        echo $TRAVIS_COMMIT
+        echo "TRAVIS_PULL_REQUEST_SHA: $TRAVIS_PULL_REQUEST_SHA"
+        echo "TRAVIS_COMMIT:           $TRAVIS_COMMIT"
         export _TRAVIS_SHA="${TRAVIS_PULL_REQUEST_SHA:-$TRAVIS_COMMIT}"
+        echo "_TRAVIS_SHA:             $_TRAVIS_SHA"
     else
         export _TRAVIS_SHA=$_SHA
         export TRAVIS_COMMIT=$_SHA
