@@ -4,4 +4,4 @@ notifications:
 sudo: false
 before_install:
   - tar zxvf shunit2-2.1.6.tgz
-script: ./build.sh
+script: tests/test
