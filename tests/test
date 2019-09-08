@@ -308,6 +308,16 @@ function test_codeship (){
     assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=$TEST_DATA_GIT_COMMIT&build=12.1&build_url=http%3A%2F%2Fendpoint&name=&tag=&slug=codecov%2Fcodecov-bash&service=codeship&flags=&pr=&job="
 }
 
+function test_github_action () {
+    reset
+
+    export GITHUB_ACTION="my-fancy-github-action"
+    export GITHUB_REF="refs/heads/master"
+    export GITHUB_REPOSITORY="codecov/ci-repo"
+    export GITHUB_SHA="$TEST_DATA_GIT_COMMIT"
+
+    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=master&commit=$TEST_DATA_GIT_COMMIT&build=&build_url=&name=&tag=&slug=codecov%2Fci-repo&service=github-actions&flags=&pr=&job="
+}
 
 semaphore (){
     reset

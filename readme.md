@@ -65,24 +65,25 @@ bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverag
 
 
 ### CI Providers
-|                       Company                       |                                                                    Supported                                                                     | Token Required   |
-| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------- |
-| [Travis CI](https://travis-ci.org/)                 | Yes [![Build Status](https://secure.travis-ci.org/codecov/codecov-bash.svg?branch=master)](http://travis-ci.org/codecov/codecov-bash)            | Private only     |
-| [CircleCI](https://circleci.com/)                   | Yes [![Circle CI](https://img.shields.io/circleci/project/codecov/codecov-bash.svg?branch=master)](https://circleci.com/gh/codecov/codecov-bash) | Private only     |
-| [Codeship](https://codeship.com/)                   | Yes                                                                                                                                              | Public & Private |
-| [Jenkins](https://jenkins-ci.org/)                  | Yes                                                                                                                                              | Public & Private |
-| [Semaphore](https://semaphoreci.com/)               | Yes                                                                                                                                              | Public & Private |
-| [drone.io](https://drone.io/)                       | Yes                                                                                                                                              | Public & Private |
-| [AppVeyor](http://www.appveyor.com/)                | No. See [Codecov Python](https://github.com/codecov/codecov-python).                                                                             | Private only     |
-| [Wercker](http://wercker.com/)                      | Yes                                                                                                                                              | Public & Private |
-| [Magnum CI](https://magnum-ci.com/)                 | Yes                                                                                                                                              | Public & Private |
-| [Shippable](http://www.shippable.com/)              | Yes                                                                                                                                              | Public & Private |
-| [Gitlab CI](https://about.gitlab.com/gitlab-ci/)    | Yes                                                                                                                                              | Public & Private |
-| git                                                 | Yes (as a fallback)                                                                                                                              | Public & Private |
-| [Buildbot](http://buildbot.net/)                    | `coming soon` [buildbot/buildbot#1671](https://github.com/buildbot/buildbot/pull/1671)                                                           |                  |
-| [Bamboo](https://www.atlassian.com/software/bamboo) | `coming soon`                                                                                                                                    |                  |
-| [Solano Labs](https://www.solanolabs.com/)          | `coming soon`                                                                                                                                    |                  |
-| [Bitrise](https://bitrise.io/)                      | `coming soon`                                                                                                                                    |                  |
+|                       Company                            |                                                                    Supported                                                                     | Token Required   |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------- |
+| [Travis CI](https://travis-ci.org/)                      | Yes [![Build Status](https://secure.travis-ci.org/codecov/codecov-bash.svg?branch=master)](http://travis-ci.org/codecov/codecov-bash)            | Private only     |
+| [CircleCI](https://circleci.com/)                        | Yes [![Circle CI](https://img.shields.io/circleci/project/codecov/codecov-bash.svg?branch=master)](https://circleci.com/gh/codecov/codecov-bash) | Private only     |
+| [Codeship](https://codeship.com/)                        | Yes                                                                                                                                              | Public & Private |
+| [Jenkins](https://jenkins-ci.org/)                       | Yes                                                                                                                                              | Public & Private |
+| [Semaphore](https://semaphoreci.com/)                    | Yes                                                                                                                                              | Public & Private |
+| [drone.io](https://drone.io/)                            | Yes                                                                                                                                              | Public & Private |
+| [AppVeyor](http://www.appveyor.com/)                     | No. See [Codecov Python](https://github.com/codecov/codecov-python).                                                                             | Private only     |
+| [Wercker](http://wercker.com/)                           | Yes                                                                                                                                              | Public & Private |
+| [Magnum CI](https://magnum-ci.com/)                      | Yes                                                                                                                                              | Public & Private |
+| [Shippable](http://www.shippable.com/)                   | Yes                                                                                                                                              | Public & Private |
+| [Gitlab CI](https://about.gitlab.com/gitlab-ci/)         | Yes                                                                                                                                              | Public & Private |
+| [GitHub Actions](https://github.com/features/actions)    | Yes                                                                                                                                              | Public & Private |
+| git                                                      | Yes (as a fallback)                                                                                                                              | Public & Private |
+| [Buildbot](http://buildbot.net/)                         | `coming soon` [buildbot/buildbot#1671](https://github.com/buildbot/buildbot/pull/1671)                                                           |                  |
+| [Bamboo](https://www.atlassian.com/software/bamboo)      | `coming soon`                                                                                                                                    |                  |
+| [Solano Labs](https://www.solanolabs.com/)               | `coming soon`                                                                                                                                    |                  |
+| [Bitrise](https://bitrise.io/)                           | `coming soon`                                                                                                                                    |                  |
 
 > Using **Travis CI**? Uploader is compatible with `sudo: false` which can speed up your builds. :+1:
 

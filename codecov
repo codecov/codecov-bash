@@ -735,6 +735,18 @@ then
   remote_addr="${CI_BUILD_REPO:-$CI_REPOSITORY_URL}"
   commit="${CI_BUILD_REF:-$CI_COMMIT_SHA}"
 
+elif [ "$GITHUB_ACTION" != "" ];
+then
+  say "$e==>$x GitHub Actions detected."
+
+  # https://github.com/features/actions
+  service="github-actions"
+
+  # https://help.github.com/en/articles/virtual-environments-for-github-actions#environment-variables
+  branch="${GITHUB_REF#refs/heads/}"
+  commit="${GITHUB_SHA}"
+  slug="${GITHUB_REPOSITORY}"
+
 else
   say "${r}x>${x} No CI provider detected."
   say "    Testing inside Docker? ${b}http://docs.codecov.io/docs/testing-with-docker${x}"
