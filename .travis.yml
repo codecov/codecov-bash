@@ -7,6 +7,6 @@ sudo: false
 before_install:
   - tar zxvf shunit2-2.1.6.tgz
 script: 
-  apt-get install kcov
-  kcov coverage codecov &&
-  bash <(curl -s https://codecov.io/bash)
+  - apt-get install kcov
+  - kcov coverage codecov 
+  - bash <(curl -s https://codecov.io/bash)
