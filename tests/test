@@ -367,7 +367,6 @@ function test_appveyor (){
     export APPVEYOR_REPO_COMMIT="$TEST_DATA_GIT_COMMIT"
     export APPVEYOR_URL="https://ci.appveyor.com"
     export APPVEYOR_BUILD_ID="123456789"
-    build_url=$(urlencode "${APPVEYOR_URL}/project/${APPVEYOR_REPO_NAME}/builds/$APPVEYOR_BUILD_ID/job/${APPVEYOR_JOB_ID}")    
     assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=$TEST_DATA_GIT_COMMIT&build=9r2qufuu8&build_url=https%3A%2F%2Fci.appveyor.com%2Fproject%2Fmyowner%2Fmyrepo%2Fbuilds%2F123456789%2Fjob%2F9r2qufuu8&name=&tag=&slug=myowner%2Fmyrepo&service=appveyor&flags=&pr=1&job=a%2Fb%2F1.2.3"
 }
 
