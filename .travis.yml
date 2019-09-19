@@ -6,5 +6,5 @@ before_install:
   - tar zxvf shunit2-2.1.6.tgz
 script: 
   - sudo apt-get install kcov
-  - kcov coverage codecov 
+  - kcov coverage tests/test
   - bash <(curl -s https://codecov.io/bash)
