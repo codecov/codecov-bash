@@ -420,7 +420,7 @@ function test_azure_pipelines_2 (){
     export SYSTEM_TEAMFOUNDATIONSERVERURI="https://dev.azure.com/"
     export BUILD_SOURCEVERSION="$TEST_DATA_GIT_COMMIT"
     export BUILD_BUILDNUMBER="1.2"
-    export PULL_REQUEST_NUMBER="2"
+    export PULL_REQUEST_ID="33"
     export BUILD_BUILDID="3"
     export BUILD_SOURCEBRANCHNAME="develop"
     export SYSTEM_TEAMPROJECT="project"
@@ -429,11 +429,12 @@ function test_azure_pipelines_2 (){
 
 function test_bitbucket() {
     reset
-    export $BITBUCKET_BRANCH
-    BITBUCKET_BUILD_NUMBER="2"
-    BITBUCKET_REPO_OWNER="test_owner"
-    BITBUCKET_REPO_SLUG="test_slug"
-    BITBUCKET_PR_ID="3"
+    export CI="true"
+    export BITBUCKET_BRANCH="bb_develop"
+    export BITBUCKET_BUILD_NUMBER="2"
+    export BITBUCKET_REPO_OWNER="test_owner"
+    export BITBUCKET_REPO_SLUG="test_slug"
+    export BITBUCKET_PR_ID="3"
     assertURL "https://"
 }
 
