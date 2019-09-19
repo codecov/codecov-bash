@@ -4,4 +4,17 @@ notifications:
 sudo: false
 before_install:
   - tar zxvf shunit2-2.1.6.tgz
-script: env -i PATH="$PATH" tests/test
+script: 
+  wget https://github.com/SimonKagstrom/kcov/archive/master.tar.gz &&
+  tar xzf master.tar.gz &&
+  cd kcov-master &&
+  mkdir build &&
+  cd build &&
+  cmake .. &&
+  make &&
+  sudo make install &&
+  cd ../.. &&
+  rm -rf kcov-master &&
+  mkdir -p coverage &&
+  kcov coverage codecov &&
+  bash <(curl -s https://codecov.io/bash)
