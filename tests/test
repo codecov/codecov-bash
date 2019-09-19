@@ -403,6 +403,39 @@ function test_shippable (){
     assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=develop&commit=$TEST_DATA_GIT_COMMIT&build=1.2&build_url=http%3A%2F%2Fshippable&name=&tag=&slug=myowner%2Fmyrepo&service=shippable&flags=&pr=2&job="
 }
 
+function test_azure_pipelines (){
+    reset
+    export SYSTEM_TEAMFOUNDATIONSERVERURI="https://dev.azure.com/"
+    export BUILD_SOURCEVERSION="$TEST_DATA_GIT_COMMIT"
+    export BUILD_BUILDNUMBER="1.2"
+    export PULL_REQUEST_NUMBER="2"
+    export BUILD_BUILDID="3"
+    export BUILD_SOURCEBRANCHNAME="develop"
+    export SYSTEM_TEAMPROJECT="project"
+    assertURL "https://"
+}
+
+function test_azure_pipelines_2 (){
+    reset
+    export SYSTEM_TEAMFOUNDATIONSERVERURI="https://dev.azure.com/"
+    export BUILD_SOURCEVERSION="$TEST_DATA_GIT_COMMIT"
+    export BUILD_BUILDNUMBER="1.2"
+    export PULL_REQUEST_NUMBER="2"
+    export BUILD_BUILDID="3"
+    export BUILD_SOURCEBRANCHNAME="develop"
+    export SYSTEM_TEAMPROJECT="project"
+    assertURL "https://"
+}
+
+function test_bitbucket() {
+    reset
+    export $BITBUCKET_BRANCH
+    BITBUCKET_BUILD_NUMBER="2"
+    BITBUCKET_REPO_OWNER="test_owner"
+    BITBUCKET_REPO_SLUG="test_slug"
+    BITBUCKET_PR_ID="3"
+    assert "https://"
+}
 
 # Call and Run all Tests
 . "shunit2-2.1.6/src/shunit2"
