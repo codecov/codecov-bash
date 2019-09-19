@@ -671,7 +671,7 @@ then
   job="$APPVEYOR_ACCOUNT_NAME%2F$APPVEYOR_PROJECT_SLUG%2F$APPVEYOR_BUILD_VERSION"
   slug="$APPVEYOR_REPO_NAME"
   commit="$APPVEYOR_REPO_COMMIT"
-
+  build_url=$(urlencode "${APPVEYOR_URL}/project/${APPVEYOR_REPO_NAME}/builds/$APPVEYOR_BUILD_ID/job/${APPVEYOR_JOB_ID}")
 elif [ "$CI" = "true" ] && [ "$WERCKER_GIT_BRANCH" != "" ];
 then
   say "$e==>$x Wercker CI detected."
@@ -734,7 +734,34 @@ then
   build="${CI_BUILD_ID:-$CI_JOB_ID}"
   remote_addr="${CI_BUILD_REPO:-$CI_REPOSITORY_URL}"
   commit="${CI_BUILD_REF:-$CI_COMMIT_SHA}"
+  slug="${CI_PROJECT_PATH}"
 
+elif [ "$SYSTEM_TEAMFOUNDATIONSERVERURI" != "" ];
+then
+  say "$e==>$x Azure Pipelines detected."
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=vsts
+  service="azure_pipelines"
+  commit="$BUILD_SOURCEVERSION"
+  build="$BUILD_BUILDNUMBER"
+  if [  -z "$PULL_REQUEST_NUMBER"];
+  then
+    pr="$PULL_REQUEST_ID"
+  else
+    pr="$PULL_REQUEST_NUMBER"
+  fi
+  job="${BUILD_BUILDID}"
+  branch="$BUILD_SOURCEBRANCHNAME"
+  build_url=$(urlencode "${SYSTEM_TEAMFOUNDATIONSERVERURI}${SYSTEM_TEAMPROJECT}/_build/results?buildId=${BUILD_BUILDID}")
+elif [ "$CI" = "true" ] && [ "$BITBUCKET_BUILD_NUMBER" != "" ];
+then
+  say "$e==>$x Bitbucket detected."
+  # https://confluence.atlassian.com/bitbucket/variables-in-pipelines-794502608.html
+  service="bitbucket"
+  branch="$BITBUCKET_BRANCH"
+  build="$BITBUCKET_BUILD_NUMBER"
+  slug="$BITBUCKET_REPO_OWNER/$BITBUCKET_REPO_SLUG"
+  job="$BITBUCKET_BUILD_NUMBER"
+  pr="$BITBUCKET_PR_ID"
 else
   say "${r}x>${x} No CI provider detected."
   say "    Testing inside Docker? ${b}http://docs.codecov.io/docs/testing-with-docker${x}"
@@ -1477,6 +1504,8 @@ else
   say "    ${e}url:${x} $url"
   say "    ${e}query:${x} $query"
 
+  # Full query without token (to display on terminal output)
+  queryNoToken=$(echo "package=bash-$VERSION&token=secret&$query" | tr -d ' ')
   # now add token to query
   query=$(echo "package=bash-$VERSION&token=$token&$query" | tr -d ' ')
 
@@ -1487,6 +1516,7 @@ else
     do
       i=$[$i+1]
       say "    ${e}->${x} Pinging Codecov"
+      say "$url/upload/v4?$queryNoToken"
       res=$(curl $curl_s -X POST $curlargs $cacert \
             -H 'X-Reduced-Redundancy: false' \
             -H 'X-Content-Type: application/x-gzip' \
