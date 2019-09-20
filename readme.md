@@ -65,27 +65,20 @@ bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverag
 ### CI Providers
 |                       Company                       |                                                                    Supported                                                                     | Token Required   |
 | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------- |
-| [Travis CI](https://travis-ci.org/)                 | Yes [![Build Status](https://secure.travis-ci.org/codecov/codecov-bash.svg?branch=master)](http://travis-ci.org/codecov/codecov-bash)            
-| Private only     |
-| [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) | Yes
-| Public & Private |
-| [CircleCI](https://circleci.com/)                   | Yes                    
-| Private only     |
-| [Codeship](https://codeship.com/)                   | Yes                                                                                                                                              | Public & Private |
-| [Jenkins](https://jenkins-ci.org/)                  | Yes                                                                                                                                              | Public & Private |
-| [Semaphore](https://semaphoreci.com/)               | Yes                                                                                                                                              | Public & Private |
-| [TeamCity](https://www.jetbrains.com/teamcity/).    | Yes
-| Public & Private |
-| [drone.io](https://drone.io/)                       | Yes                                                                                                                                              | Public & Private |
-| [AppVeyor](http://www.appveyor.com/)                | Yes                                                                             | Private only     |
-| [Bamboo](https://www.atlassian.com/software/bamboo) | Yes                                                                                                                                    | Public & Private |
+| [Travis CI](https://travis-ci.org/)                 | Yes [![Build Status](https://secure.travis-ci.org/codecov/codecov-bash.svg?branch=master)](http://travis-ci.org/codecov/codecov-bash)                                                         | Private only     |
+| [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) | Yes                                     | Public & Private |
+| [CircleCI](https://circleci.com/)                   | Yes                                                                 | Private only     |
+| [Codeship](https://codeship.com/)                   | Yes                                                                                                                  | Public & Private |
+| [Jenkins](https://jenkins-ci.org/)                  | Yes                                                                                                          | Public & Private |
+| [Semaphore](https://semaphoreci.com/)               | Yes                                                                 | Public & Private |
+| [TeamCity](https://www.jetbrains.com/teamcity/).    | Yes                                                                 | Public & Private |
+| [drone.io](https://drone.io/)                       | Yes                                                                                                 | Public & Private |
+| [AppVeyor](http://www.appveyor.com/)                | Yes                                                                  | Private only     |
+| [Bamboo](https://www.atlassian.com/software/bamboo) | Yes                                                                 | Public & Private |
 | [Bitrise](https://bitrise.io/)                      | Yes                                                                                                                                    | Public & Private |
-| [buddybuild](https://buddybuild.com)                | Yes
-| Public & Private |
-| [Buildkite](https://buildkite.com)                  | Yes
-| Public & Private |
-| [Heroku](https://heroku.com)                        | Yes
-| Public & Private |
+| [buddybuild](https://buddybuild.com)                | Yes                                                                  | Public & Private |
+| [Buildkite](https://buildkite.com)                  | Yes                                                                 | Public & Private |
+| [Heroku](https://heroku.com)                        | Yes                                                                 | Public & Private |
 | [Wercker](http://wercker.com/)                      | Yes                                                                                                                                              | Public & Private |
 | [Shippable](http://www.shippable.com/)              | Yes                                                                                                                                              | Public & Private |
 | [Gitlab CI](https://about.gitlab.com/gitlab-ci/)    | Yes                                                                                                                                              | Public & Private |
