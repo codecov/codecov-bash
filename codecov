@@ -16,6 +16,7 @@ search_in=""
 flags=""
 exit_with=0
 curlargs=""
+
 curlawsargs=""
 dump="0"
 clean="0"
