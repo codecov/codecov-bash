@@ -8,7 +8,7 @@ before_install:
 stages:
   - Test
   - name: bump
-    if: branch = master && type != pull_request
+    if: branch = master
 
 jobs:
   include:
