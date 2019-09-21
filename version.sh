@@ -25,7 +25,7 @@ commit_and_upload () {
   git commit -m "Version $_version Release" 
   git remote rm origin 
   git remote add origin https://codecov:${GH_TOKEN}@github.com/codecov/codecov-bash.git
-  git push origin master --quiet
+  git push origin production --quiet
 }
 
 create_all_branches()
