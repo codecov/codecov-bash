@@ -6,8 +6,8 @@ before_install:
   - tar zxvf shunit2-2.1.6.tgz
 
 stages:
-  - name: deploy
-    if: branch =  Version Bump
+  - name: Version Bump
+    if: branch = master
 
 jobs:
   include:
