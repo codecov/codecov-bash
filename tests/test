@@ -5,7 +5,7 @@ urlencode() {
 }
 
 TEST_DATA_GIT_COMMIT="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
-VERSION=$(grep "VERSION=" codecov)
+VERSION=$(grep "VERSION=" codecov | tr -d 'VERSION=')
 _SHA=$(git rev-parse HEAD)
 _BRANCH=$(git rev-parse --abbrev-ref HEAD)
 _BRANCH=$(urlencode $_BRANCH)
