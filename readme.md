@@ -4,6 +4,8 @@ Codecov Global Uploader
 
 [![Deployed Version](https://codecov.io/bash)](https://codecov.io/bash)
 
+SHA1Sum `3549c376d19e75d9eb2917ff3d38f77b5bc42fcc`
+
 ------
 
 ```bash
