@@ -87,9 +87,6 @@ bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverag
 | git                                                 | Yes (as a fallback)                                                                                                                              | Public & Private |
 
 
-> Using **Travis CI**? Uploader is compatible with `sudo: false` which can speed up your builds. :+1:
-
-
 ## Caveat
 
 1. **Jenkins**: Unable to find reports? Try `PWD=WORKSPACE bash <(curl -s https://codecov.io/bash)`
