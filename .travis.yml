@@ -4,15 +4,4 @@ notifications:
 sudo: false
 before_install:
   - tar zxvf shunit2-2.1.6.tgz
-
-stages:
-  - Test
-  - name: bump
-    if: branch = master && type != pull_request
-
-jobs:
-  include:
-    - stage: Test
-      script: env -i PATH="$PATH" tests/test
-    - stage: bump
-      script: bash version.sh
+script: env -i PATH="$PATH" tests/test
