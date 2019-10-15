@@ -764,6 +764,16 @@ then
   slug="$BITBUCKET_REPO_OWNER/$BITBUCKET_REPO_SLUG"
   job="$BITBUCKET_BUILD_NUMBER"
   pr="$BITBUCKET_PR_ID"
+elif [ "$GITHUB_WORKFLOW" != "" ];
+then
+  say "$e==>$x GitHub Actions detected."
+  # https://help.github.com/en/articles/virtual-environments-for-github-actions#environment-variables
+  service="github"
+  branch="${GITHUB_REF}"
+  build="${GITHUB_ACTION}"
+  commit="${GITHUB_SHA}"
+  slug="${GITHUB_REPOSITORY}"
+
 else
   say "${r}x>${x} No CI provider detected."
   say "    Testing inside Docker? ${b}http://docs.codecov.io/docs/testing-with-docker${x}"
