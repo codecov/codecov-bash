@@ -513,6 +513,16 @@ then
   build_url=$(urlencode "$CI_BUILD_URL")
   commit="$CI_COMMIT_ID"
 
+elif [ "$CI" = "true" ] && [ "$CIRRUS_CI" = "true" ];
+then
+  say "$e==>$x Cirrus CI detected."
+  # https://cirrus-ci.org/guide/writing-tasks/#environment-variables
+  service="cirrus"
+  branch="$CIRRUS_BRANCH"
+  build="$"
+  build_url="https://cirrus-ci.com"
+  commit="$CIRRUS_CHANGE_IN_REPO"
+
 elif [ ! -z "$CF_BUILD_URL" ] && [ ! -z "$CF_BUILD_ID" ];
 then
   say "$e==>$x Codefresh CI detected."
