@@ -70,6 +70,7 @@ bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverag
 | [Travis CI](https://travis-ci.org/)                 | Yes [![Build Status](https://secure.travis-ci.org/codecov/codecov-bash.svg?branch=master)](http://travis-ci.org/codecov/codecov-bash)                                                         | Private only     |
 | [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) | Yes                                     | Public & Private |
 | [CircleCI](https://circleci.com/)                   | Yes                                                                 | Private only     |
+| [Cirrus CI](https://cirrus-ci.org/).                | Yes                                                                 | Public & Private |
 | [Codeship](https://codeship.com/)                   | Yes                                                                                                                  | Public & Private |
 | [Jenkins](https://jenkins-ci.org/)                  | Yes                                                                                                          | Public & Private |
 | [Semaphore](https://semaphoreci.com/)               | Yes                                                                 | Public & Private |
