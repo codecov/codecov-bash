@@ -220,4 +220,10 @@ then
   add "CI_BUILD_REPO"
   add "CI_BUILD_REF"
 
+elif [ "$GITHUB_ACTION" != '' ]
+then
+  add "GITHUB_REF"
+  add "GITHUB_REPOSITORY"
+  add "GITHUB_SHA"
+
 fi
