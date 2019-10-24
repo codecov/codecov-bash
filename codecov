@@ -486,10 +486,10 @@ then
     branch="$TRAVIS_BRANCH"
   fi
 
-  language=$(printenv | grep "TRAVIS_.*_VERSION" | head -1)
+  language=$(compgen -A variable | grep "^TRAVIS_.*_VERSION$" | head -1)
   if [ "$language" != "" ];
   then
-    env="$env,${language%=*}"
+    env="$env,${!language}"
   fi
 
 elif [ "$DOCKER_REPO" != "" ];
