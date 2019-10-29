@@ -747,6 +747,7 @@ then
   branch="${GITHUB_REF#refs/heads/}"
   commit="${GITHUB_SHA}"
   slug="${GITHUB_REPOSITORY}"
+  branch="$GITHUB_ACTION"
 
 elif [ "$SYSTEM_TEAMFOUNDATIONSERVERURI" != "" ];
 then
