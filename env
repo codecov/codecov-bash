@@ -214,6 +214,7 @@ then
 
 elif [ "$GITLAB_CI" != "" ];
 then
+  add "GITHUB_ACTION"
   add "GITLAB_CI"
   add "CI_BUILD_REF_NAME"
   add "CI_BUILD_ID"
