@@ -319,7 +319,7 @@ function test_github_action () {
     assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=master&commit=$TEST_DATA_GIT_COMMIT&build=&build_url=&name=&tag=&slug=codecov%2Fci-repo&service=github-actions&flags=&pr=&job="
 }
 
-semaphore (){
+function test_semaphore (){
     reset
     export CI="true"
     export SEMAPHORE="true"
