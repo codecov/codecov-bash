@@ -498,8 +498,8 @@ then
   # https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
   service="codebuild"
   commit="$CODEBUILD_RESOLVED_SOURCE_VERSION"
-  build="${CODEBUILD_WEBHOOK_HEAD_REF/refs\/heads/}"
-  pr="${refs\/heads/pr\//}"
+  build="$CODEBUILD_BUILD_ID"
+  pr="$(echo $CODEBUILD_WEBHOOK_HEAD_REF | sed 's/^pr\///')"
   job="$CODEBUILD_BUILD_ID"
   slug="$(echo $CODEBUILD_SOURCE_REPO_URL | sed 's/^.*github.com\///' | sed 's/\.git$//')"
 
