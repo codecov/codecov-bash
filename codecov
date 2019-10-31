@@ -500,11 +500,11 @@ then
   commit="$CODEBUILD_RESOLVED_SOURCE_VERSION"
   build="$CODEBUILD_BUILD_ID"
   branch="$(echo $CODEBUILD_WEBHOOK_HEAD_REF | sed 's/^refs\/heads\///')"
-  if [ "${CODEBUILD_SOURCE_VERSION/"pr/"}" = ""pr/"" ] ; then
+  if [ "${CODEBUILD_SOURCE_VERSION/pr}" = "$CODEBUILD_SOURCE_VERSION" ] ; then
     pr="false"
   else
     pr="$(echo $CODEBUILD_SOURCE_VERSION | sed 's/^pr\///')"
-fi
+  fi
   job="$CODEBUILD_BUILD_ID"
   slug="$(echo $CODEBUILD_SOURCE_REPO_URL | sed 's/^.*github.com\///' | sed 's/\.git$//')"
 
