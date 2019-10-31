@@ -222,6 +222,7 @@ then
 
 elif [ "$GITHUB_ACTION" != '' ]
 then
+  add "GITHUB_ACTION"
   add "GITHUB_REF"
   add "GITHUB_REPOSITORY"
   add "GITHUB_SHA"

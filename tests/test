@@ -316,10 +316,10 @@ function test_github_action () {
     export GITHUB_REPOSITORY="codecov/ci-repo"
     export GITHUB_SHA="$TEST_DATA_GIT_COMMIT"
 
-    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=master&commit=$TEST_DATA_GIT_COMMIT&build=&build_url=&name=&tag=&slug=codecov%2Fci-repo&service=github-actions&flags=&pr=&job="
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=master&commit=$TEST_DATA_GIT_COMMIT&build=&build_url=&name=&tag=&slug=codecov%2Fci-repo&service=github-actions&flags=&pr=&job=$GITHUB_ACTION"
 }
 
-semaphore (){
+function test_semaphore (){
     reset
     export CI="true"
     export SEMAPHORE="true"
