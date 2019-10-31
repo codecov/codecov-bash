@@ -245,7 +245,7 @@ function test_codebuild () {
     export CODEBUILD_SOURCE_VERSION="pr/42"
     export CODEBUILD_BUILD_ID="33116958"
     export CODEBUILD_SOURCE_REPO_URL="https://github.com/codecov/codecov-bash.git"
-    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=codebuild-master&commit=$TEST_DATA_GIT_COMMIT&build=4.1&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=codebuild&flags=&pr=42&job=33116958"
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=codebuild-master&commit=$TEST_DATA_GIT_COMMIT&build=33116958&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=codebuild&flags=&pr=42&job=33116958"
 }
 
 # Test an AWS Codebuild upload from a PR
@@ -271,7 +271,7 @@ function test_travis () {
     export TRAVIS_JOB_ID="33116958"
     export TRAVIS_PULL_REQUEST="false"
     export TRAVIS_JOB_NUMBER="4.1"
-    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=master&commit=$TEST_DATA_GIT_COMMIT&build=33116958&build_url=&name=&tag=&slug=codecov%2Fci-repo&service=travis&flags=&pr=false&job=33116958"
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=master&commit=$TEST_DATA_GIT_COMMIT&build=4.1&build_url=&name=&tag=&slug=codecov%2Fci-repo&service=travis&flags=&pr=false&job=33116958"
 }
 
 function test_jenkins (){
