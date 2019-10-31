@@ -501,7 +501,7 @@ then
   build="$CODEBUILD_BUILD_ID"
   branch="$(echo $CODEBUILD_WEBHOOK_HEAD_REF | sed 's/^refs\/heads\///')"
   if [ "${CODEBUILD_SOURCE_VERSION/"pr/"}" = ""pr/"" ] ; then
-    prr="false"
+    pr="false"
   else
     pr="$(echo $CODEBUILD_SOURCE_VERSION | sed 's/^pr\///')"
 fi
