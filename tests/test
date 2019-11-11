@@ -446,7 +446,7 @@ function test_azure_pipelines (){
     export BUILD_BUILDID="3"
     export BUILD_SOURCEBRANCHNAME="develop"
     export SYSTEM_TEAMPROJECT="project"
-    assertURL "https://codecov.io/upload/v4?package=bash-8a28df4&token=&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=1.2&build_url=https%3A%2F%2Fdev.azure.com%2Fproject%2F_build%2Fresults%3FbuildId%3D3&name=&tag=&slug=codecov%2Fcodecov-bash&service=azure_pipelines&flags=&pr=2&job=3&project=project&server_uri=https://dev.azure.com/"
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=develop&commit=$TEST_DATA_GIT_COMMIT&build=1.2&build_url=https%3A%2F%2Fdev.azure.com%2Fproject%2F_build%2Fresults%3FbuildId%3D3&name=&tag=&slug=codecov%2Fcodecov-bash&service=azure_pipelines&flags=&pr=2&job=3&project=project&server_uri=https://dev.azure.com/"
 }
 
 function test_azure_pipelines_2 (){
@@ -458,7 +458,7 @@ function test_azure_pipelines_2 (){
     export BUILD_BUILDID="3"
     export BUILD_SOURCEBRANCHNAME="develop"
     export SYSTEM_TEAMPROJECT="project"
-    assertURL "https://codecov.io/upload/v4?package=bash-8a28df4&token=&branch=develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=1.2&build_url=https%3A%2F%2Fdev.azure.com%2Fproject%2F_build%2Fresults%3FbuildId%3D3&name=&tag=&slug=codecov%2Fcodecov-bash&service=azure_pipelines&flags=&pr=33&job=3&project=project&server_uri=https://dev.azure.com/"
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=develop&commit=$TEST_DATA_GIT_COMMIT&build=1.2&build_url=https%3A%2F%2Fdev.azure.com%2Fproject%2F_build%2Fresults%3FbuildId%3D3&name=&tag=&slug=codecov%2Fcodecov-bash&service=azure_pipelines&flags=&pr=33&job=3&project=project&server_uri=https://dev.azure.com/"
 }
 
 function test_bitbucket() {
@@ -469,7 +469,7 @@ function test_bitbucket() {
     export BITBUCKET_REPO_OWNER="test_owner"
     export BITBUCKET_REPO_SLUG="test_slug"
     export BITBUCKET_PR_ID="3"
-    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=bb_develop&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=2&build_url=&name=&tag=&slug=test_owner%2Ftest_slug&service=bitbucket&flags=&pr=3&job=2"
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=bb_develop&commit=$TEST_DATA_GIT_COMMIT&build=2&build_url=&name=&tag=&slug=test_owner%2Ftest_slug&service=bitbucket&flags=&pr=3&job=2"
 }
 
 # Call and Run all Tests
