@@ -6,7 +6,7 @@
 
 set -e +o pipefail
 
-VERSION="8a28df4"
+VERSION="tbd"
 
 url="https://codecov.io"
 env="$CODECOV_ENV"
@@ -772,7 +772,7 @@ then
   service="azure_pipelines"
   commit="$BUILD_SOURCEVERSION"
   build="$BUILD_BUILDNUMBER"
-  if [  -z "$PULL_REQUEST_NUMBER"];
+  if [  -z "$PULL_REQUEST_NUMBER" ];
   then
     pr="$PULL_REQUEST_ID"
   else
