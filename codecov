@@ -772,7 +772,7 @@ then
   service="azure_pipelines"
   commit="$BUILD_SOURCEVERSION"
   build="$BUILD_BUILDNUMBER"
-  if [  -z "$PULL_REQUEST_NUMBER"];
+  if [  -z "$PULL_REQUEST_NUMBER" ];
   then
     pr="$PULL_REQUEST_ID"
   else
