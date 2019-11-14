@@ -235,8 +235,6 @@ then
   add "GITHUB_REPOSITORY"
   add "GITHUB_SHA"
 
-fi
-
 elif [ "$CI" = "true" ] && [ "$BITBUCKET_BUILD_NUMBER" != "" ];
 then
   add "CI"
@@ -245,3 +243,5 @@ then
   add "BITBUCKET_REPO_OWNER"
   add "BITBUCKET_REPO_SLUG"
   add "BITBUCKET_PR_ID"
+
+fi
