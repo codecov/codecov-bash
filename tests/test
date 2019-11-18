@@ -486,5 +486,14 @@ function test_cirrus () {
     assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=master&commit=$TEST_DATA_GIT_COMMIT&build=239&build_url=&name=&tag=&slug=codecov%2Fci-repo&service=cirrus&flags=&pr=1&job=test"
 }
 
+function test_heroku () {
+    reset
+    export CI="true"
+    export HEROKU_TEST_RUN_BRANCH="master"
+    export HEROKU_TEST_RUN_ID="1"
+    export HEROKU_TEST_RUN_COMMIT_VERSION="$TEST_DATA_GIT_COMMIT"
+    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=master&commit=$TEST_DATA_GIT_COMMIT&build=239&build_url=&name=&tag=&slug=codecov%2Fci-repo&service=heroku&flags=&pr=1&job=test"
+}
+
 # Call and Run all Tests
 . "shunit2-2.1.6/src/shunit2"
