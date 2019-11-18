@@ -8,3 +8,4 @@ script:
   - sudo apt-get install kcov
   - kcov coverage tests/test
   - bash <(curl -s https://codecov.io/bash)
+
