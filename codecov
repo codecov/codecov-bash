@@ -793,6 +793,7 @@ then
   slug="$BITBUCKET_REPO_OWNER/$BITBUCKET_REPO_SLUG"
   job="$BITBUCKET_BUILD_NUMBER"
   pr="$BITBUCKET_PR_ID"
+  commit="$BITBUCKET_COMMIT"
 else
   say "${r}x>${x} No CI provider detected."
   say "    Testing inside Docker? ${b}http://docs.codecov.io/docs/testing-with-docker${x}"
