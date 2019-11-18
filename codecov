@@ -793,6 +793,7 @@ then
   slug="$BITBUCKET_REPO_OWNER/$BITBUCKET_REPO_SLUG"
   job="$BITBUCKET_BUILD_NUMBER"
   pr="$BITBUCKET_PR_ID"
+  commit="$BITBUCKET_COMMIT"
 elif [ "$CIRRUS_CI" != "" ];
 then
   say "$e==>$x Cirrus CI detected."

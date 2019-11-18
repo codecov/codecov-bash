@@ -78,6 +78,7 @@ bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverag
 | [drone.io](https://drone.io/)                       | Yes                                                                                                 | Public & Private |
 | [AppVeyor](http://www.appveyor.com/)                | Yes                                                                  | Private only     |
 | [Bamboo](https://www.atlassian.com/software/bamboo) | Yes                                                                 | Public & Private |
+| [Bitbucket](https://bitbucket.org/product/features/pipelines) | Yes                                                                                                                                   | Public & Private |
 | [Bitrise](https://bitrise.io/)                      | Yes                                                                                                                                    | Public & Private |
 | [buddybuild](https://buddybuild.com)                | Yes                                                                  | Public & Private |
 | [Buildkite](https://buildkite.com)                  | Yes                                                                 | Public & Private |

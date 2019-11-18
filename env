@@ -235,4 +235,14 @@ then
   add "GITHUB_REPOSITORY"
   add "GITHUB_SHA"
 
+elif [ "$CI" = "true" ] && [ "$BITBUCKET_BUILD_NUMBER" != "" ];
+then
+  add "CI"
+  add "BITBUCKET_BRANCH"
+  add "BITBUCKET_BUILD_NUMBER"
+  add "BITBUCKET_REPO_OWNER"
+  add "BITBUCKET_REPO_SLUG"
+  add "BITBUCKET_PR_ID"
+  add "BITBUCKET_COMMIT"
+
 fi

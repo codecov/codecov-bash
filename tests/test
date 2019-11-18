@@ -469,6 +469,7 @@ function test_bitbucket() {
     export BITBUCKET_REPO_OWNER="test_owner"
     export BITBUCKET_REPO_SLUG="test_slug"
     export BITBUCKET_PR_ID="3"
+    export BITBUCKET_COMMIT="$TEST_DATA_GIT_COMMIT"
     assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=bb_develop&commit=$TEST_DATA_GIT_COMMIT&build=2&build_url=&name=&tag=&slug=test_owner%2Ftest_slug&service=bitbucket&flags=&pr=3&job=2"
 }
 
