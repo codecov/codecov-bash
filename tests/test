@@ -450,7 +450,7 @@ function test_prow_presubmit (){
 	export REPO_NAME=myrepo
 	export REPO_OWNER=owner
 	export CI_BUILD_URL="https://prow"
-    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=master&commit=$_SHA&build=1&build_url=https%3A%2F%2Fprow&name=&tag=&slug=owner%2Fmyrepo&service=prow&flags=&pr=1&job=91c3ff58-3a97-11e9-a034-0a58ac105a97"
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=master&commit=$TEST_DATA_GIT_COMMIT&build=1&build_url=https%3A%2F%2Fprow&name=&tag=&slug=owner%2Fmyrepo&service=prow&flags=&pr=1&job=91c3ff58-3a97-11e9-a034-0a58ac105a97"
 }
 
 function test_prow_postsubmit (){
@@ -464,7 +464,7 @@ function test_prow_postsubmit (){
 	export REPO_NAME=myrepo
 	export REPO_OWNER=owner
 	export CI_BUILD_URL="https://prow"
-    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=master&commit=$_SHA&build=1&build_url=https%3A%2F%2Fprow&name=&tag=&slug=owner%2Fmyrepo&service=prow&flags=&pr=&job=91c3ff58-3a97-11e9-a034-0a58ac105a97"
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=master&commit=$TEST_DATA_GIT_COMMIT&build=1&build_url=https%3A%2F%2Fprow&name=&tag=&slug=owner%2Fmyrepo&service=prow&flags=&pr=&job=91c3ff58-3a97-11e9-a034-0a58ac105a97"
 }
 
 
