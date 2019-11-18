@@ -39,6 +39,14 @@ then
   add "BUILD_NUMBER"
   add "ghprbPullId"
   add "BUILD_URL"
+  
+if [ "$CODEBUILD_BUILD_ARN" != "" ];
+then
+  add "CODEBUILD_WEBHOOK_HEAD_REF"
+  add "CODEBUILD_RESOLVED_SOURCE_VERSION"
+  add "CODEBUILD_SOURCE_VERSION"
+  add "CODEBUILD_BUILD_ID"
+  add "CODEBUILD_SOURCE_REPO_URL"
 
 elif [ "$CI" = "true" ] && [ "$TRAVIS" = "true" ] && [ "$SHIPPABLE" != "true" ];
 then
@@ -219,5 +227,12 @@ then
   add "CI_BUILD_ID"
   add "CI_BUILD_REPO"
   add "CI_BUILD_REF"
+
+elif [ "$GITHUB_ACTION" != '' ]
+then
+  add "GITHUB_ACTION"
+  add "GITHUB_REF"
+  add "GITHUB_REPOSITORY"
+  add "GITHUB_SHA"
 
 fi

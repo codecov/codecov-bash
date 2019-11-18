@@ -36,8 +36,9 @@ ft_fix="1"
 ft_search="1"
 ft_s3="1"
 ft_network="1"
-ft_xcodellvm="0"
-ft_xcodeplist="1"
+ft_xcodellvm="1"
+ft_xcodeplist="0"
+ft_gcovout="1"
 
 _git_root=$(git rev-parse --show-toplevel 2>/dev/null || hg root 2>/dev/null || echo $PWD)
 git_root="$_git_root"
@@ -123,6 +124,7 @@ cat << EOF
                  -X search        Disable searching for reports
                  -X xcode         Disable xcode processing
                  -X network       Disable uploading the file network
+                 -X gcovout       Disable gcov output
 
     -R root dir  Used when not in git/hg project to identify project root directory
     -y conf file Used to specify the location of the .codecov.yml config file
@@ -379,6 +381,9 @@ $OPTARG"
         elif [ "$OPTARG" = "coveragepy" ] || [ "$OPTARG" = "py" ];
         then
           ft_coveragepy="0"
+        elif [ "$OPTARG" = "gcovout" ];
+        then
+          ft_gcovout="0"
         elif [ "$OPTARG" = "xcodellvm" ];
         then
           ft_xcodellvm="1"
@@ -481,11 +486,27 @@ then
     branch="$TRAVIS_BRANCH"
   fi
 
-  language=$(printenv | grep "TRAVIS_.*_VERSION" | head -1)
+  language=$(compgen -A variable | grep "^TRAVIS_.*_VERSION$" | head -1)
   if [ "$language" != "" ];
   then
-    env="$env,${language%=*}"
+    env="$env,${!language}"
   fi
+
+elif [ "$CODEBUILD_BUILD_ARN" != "" ];
+then
+  say "$e==>$x AWS Codebuild detected."
+  # https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
+  service="codebuild"
+  commit="$CODEBUILD_RESOLVED_SOURCE_VERSION"
+  build="$CODEBUILD_BUILD_ID"
+  branch="$(echo $CODEBUILD_WEBHOOK_HEAD_REF | sed 's/^refs\/heads\///')"
+  if [ "${CODEBUILD_SOURCE_VERSION/pr}" = "$CODEBUILD_SOURCE_VERSION" ] ; then
+    pr="false"
+  else
+    pr="$(echo $CODEBUILD_SOURCE_VERSION | sed 's/^pr\///')"
+  fi
+  job="$CODEBUILD_BUILD_ID"
+  slug="$(echo $CODEBUILD_SOURCE_REPO_URL | sed 's/^.*github.com\///' | sed 's/\.git$//')"
 
 elif [ "$DOCKER_REPO" != "" ];
 then
@@ -634,7 +655,7 @@ then
   fi
   tag="$BUILDKITE_TAG"
 
-elif [ "$CI" = "drone" ];
+elif [ "$CI" = "drone" ] || [ "$DRONE" = "true" ];
 then
   say "$e==>$x Drone CI detected."
   # http://docs.drone.io/env.html
@@ -666,7 +687,7 @@ then
   job="$APPVEYOR_ACCOUNT_NAME%2F$APPVEYOR_PROJECT_SLUG%2F$APPVEYOR_BUILD_VERSION"
   slug="$APPVEYOR_REPO_NAME"
   commit="$APPVEYOR_REPO_COMMIT"
-
+  build_url=$(urlencode "${APPVEYOR_URL}/project/${APPVEYOR_REPO_NAME}/builds/$APPVEYOR_BUILD_ID/job/${APPVEYOR_JOB_ID}")
 elif [ "$CI" = "true" ] && [ "$WERCKER_GIT_BRANCH" != "" ];
 then
   say "$e==>$x Wercker CI detected."
@@ -729,7 +750,60 @@ then
   build="${CI_BUILD_ID:-$CI_JOB_ID}"
   remote_addr="${CI_BUILD_REPO:-$CI_REPOSITORY_URL}"
   commit="${CI_BUILD_REF:-$CI_COMMIT_SHA}"
+  slug="${CI_PROJECT_PATH}"
 
+elif [ "$GITHUB_ACTION" != "" ];
+then
+  say "$e==>$x GitHub Actions detected."
+
+  # https://github.com/features/actions
+  service="github-actions"
+
+  # https://help.github.com/en/articles/virtual-environments-for-github-actions#environment-variables
+  branch="${GITHUB_REF#refs/heads/}"
+  commit="${GITHUB_SHA}"
+  slug="${GITHUB_REPOSITORY}"
+  job="${GITHUB_ACTION}"
+
+elif [ "$SYSTEM_TEAMFOUNDATIONSERVERURI" != "" ];
+then
+  say "$e==>$x Azure Pipelines detected."
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=vsts
+  service="azure_pipelines"
+  commit="$BUILD_SOURCEVERSION"
+  build="$BUILD_BUILDNUMBER"
+  if [  -z "$PULL_REQUEST_NUMBER" ];
+  then
+    pr="$PULL_REQUEST_ID"
+  else
+    pr="$PULL_REQUEST_NUMBER"
+  fi
+  project="${SYSTEM_TEAMPROJECT}"
+  server_uri="${SYSTEM_TEAMFOUNDATIONSERVERURI}"
+  job="${BUILD_BUILDID}"
+  branch="$BUILD_SOURCEBRANCHNAME"
+  build_url=$(urlencode "${SYSTEM_TEAMFOUNDATIONSERVERURI}${SYSTEM_TEAMPROJECT}/_build/results?buildId=${BUILD_BUILDID}")
+elif [ "$CI" = "true" ] && [ "$BITBUCKET_BUILD_NUMBER" != "" ];
+then
+  say "$e==>$x Bitbucket detected."
+  # https://confluence.atlassian.com/bitbucket/variables-in-pipelines-794502608.html
+  service="bitbucket"
+  branch="$BITBUCKET_BRANCH"
+  build="$BITBUCKET_BUILD_NUMBER"
+  slug="$BITBUCKET_REPO_OWNER/$BITBUCKET_REPO_SLUG"
+  job="$BITBUCKET_BUILD_NUMBER"
+  pr="$BITBUCKET_PR_ID"
+elif [ "$CIRRUS_CI" != "" ];
+then
+  say "$e==>$x Cirrus CI detected."
+  # https://cirrus-ci.org/guide/writing-tasks/#environment-variables
+  service="cirrus"
+  slug="$CIRRUS_REPO_FULL_NAME"
+  branch="$CIRRUS_BRANCH"
+  pr="$CIRRUS_PR"
+  commit="$CIRRUS_CHANGE_IN_REPO"
+  build="$CIRRUS_TASK_ID"
+  job="$CIRRUS_TASK_NAME"
 else
   say "${r}x>${x} No CI provider detected."
   say "    Testing inside Docker? ${b}http://docs.codecov.io/docs/testing-with-docker${x}"
@@ -871,6 +945,11 @@ query="branch=$branch\
        &pr=$([ "$pr_o" = "" ] && echo "${pr##\#}" || echo "${pr_o##\#}")\
        &job=$job"
 
+if [ ! -z "$project" ] && [ ! -z "$server_uri" ];
+then
+  query=$(echo "$query&project=$project&server_uri=$server_uri" | tr -d ' ')
+fi
+
 if [ "$ft_search" = "1" ];
 then
   # detect bower comoponents location
@@ -916,7 +995,13 @@ then
     if [ "$ft_gcov" = "1" ];
     then
       say "    ${e}->${x} Running $gcov_exe for Obj-C"
-      bash -c "find $ddp -type f -name '*.gcda' $gcov_include $gcov_ignore -exec $gcov_exe -p $gcov_arg {} +" || true
+      if [ "$ft_gcovout" = "1" ];
+      then
+        # suppress gcov output
+        bash -c "find $ddp -type f -name '*.gcda' $gcov_include $gcov_ignore -exec $gcov_exe -p $gcov_arg {} +" || true 2>/dev/null
+      else
+        bash -c "find $ddp -type f -name '*.gcda' $gcov_include $gcov_ignore -exec $gcov_exe -p $gcov_arg {} +" || true
+      fi
     fi
   fi
 
@@ -1466,6 +1551,8 @@ else
   say "    ${e}url:${x} $url"
   say "    ${e}query:${x} $query"
 
+  # Full query without token (to display on terminal output)
+  queryNoToken=$(echo "package=bash-$VERSION&token=secret&$query" | tr -d ' ')
   # now add token to query
   query=$(echo "package=bash-$VERSION&token=$token&$query" | tr -d ' ')
 
@@ -1476,6 +1563,7 @@ else
     do
       i=$[$i+1]
       say "    ${e}->${x} Pinging Codecov"
+      say "$url/upload/v4?$queryNoToken"
       res=$(curl $curl_s -X POST $curlargs $cacert \
             -H 'X-Reduced-Redundancy: false' \
             -H 'X-Content-Type: application/x-gzip' \
@@ -1486,12 +1574,16 @@ else
       then
         s3target=$(echo "$res" | sed -n 2p)
         say "    ${e}->${x} Uploading"
+
+
         s3=$(curl $curl_s -fiX PUT $curlawsargs \
-                  --data-binary @$upload_file.gz \
-                  -H 'Content-Type: application/x-gzip' \
-                  -H 'Content-Encoding: gzip' \
-                  -H 'x-amz-acl: public-read' \
-                  "$s3target" || true)
+            --data-binary @$upload_file.gz \
+            -H 'Content-Type: application/x-gzip' \
+            -H 'Content-Encoding: gzip' \
+             -H 'x-amz-acl: public-read' \
+            "$s3target" || true)
+
+
         if [ "$s3" != "" ];
         then
           say "    ${g}->${x} View reports at ${b}$(echo "$res" | sed -n 1p)${x}"
