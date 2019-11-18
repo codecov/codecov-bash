@@ -4,4 +4,7 @@ notifications:
 sudo: false
 before_install:
   - tar zxvf shunit2-2.1.6.tgz
-script: env -i PATH="$PATH" tests/test
+script:
+  # Run the source through ShellCheck (http://www.shellcheck.net).
+  - env -i PATH="$PATH" shellcheck shunit2 tests/test
+  - env -i PATH="$PATH" tests/test
