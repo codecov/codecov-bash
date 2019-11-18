@@ -87,6 +87,7 @@ bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverag
 | [Shippable](http://www.shippable.com/)              | Yes                                                                                                                                              | Public & Private |
 | [Gitlab CI](https://about.gitlab.com/gitlab-ci/)    | Yes                                                                                                                                              | Public & Private |
 | [GitHub Actions](https://github.com/features/actions)    | Yes                                                                                                                                              | Public & Private |
+| [Cirrus CI](https://cirrus-ci.org/)                 | Yes                                                                                                                                              | Public & Private |
 | git                                                 | Yes (as a fallback)                                                                                                                              | Public & Private |
 
 

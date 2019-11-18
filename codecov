@@ -794,6 +794,17 @@ then
   job="$BITBUCKET_BUILD_NUMBER"
   pr="$BITBUCKET_PR_ID"
   commit="$BITBUCKET_COMMIT"
+elif [ "$CIRRUS_CI" != "" ];
+then
+  say "$e==>$x Cirrus CI detected."
+  # https://cirrus-ci.org/guide/writing-tasks/#environment-variables
+  service="cirrus"
+  slug="$CIRRUS_REPO_FULL_NAME"
+  branch="$CIRRUS_BRANCH"
+  pr="$CIRRUS_PR"
+  commit="$CIRRUS_CHANGE_IN_REPO"
+  build="$CIRRUS_TASK_ID"
+  job="$CIRRUS_TASK_NAME"
 else
   say "${r}x>${x} No CI provider detected."
   say "    Testing inside Docker? ${b}http://docs.codecov.io/docs/testing-with-docker${x}"
@@ -1564,15 +1575,15 @@ else
       then
         s3target=$(echo "$res" | sed -n 2p)
         say "    ${e}->${x} Uploading"
-        
-        
+
+
         s3=$(curl $curl_s -fiX PUT $curlawsargs \
             --data-binary @$upload_file.gz \
             -H 'Content-Type: application/x-gzip' \
             -H 'Content-Encoding: gzip' \
              -H 'x-amz-acl: public-read' \
             "$s3target" || true)
-  
+
 
         if [ "$s3" != "" ];
         then
