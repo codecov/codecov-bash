@@ -6,5 +6,5 @@ before_install:
   - tar zxvf shunit2-2.1.6.tgz
 script:
   # Run the source through ShellCheck (http://www.shellcheck.net).
-  - env -i PATH="$PATH" shellcheck shunit2 tests/test
+  - env -i PATH="$PATH" shellcheck tests/test
   - env -i PATH="$PATH" tests/test
