@@ -126,6 +126,10 @@ cat << EOF
                  -X network       Disable uploading the file network
                  -X gcovout       Disable gcov output
 
+    -N           The sha of the commit that is supposed to be the parent of this commit.
+                 If not present, the parent will be determined using the git provider of the repo
+                 trying to find the closest ancestor to the commit
+
     -R root dir  Used when not in git/hg project to identify project root directory
     -y conf file Used to specify the location of the .codecov.yml config file
     -F flag      Flag the upload to group coverage metrics
@@ -236,9 +240,12 @@ parse_yaml() {
 
 if [ $# != 0 ];
 then
-  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:k:Kn:p:P:r:R:y:s:S:t:T:u:U:vx:X:Z" o
+  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:k:Kn:p:P:r:R:y:s:S:t:T:u:U:vx:X:ZN:" o
   do
     case "$o" in
+      "N")
+        parent=$OPTARG
+        ;;
       "a")
         gcov_arg=$OPTARG
         ;;
@@ -937,6 +944,11 @@ query="branch=$branch\
 if [ ! -z "$project" ] && [ ! -z "$server_uri" ];
 then
   query=$(echo "$query&project=$project&server_uri=$server_uri" | tr -d ' ')
+fi
+
+if [ "$parent" != "" ];
+then
+  query=$(echo "parent=$parent&$query" | tr -d ' ')
 fi
 
 if [ "$ft_search" = "1" ];
