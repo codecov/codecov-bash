@@ -126,9 +126,10 @@ cat << EOF
                  -X network       Disable uploading the file network
                  -X gcovout       Disable gcov output
 
-    -N           The sha of the commit that is supposed to be the parent of this commit.
-                 If not present, the parent will be determined using the git provider of the repo
-                 trying to find the closest ancestor to the commit
+    -N           The commit SHA of the parent for which you are uploading coverage. If not present,
+                 the parent will be determined using the API of your repository provider.
+                 When using the repository provider's API, the parent is determined via finding
+                 the closest ancestor to the commit.
 
     -R root dir  Used when not in git/hg project to identify project root directory
     -y conf file Used to specify the location of the .codecov.yml config file
