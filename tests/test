@@ -483,7 +483,7 @@ function test_cirrus () {
     export CIRRUS_BUILD_ID="777"
     export CIRRUS_TASK_ID="239"
     export CIRRUS_TASK_NAME="test"
-    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=master&commit=$TEST_DATA_GIT_COMMIT&build=239&build_url=&name=&tag=&slug=codecov%2Fci-repo&service=cirrus&flags=&pr=1&job=test"
+    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=master&commit=$TEST_DATA_GIT_COMMIT&build=239&build_url=&name=&tag=&slug=codecov%2Fci-repo&service=cirrus-ci&flags=&pr=1&job=test"
 }
 
 # Call and Run all Tests
