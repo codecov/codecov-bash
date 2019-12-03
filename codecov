@@ -797,7 +797,7 @@ elif [ "$CIRRUS_CI" != "" ];
 then
   say "$e==>$x Cirrus CI detected."
   # https://cirrus-ci.org/guide/writing-tasks/#environment-variables
-  service="cirrus"
+  service="cirrus-ci"
   slug="$CIRRUS_REPO_FULL_NAME"
   branch="$CIRRUS_BRANCH"
   pr="$CIRRUS_PR"
