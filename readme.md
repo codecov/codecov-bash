@@ -69,7 +69,7 @@ bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverag
 |                       Company                       |                                                                    Supported                                                                     | Token Required   |
 | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------- |
 | [Travis CI](https://travis-ci.org/)                 | Yes [![Build Status](https://secure.travis-ci.org/codecov/codecov-bash.svg?branch=master)](http://travis-ci.org/codecov/codecov-bash)                                                         | Private only     |
-| [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) | Yes                                     | Public & Private |
+| [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) | Yes                                     | Private only |
 | [CircleCI](https://circleci.com/)                   | Yes                                                                 | Private only     |
 | [Codeship](https://codeship.com/)                   | Yes                                                                                                                  | Public & Private |
 | [Jenkins](https://jenkins-ci.org/)                  | Yes                                                                                                          | Public & Private |
@@ -78,6 +78,7 @@ bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverag
 | [drone.io](https://drone.io/)                       | Yes                                                                                                 | Public & Private |
 | [AppVeyor](http://www.appveyor.com/)                | Yes                                                                  | Private only     |
 | [Bamboo](https://www.atlassian.com/software/bamboo) | Yes                                                                 | Public & Private |
+| [Bitbucket](https://bitbucket.org/product/features/pipelines) | Yes                                                                                                                                   | Public & Private |
 | [Bitrise](https://bitrise.io/)                      | Yes                                                                                                                                    | Public & Private |
 | [buddybuild](https://buddybuild.com)                | Yes                                                                  | Public & Private |
 | [Buildkite](https://buildkite.com)                  | Yes                                                                 | Public & Private |
@@ -85,10 +86,13 @@ bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverag
 | [Wercker](http://wercker.com/)                      | Yes                                                                                                                                              | Public & Private |
 | [Shippable](http://www.shippable.com/)              | Yes                                                                                                                                              | Public & Private |
 | [Gitlab CI](https://about.gitlab.com/gitlab-ci/)    | Yes                                                                                                                                              | Public & Private |
+| [Buildkite](https://buildkite.com)                  | Yes                                                                                                                                              | Public & Private |
 | [GitHub Actions](https://github.com/features/actions)    | Yes                                                                                                                                              | Public & Private |
+| [Cirrus CI](https://cirrus-ci.org/)                 | Yes                                                                                                                                              | Public & Private |
 | git                                                 | Yes (as a fallback)                                                                                                                              | Public & Private |
 
 
 ## Caveat
 
 1. **Jenkins**: Unable to find reports? Try `PWD=WORKSPACE bash <(curl -s https://codecov.io/bash)`
+ 
