@@ -4,4 +4,7 @@ notifications:
 sudo: false
 before_install:
   - tar zxvf shunit2-2.1.6.tgz
-script: env -i PATH="$PATH" tests/test
+script:
+  - env -i PATH="$PATH" tests/test
+  - |
+    diff <(shasum ./codecov) <(echo "$(cat SHA1SUM)  -")
