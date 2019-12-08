@@ -2,7 +2,7 @@ Codecov Global Uploader
 =======================
 > Upload reports to Codecov for almost every supported language.
 
-[![Deployed Version](https://codecov.io/bash)](https://codecov.io/bash)
+[Deployed Version](https://codecov.io/bash)
 
 SHA1Sum:  [hash file](https://raw.githubusercontent.com/codecov/codecov-bash/master/SHA1SUM)
 
@@ -14,7 +14,7 @@ bash <(curl -s https://codecov.io/bash)
 
 # Pipe to bash (Jenkins)
 curl -s https://codecov.io/bash | bash -s - -t token
-                                            ^ add your extra config here
+#                                           ^ add your extra config here
 
 # No bash method
 curl -s https://codecov.io/bash > .codecov
