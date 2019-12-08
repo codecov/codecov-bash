@@ -487,4 +487,4 @@ function test_cirrus () {
 }
 
 # Call and Run all Tests
-. "shunit2-2.1.6/src/shunit2"
+. $(which shunit2)
