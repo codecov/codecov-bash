@@ -2,6 +2,8 @@ language: ruby
 notifications:
   email: false
 sudo: false
-before_install:
-  - tar zxvf shunit2-2.1.6.tgz
+addons:
+  apt:
+    packages:
+      - shunit2
 script: env -i PATH="$PATH" tests/test
