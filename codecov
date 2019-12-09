@@ -801,6 +801,10 @@ then
   job="$BITBUCKET_BUILD_NUMBER"
   pr="$BITBUCKET_PR_ID"
   commit="$BITBUCKET_COMMIT"
+  if [ "${#commit}" = 12 ];
+  then
+    commit=$(git rev-parse "$BITBUCKET_COMMIT")
+  fi
 elif [ "$CIRRUS_CI" != "" ];
 then
   say "$e==>$x Cirrus CI detected."
