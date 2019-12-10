@@ -7,7 +7,6 @@ urlencode() {
 TEST_DATA_GIT_COMMIT="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
 VERSION=$(grep  "VERSION=" codecov | tr -d 'VERSION=' | tr -d '"')
 _SHA=$(git rev-parse HEAD)
-echo "_SHA: $_SHA"
 _BRANCH=$(git rev-parse --abbrev-ref HEAD)
 _BRANCH=$(urlencode $_BRANCH)
 if [ "$_BRANCH" = "HEAD" ];
@@ -492,7 +491,7 @@ function test_bitbucket_pull_request() {
     export BITBUCKET_COMMIT=$(echo "$_SHA" | head -c 12)
 
     url=$(./codecov -d | grep 'https://codecov.io/')
-    diff <(echo "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=bb_develop&commit=$_SHA&build=2&build_url=&name=&tag=&slug=test_owner%2Ftest_slug&service=bitbucket&flags=&pr=3&job=2") <(echo "$url")
+    diff <(echo "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=bb_develop&commit=$_SHA&build=2&build_url=&name=&tag=&slug=test_owner%2Ftest_slug&service=bitbucket&flags=&pr=&job=2") <(echo "$url")
     assertTrue 'Expected output differs.' $?
 }
 
