@@ -804,6 +804,8 @@ then
   if [ "${#commit}" = 12 ];
   then
     commit=$(git rev-parse "$BITBUCKET_COMMIT")
+    echo "BITBUCKET_COMMIT=$BITBUCKET_COMMIT"
+    echo "commit=$commit"
   fi
 elif [ "$CIRRUS_CI" != "" ];
 then
@@ -839,6 +841,8 @@ then
   fi
 fi
 
+echo "mc=$(git show --no-patch --format="%P" 2>/dev/null || echo "")"
+echo "commit=$(git log -1 --format="%H" 2>/dev/null || hg id -i --debug 2>/dev/null | tr -d '+' || echo "")"
 if [ "$commit_o" = "" ];
 then
   # merge commit -> actual commit
