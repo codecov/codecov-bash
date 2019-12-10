@@ -482,10 +482,14 @@ function test_bitbucket_pull_request() {
     export BITBUCKET_BUILD_NUMBER="2"
     export BITBUCKET_REPO_OWNER="test_owner"
     export BITBUCKET_REPO_SLUG="test_slug"
-    export BITBUCKET_PR_ID="3"
+    # In case or PR, in a real Bitbucket Pipeline the command
+    #    mc=$(git show --no-patch --format="%P" 2>/dev/null || echo "")
+    # always returns a single hash, co the `$commit` variable in never fixed.
+    # In Travis instead returns 2 hashes and so the `$commit` variable is overwritten.
+    # So, to mimic a real Bitbucket Pipeline for a PR in a test run on Travis
+    # we have to NOT set the BITBUCKET_PR_ID variable
+    # export BITBUCKET_PR_ID="3"
     export BITBUCKET_COMMIT=$(echo "$_SHA" | head -c 12)
-    echo "_SHA: $_SHA"
-    echo "BITBUCKET_COMMIT: $BITBUCKET_COMMIT"
 
     url=$(./codecov -d | grep 'https://codecov.io/')
     diff <(echo "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=bb_develop&commit=$_SHA&build=2&build_url=&name=&tag=&slug=test_owner%2Ftest_slug&service=bitbucket&flags=&pr=3&job=2") <(echo "$url")

@@ -801,11 +801,10 @@ then
   job="$BITBUCKET_BUILD_NUMBER"
   pr="$BITBUCKET_PR_ID"
   commit="$BITBUCKET_COMMIT"
+  # See https://jira.atlassian.com/browse/BCLOUD-19393
   if [ "${#commit}" = 12 ];
   then
     commit=$(git rev-parse "$BITBUCKET_COMMIT")
-    >&2 echo "BITBUCKET_COMMIT=$BITBUCKET_COMMIT"
-    >&2 echo "commit=$commit"
   fi
 elif [ "$CIRRUS_CI" != "" ];
 then
@@ -841,8 +840,6 @@ then
   fi
 fi
 
->&2 echo "mc=$(git show --no-patch --format="%P" 2>/dev/null || echo "")"
->&2 echo "commit=$(git log -1 --format="%H" 2>/dev/null || hg id -i --debug 2>/dev/null | tr -d '+' || echo "")"
 if [ "$commit_o" = "" ];
 then
   # merge commit -> actual commit
