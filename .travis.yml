@@ -1,5 +1,9 @@
 dist: bionic
 language: ruby
+addons:
+  apt:
+    packages:
+      - libdigest-sha-perl
 notifications:
   email: false
 sudo: false
