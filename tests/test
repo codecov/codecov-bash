@@ -473,6 +473,30 @@ function test_bitbucket() {
     assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=bb_develop&commit=$TEST_DATA_GIT_COMMIT&build=2&build_url=&name=&tag=&slug=test_owner%2Ftest_slug&service=bitbucket&flags=&pr=3&job=2"
 }
 
+# See https://jira.atlassian.com/browse/BCLOUD-19393
+function test_bitbucket_pull_request() {
+    reset
+    export CI="true"
+    export BITBUCKET_BRANCH="bb_develop"
+    export BITBUCKET_BUILD_NUMBER="2"
+    export BITBUCKET_REPO_OWNER="test_owner"
+    export BITBUCKET_REPO_SLUG="test_slug"
+    # In case of an already rebased PR, in a real Bitbucket Pipeline the command
+    #    mc=$(git show --no-patch --format="%P" 2>/dev/null || echo "")
+    # always returns a single hash, so the `$commit` variable in never fixed because there
+    # is no need for a merge commit.
+    # In the codecov-bash project development environment, Travis can return 2 hashes if
+    # a PR is not rebased, and so the `$commit` variable is overwritten.
+    # So, to mimic a real Bitbucket Pipeline for a rebased PR in a test run on Travis
+    # we have to NOT set the BITBUCKET_PR_ID variable
+    # export BITBUCKET_PR_ID="3"
+    export BITBUCKET_COMMIT=$(echo "$_SHA" | head -c 12)
+
+    url=$(./codecov -d | grep 'https://codecov.io/')
+    diff <(echo "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=bb_develop&commit=$_SHA&build=2&build_url=&name=&tag=&slug=test_owner%2Ftest_slug&service=bitbucket&flags=&pr=&job=2") <(echo "$url")
+    assertTrue 'Expected output differs.' $?
+}
+
 function test_cirrus () {
     reset
     export CIRRUS_CI="true"
