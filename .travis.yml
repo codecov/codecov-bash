@@ -10,6 +10,9 @@ sudo: false
 before_install:
   - tar zxvf shunit2-2.1.6.tgz
 script:
+  # Confirm tests pass first
+  - env -i PATH="$PATH" tests/test
   # Run the source through ShellCheck (http://www.shellcheck.net).
   - env -i PATH="$PATH" shellcheck codecov tests/test
+  # Verify the hash matches the file
   - shasum --algorithm 1 --check --strict ./SHA1SUM
