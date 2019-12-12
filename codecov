@@ -204,7 +204,7 @@ swiftcov() {
   _dir=$(dirname "$1" | sed 's/\(Build\).*/\1/g')
   for _type in app framework xctest
   do
-    find "$_dir" -name "*.$_type" | while read f
+    find "$_dir" -name "*.$_type" | while read -r f
     do
       _proj=${f##*/}
       _proj=${_proj%."$_type"}
@@ -226,7 +226,7 @@ parse_yaml() {
    local prefix=$2
    local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
    sed -ne "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" \
-        -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p" $1 |
+        -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p" "$1" |
    awk -F$fs '{
       indent = length($1)/2;
       vname[indent] = $2;
@@ -507,14 +507,14 @@ then
   service="codebuild"
   commit="$CODEBUILD_RESOLVED_SOURCE_VERSION"
   build="$CODEBUILD_BUILD_ID"
-  branch="$(echo $CODEBUILD_WEBHOOK_HEAD_REF | sed 's/^refs\/heads\///')"
+  branch="$(echo "$CODEBUILD_WEBHOOK_HEAD_REF" | sed 's/^refs\/heads\///')"
   if [ "${CODEBUILD_SOURCE_VERSION/pr}" = "$CODEBUILD_SOURCE_VERSION" ] ; then
     pr="false"
   else
-    pr="$(echo $CODEBUILD_SOURCE_VERSION | sed 's/^pr\///')"
+    pr="$(echo "$CODEBUILD_SOURCE_VERSION" | sed 's/^pr\///')"
   fi
   job="$CODEBUILD_BUILD_ID"
-  slug="$(echo $CODEBUILD_SOURCE_REPO_URL | sed 's/^.*github.com\///' | sed 's/\.git$//')"
+  slug="$(echo "$CODEBUILD_SOURCE_REPO_URL" | sed 's/^.*github.com\///' | sed 's/\.git$//')"
 
 elif [ "$DOCKER_REPO" != "" ];
 then
@@ -906,7 +906,7 @@ yaml=$(test -n "$codecov_yml" && echo "$codecov_yml" \
        || cd "$git_root" && \
           git ls-files "*codecov.yml" "*codecov.yaml" 2>/dev/null \
        || hg locate "*codecov.yml" "*codecov.yaml" 2>/dev/null \
-       || cd $proj_root && find . -type f -name '*codecov.y*ml' -depth 1 2>/dev/null \
+       || cd "$proj_root" && find . -type f -name '*codecov.y*ml' -depth 1 2>/dev/null \
        || echo '')
 yaml=$(echo "$yaml" | head -1)
 
@@ -1034,7 +1034,7 @@ then
         if [ "$plist" != "" ];
         then
           say "    ${g}Found${x} plist file at $plist"
-          plutil -convert xml1 -o "$(basename "$plist").plist" -- $plist
+          plutil -convert xml1 -o "$(basename "$plist").plist" -- "$plist"
         fi
       done <<< "$plists_files"
     fi
@@ -1304,7 +1304,7 @@ upload_file=$(mktemp /tmp/codecov.XXXXXX)
 adjustments_file=$(mktemp /tmp/codecov.adjustments.XXXXXX)
 
 cleanup() {
-    rm -f $upload_file $adjustments_file $upload_file.gz
+    rm -f "$upload_file" "$adjustments_file" "$upload_file.gz"
 }
 
 trap cleanup INT ABRT TERM
@@ -1328,16 +1328,16 @@ fi
 
 # Append git file list
 # write discovered yaml location
-echo "$yaml" >> $upload_file
+echo "$yaml" >> "$upload_file"
 if [ "$ft_network" == "1" ];
 then
   i="woff|eot|otf"  # fonts
   i="$i|gif|png|jpg|jpeg|psd"  # images
   i="$i|ptt|pptx|numbers|pages|md|txt|xlsx|docx|doc|pdf|html|csv"  # docs
   i="$i|yml|yaml|.gitignore"  # supporting docs
-  echo "$network" | grep -vwE "($i)$" >> $upload_file
+  echo "$network" | grep -vwE "($i)$" >> "$upload_file"
 fi
-echo "<<<<<< network" >> $upload_file
+echo "<<<<<< network" >> "$upload_file"
 
 fr=0
 say "${e}==>${x} Reading reports"
@@ -1356,24 +1356,24 @@ do
         _filename=$(basename "$file")
         if [ "${_filename##*.}" = 'gcov' ];
         then
-          echo "# path=$(echo "$file.reduced" | sed "s|^$git_root/||")" >> $upload_file
+          echo "# path=$(echo "$file.reduced" | sed "s|^$git_root/||")" >> "$upload_file"
           # get file name
-          head -1 $file >> $upload_file
+          head -1 $file >> "$upload_file"
           # 1. remove source code
           # 2. remove ending bracket lines
           # 3. remove whitespace
           # 4. remove contextual lines
           # 5. remove function names
-          awk -F': *' '{print $1":"$2":"}' $file \
+          awk -F': *' '{print $1":"$2":"}' "$file" \
             | sed '\/: *} *$/d' \
             | sed 's/^ *//' \
             | sed '/^-/d' \
-            | sed 's/^function.*/func/' >> $upload_file
+            | sed 's/^function.*/func/' >> "$upload_file"
         else
-          echo "# path=$(echo "$file" | sed "s|^$git_root/||")" >> $upload_file
-          cat "$file" >> $upload_file
+          echo "# path=$(echo "$file" | sed "s|^$git_root/||")" >> "$upload_file"
+          cat "$file" >> "$upload_file"
         fi
-        echo "<<<<<< EOF" >> $upload_file
+        echo "<<<<<< EOF" >> "$upload_file"
         fr=1
         if [ "$clean" = "1" ];
         then
@@ -1428,10 +1428,10 @@ then
     find "$git_root" -type f \
                      -name '*.kt' \
                      -exec \
-      grep -nIHE -e $syntax_bracket \
-                 -e $syntax_comment_block {} \; \
+      grep -nIHE -e "$syntax_bracket" \
+                 -e "$syntax_comment_block" {} \; \
       | cut_and_join \
-      >> $adjustments_file \
+      >> "$adjustments_file" \
       || echo ''
 
     # last line in file
@@ -1440,7 +1440,7 @@ then
       wc -l {} \; \
       | while read -r l; do echo "EOF: $l"; done \
       2>/dev/null \
-      >> $adjustments_file \
+      >> "$adjustments_file" \
       || echo ''
 
   fi
@@ -1453,13 +1453,13 @@ then
                      -name '*.go' \
                      -exec \
       grep -nIHE \
-           -e $empty_line \
-           -e $syntax_comment \
-           -e $syntax_comment_block \
-           -e $syntax_bracket \
+           -e "$empty_line" \
+           -e "$syntax_comment" \
+           -e "$syntax_comment_block" \
+           -e "$syntax_bracket" \
            {} \; \
       | cut_and_join \
-      >> $adjustments_file \
+      >> "$adjustments_file" \
       || echo ''
   fi
 
@@ -1470,10 +1470,10 @@ then
                      -name '*.dart' \
                      -exec \
       grep -nIHE \
-           -e $syntax_bracket \
+           -e "$syntax_bracket" \
            {} \; \
       | cut_and_join \
-      >> $adjustments_file \
+      >> "$adjustments_file" \
       || echo ''
   fi
 
@@ -1485,12 +1485,12 @@ then
                      -name '*.php' \
                      -exec \
       grep -nIHE \
-           -e $syntax_list \
-           -e $syntax_bracket \
+           -e "$syntax_list" \
+           -e "$syntax_bracket" \
            -e '^[[:space:]]*\);[[:space:]]*(//.*)?$' \
            {} \; \
       | cut_and_join \
-      >> $adjustments_file \
+      >> "$adjustments_file" \
       || echo ''
   fi
 
@@ -1508,12 +1508,12 @@ then
            -or -name '*.hpp' \
          \) -exec \
       grep -nIHE \
-           -e $empty_line \
-           -e $syntax_bracket \
+           -e "$empty_line" \
+           -e "$syntax_bracket" \
            -e '// LCOV_EXCL' \
            {} \; \
       | cut_and_join \
-      >> $adjustments_file \
+      >> "$adjustments_file" \
       || echo ''
 
     # skip brackets
@@ -1529,20 +1529,20 @@ then
          \) -exec \
       grep -nIH '// LCOV_EXCL' \
            {} \; \
-      >> $adjustments_file \
+      >> "$adjustments_file" \
       || echo ''
 
   fi
 
-  found=$(cat $adjustments_file | tr -d ' ')
+  found=$(cat "$adjustments_file" | tr -d ' ')
 
   if [ "$found" != "" ];
   then
     say "    ${g}+${x} Found adjustments"
-    echo "# path=fixes" >> $upload_file
-    cat $adjustments_file >> $upload_file
-    echo "<<<<<< EOF" >> $upload_file
-    rm -rf $adjustments_file
+    echo "# path=fixes" >> "$upload_file"
+    cat $adjustments_file >> "$upload_file"
+    echo "<<<<<< EOF" >> "$upload_file"
+    rm -rf "$adjustments_file"
   else
     say "    ${e}->${x} No adjustments found"
   fi
@@ -1558,11 +1558,11 @@ then
   # trim whitespace from query
   say "    ${e}->${x} Dumping upload file (no upload)"
   echo "$url/upload/v4?$(echo "package=bash-$VERSION&token=$token&$query" | tr -d ' ')"
-  cat $upload_file
+  cat "$upload_file"
 else
 
   say "${e}==>${x} Gzipping contents"
-  gzip -nf9 $upload_file
+  gzip -nf9 "$upload_file"
 
   query=$(echo "${query}" | tr -d ' ')
   say "${e}==>${x} Uploading reports"
