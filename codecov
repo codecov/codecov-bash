@@ -448,6 +448,7 @@ then
   # https://wiki.jenkins-ci.org/display/JENKINS/GitHub+pull+request+builder+plugin#GitHubpullrequestbuilderplugin-EnvironmentVariables
   service="jenkins"
 
+  # shellcheck disable=SC2154
   if [ "$ghprbSourceBranch" != "" ];
   then
      branch="$ghprbSourceBranch"
@@ -459,6 +460,7 @@ then
     branch="$BRANCH_NAME"
   fi
 
+  # shellcheck disable=SC2154
   if [ "$ghprbActualCommit" != "" ];
   then
     commit="$ghprbActualCommit"
@@ -467,6 +469,7 @@ then
     commit="$GIT_COMMIT"
   fi
 
+  # shellcheck disable=SC2154
   if [ "$ghprbPullId" != "" ];
   then
     pr="$ghprbPullId"
