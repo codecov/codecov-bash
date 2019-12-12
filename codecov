@@ -1300,8 +1300,8 @@ then
   fi
 fi
 
-upload_file=`mktemp /tmp/codecov.XXXXXX`
-adjustments_file=`mktemp /tmp/codecov.adjustments.XXXXXX`
+upload_file=$(mktemp /tmp/codecov.XXXXXX)
+adjustments_file=%(mktemp /tmp/codecov.adjustments.XXXXXX)
 
 cleanup() {
     rm -f $upload_file $adjustments_file $upload_file.gz
@@ -1323,7 +1323,7 @@ then
     fi
   done
 
-echo "$inc_env<<<<<< ENV" >> $upload_file
+echo "$inc_env<<<<<< ENV" >> "$upload_file"
 fi
 
 # Append git file list
