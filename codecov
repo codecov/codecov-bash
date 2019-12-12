@@ -40,7 +40,7 @@ ft_xcodellvm="1"
 ft_xcodeplist="0"
 ft_gcovout="1"
 
-_git_root=$(git rev-parse --show-toplevel 2>/dev/null || hg root 2>/dev/null || echo $PWD)
+_git_root=$(git rev-parse --show-toplevel 2>/dev/null || hg root 2>/dev/null || echo "$PWD")
 git_root="$_git_root"
 codecov_yml=""
 remote_addr=""
@@ -958,7 +958,7 @@ query="branch=$branch\
        &pr=$([ "$pr_o" = "" ] && echo "${pr##\#}" || echo "${pr_o##\#}")\
        &job=$job"
 
-if [ ! -z "$project" ] && [ ! -z "$server_uri" ];
+if [ -n "$project" ] && [ -n "$server_uri" ];
 then
   query=$(echo "$query&project=$project&server_uri=$server_uri" | tr -d ' ')
 fi
@@ -1054,7 +1054,7 @@ then
   then
     if [ ! -f coverage.xml ];
     then
-      if which coverage >/dev/null 2>&1;
+      if command -v coverage >/dev/null 2>&1;
       then
         say "${e}==>${x} Python coveragepy exists ${e}disable via -X coveragepy${x}"
 
@@ -1438,7 +1438,7 @@ then
     find "$git_root" -type f \
                      -name '*.kt' -exec \
       wc -l {} \; \
-      | while read l; do echo "EOF: $l"; done \
+      | while read -r l; do echo "EOF: $l"; done \
       2>/dev/null \
       >> $adjustments_file \
       || echo ''
