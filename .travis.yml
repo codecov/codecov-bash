@@ -1,4 +1,9 @@
+dist: bionic
 language: ruby
+addons:
+  apt:
+    packages:
+      - libdigest-sha-perl
 notifications:
   email: false
 sudo: false
@@ -7,3 +12,4 @@ before_install:
 script:
   # Run the source through ShellCheck (http://www.shellcheck.net).
   - env -i PATH="$PATH" shellcheck codecov tests/test
+  - shasum --algorithm 1 --check --strict ./SHA1SUM
