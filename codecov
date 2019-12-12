@@ -541,7 +541,7 @@ then
   build_url=$(urlencode "$CI_BUILD_URL")
   commit="$CI_COMMIT_ID"
 
-elif [ ! -z "$CF_BUILD_URL" ] && [ ! -z "$CF_BUILD_ID" ];
+elif [ -n "$CF_BUILD_URL" ] && [ ! -z "$CF_BUILD_ID" ];
 then
   say "$e==>$x Codefresh CI detected."
   # https://docs.codefresh.io/v1.0/docs/variables
@@ -608,20 +608,26 @@ then
   build="$BUDDYBUILD_BUILD_NUMBER"
   build_url="https://dashboard.buddybuild.com/public/apps/$BUDDYBUILD_APP_ID/build/$BUDDYBUILD_BUILD_ID"
   # BUDDYBUILD_TRIGGERED_BY
-  if [ "$ddp" = "$(echo ~)/Library/Developer/Xcode/DerivedData" ];
+  if [ "$ddp" = "$HOME/Library/Developer/Xcode/DerivedData" ];
   then
     ddp="/private/tmp/sandbox/${BUDDYBUILD_APP_ID}/bbtest"
   fi
 
+# shellcheck disable=SC2154
 elif [ "${bamboo_planRepository_revision}" != "" ];
 then
   say "$e==>$x Bamboo detected"
   # https://confluence.atlassian.com/bamboo/bamboo-variables-289277087.html#Bamboovariables-Build-specificvariables
   service="bamboo"
+  # shellcheck disable=SC2154
   commit="${bamboo_planRepository_revision}"
+  # shellcheck disable=SC2154
   branch="${bamboo_planRepository_branch}"
+  # shellcheck disable=SC2154
   build="${bamboo_buildNumber}"
+  # shellcheck disable=SC2154
   build_url="${bamboo_buildResultsUrl}"
+  # shellcheck disable=SC2154
   remote_addr="${bamboo_planRepository_repositoryUrl}"
 
 elif [ "$CI" = "true" ] && [ "$BITRISE_IO" = "true" ];
