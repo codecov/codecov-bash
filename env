@@ -7,11 +7,14 @@ set -e +o pipefail
 
 VERSION="tbd"
 
-add(){
-  if [ ! -z "$1" ];
+add()
+{
+  if [ -z "$1" ];
   then
-    echo -n "-e $1 "
+    return
   fi
+
+  echo -n "-e $1 "
 }
 
 add "CODECOV_ENV"
