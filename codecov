@@ -225,7 +225,8 @@ swiftcov() {
 parse_yaml() {
    local prefix=$2
    local s='[[:space:]]*' w='[a-zA-Z0-9_]*' 
-   local fs=$(echo @|tr @ '\034')
+   local fs
+   fs=$(echo @|tr @ '\034')
    sed -ne "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" \
         -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p" "$1" |
    awk -F$fs '{
@@ -541,7 +542,7 @@ then
   build_url=$(urlencode "$CI_BUILD_URL")
   commit="$CI_COMMIT_ID"
 
-elif [ ! -z "$CF_BUILD_URL" ] && [ ! -z "$CF_BUILD_ID" ];
+elif [ -n "$CF_BUILD_URL" ] && [ -n "$CF_BUILD_ID" ];
 then
   say "$e==>$x Codefresh CI detected."
   # https://docs.codefresh.io/v1.0/docs/variables
@@ -1598,7 +1599,7 @@ else
         say "    ${e}->${x} Uploading"
 
 
-        s3=$(curl $curl_s -fiX PUT $curlawsargs \
+        s3=$(curl $curl_s -fiX PUT "$curlawsargs" \
             --data-binary @$upload_file.gz \
             -H 'Content-Type: application/x-gzip' \
             -H 'Content-Encoding: gzip' \
@@ -1630,7 +1631,7 @@ else
   do
     i=$[$i+1]
 
-    res=$(curl $curl_s -X POST $curlargs $cacert \
+    res=$(curl $curl_s -X POST "$curlargs" "$cacert" \
           --data-binary @$upload_file.gz \
           -H 'Content-Type: text/plain' \
           -H 'Content-Encoding: gzip' \
