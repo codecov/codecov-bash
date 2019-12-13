@@ -229,7 +229,7 @@ parse_yaml() {
    fs=$(echo @|tr @ '\034')
    sed -ne "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" \
         -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p" "$1" |
-   awk -F$fs '{
+   awk -F"$fs" '{
       indent = length($1)/2;
       vname[indent] = $2;
       for (i in vname) {if (i > indent) {delete vname[i]}}
@@ -1587,7 +1587,7 @@ else
       i=$[$i+1]
       say "    ${e}->${x} Pinging Codecov"
       say "$url/upload/v4?$queryNoToken"
-      res=$(curl $curl_s -X POST $curlargs $cacert \
+      res=$(curl $curl_s -X POST "$curlargs" "$cacert" \
             -H 'X-Reduced-Redundancy: false' \
             -H 'X-Content-Type: application/x-gzip' \
             "$url/upload/v4?$query" || true)
@@ -1600,7 +1600,7 @@ else
 
 
         s3=$(curl $curl_s -fiX PUT "$curlawsargs" \
-            --data-binary @$upload_file.gz \
+            --data-binary @"$upload_file".gz \
             -H 'Content-Type: application/x-gzip' \
             -H 'Content-Encoding: gzip' \
              -H 'x-amz-acl: public-read' \
@@ -1632,7 +1632,7 @@ else
     i=$[$i+1]
 
     res=$(curl $curl_s -X POST "$curlargs" "$cacert" \
-          --data-binary @$upload_file.gz \
+          --data-binary @"$upload_file".gz \
           -H 'Content-Type: text/plain' \
           -H 'Content-Encoding: gzip' \
           -H 'X-Content-Encoding: gzip' \
