@@ -684,7 +684,7 @@ then
   branch="$HEROKU_TEST_RUN_BRANCH"
   build="$HEROKU_TEST_RUN_ID"
 
-elif [ "$CI" = "True" ] && [ "$APPVEYOR" = "True" ];
+elif [ "$CI" = "true" ] && [ "$APPVEYOR" = "true" ];
 then
   say "$e==>$x Appveyor CI detected."
   # http://www.appveyor.com/docs/environment-variables
