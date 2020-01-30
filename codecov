@@ -900,7 +900,11 @@ yaml=$(echo "$yaml" | head -1)
 if [ "$yaml" != "" ];
 then
   say "    ${e}Yaml found at:${x} $yaml"
-  config=$(parse_yaml "$git_root/$yaml" || echo '')
+  if [[ "$yaml" != /* ]]; then
+    # relative path for yaml file given, assume relative to the repo root
+    yaml="$git_root/$yaml"
+  fi
+  config=$(parse_yaml "$yaml" || echo '')
 
   # TODO validate the yaml here
 
