@@ -126,6 +126,11 @@ cat << EOF
                  -X network       Disable uploading the file network
                  -X gcovout       Disable gcov output
 
+    -N           The commit SHA of the parent for which you are uploading coverage. If not present,
+                 the parent will be determined using the API of your repository provider.
+                 When using the repository provider's API, the parent is determined via finding
+                 the closest ancestor to the commit.
+
     -R root dir  Used when not in git/hg project to identify project root directory
     -y conf file Used to specify the location of the .codecov.yml config file
     -F flag      Flag the upload to group coverage metrics
@@ -236,9 +241,12 @@ parse_yaml() {
 
 if [ $# != 0 ];
 then
-  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:k:Kn:p:P:r:R:y:s:S:t:T:u:U:vx:X:Z" o
+  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:k:Kn:p:P:r:R:y:s:S:t:T:u:U:vx:X:ZN:" o
   do
     case "$o" in
+      "N")
+        parent=$OPTARG
+        ;;
       "a")
         gcov_arg=$OPTARG
         ;;
@@ -676,7 +684,7 @@ then
   branch="$HEROKU_TEST_RUN_BRANCH"
   build="$HEROKU_TEST_RUN_ID"
 
-elif [ "$CI" = "True" ] && [ "$APPVEYOR" = "True" ];
+elif [ "$CI" = "true" ] && [ "$APPVEYOR" = "true" ];
 then
   say "$e==>$x Appveyor CI detected."
   # http://www.appveyor.com/docs/environment-variables
@@ -793,11 +801,16 @@ then
   job="$BITBUCKET_BUILD_NUMBER"
   pr="$BITBUCKET_PR_ID"
   commit="$BITBUCKET_COMMIT"
+  # See https://jira.atlassian.com/browse/BCLOUD-19393
+  if [ "${#commit}" = 12 ];
+  then
+    commit=$(git rev-parse "$BITBUCKET_COMMIT")
+  fi
 elif [ "$CIRRUS_CI" != "" ];
 then
   say "$e==>$x Cirrus CI detected."
   # https://cirrus-ci.org/guide/writing-tasks/#environment-variables
-  service="cirrus"
+  service="cirrus-ci"
   slug="$CIRRUS_REPO_FULL_NAME"
   branch="$CIRRUS_BRANCH"
   pr="$CIRRUS_PR"
@@ -954,6 +967,11 @@ then
   query=$(echo "$query&project=$project&server_uri=$server_uri" | tr -d ' ')
 fi
 
+if [ "$parent" != "" ];
+then
+  query=$(echo "parent=$parent&$query" | tr -d ' ')
+fi
+
 if [ "$ft_search" = "1" ];
 then
   # detect bower comoponents location
@@ -1030,7 +1048,7 @@ then
   if [ "$ft_gcov" = "1" ];
   then
     say "${e}==>${x} Running gcov in $proj_root ${e}(disable via -X gcov)${x}"
-    bash -c "find $proj_root -type f -name '*.gcno' $gcov_include $gcov_ignore -execdir $gcov_exe -pb $gcov_arg {} +" || true
+    bash -c "find $proj_root -type f -name '*.gcno' $gcov_include $gcov_ignore -execdir $gcov_exe -pb $gcov_arg {} \;" || true
   else
     say "${e}==>${x} gcov disabled"
   fi
