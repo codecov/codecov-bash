@@ -237,6 +237,7 @@ then
   add "GITHUB_REF"
   add "GITHUB_REPOSITORY"
   add "GITHUB_SHA"
+  add "GITHUB_RUN_ID"
 
 elif [ "$CI" = "true" ] && [ "$BITBUCKET_BUILD_NUMBER" != "" ];
 then
