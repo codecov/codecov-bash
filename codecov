@@ -771,6 +771,8 @@ then
   branch="${GITHUB_REF#refs/heads/}"
   commit="${GITHUB_SHA}"
   slug="${GITHUB_REPOSITORY}"
+  build="${GITHUB_RUN_ID}"
+  build_url=$(urlencode "http://github.com/${GITHUB_REPOSITORY}/runs/${GITHUB_RUN_ID}")
 
 elif [ "$SYSTEM_TEAMFOUNDATIONSERVERURI" != "" ];
 then
