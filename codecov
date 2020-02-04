@@ -778,14 +778,15 @@ elif [ "$SYSTEM_TEAMFOUNDATIONSERVERURI" != "" ];
 then
   say "$e==>$x Azure Pipelines detected."
   # https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=vsts
+  # https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&viewFallbackFrom=vsts&tabs=yaml
   service="azure_pipelines"
   commit="$BUILD_SOURCEVERSION"
   build="$BUILD_BUILDNUMBER"
-  if [  -z "$PULL_REQUEST_NUMBER" ];
+  if [  -z "$SYSTEM_PULLREQUEST_PULLREQUESTNUMBER" ];
   then
-    pr="$PULL_REQUEST_ID"
+    pr="$SYSTEM_PULLREQUEST_PULLREQUESTID"
   else
-    pr="$PULL_REQUEST_NUMBER"
+    pr="$SYSTEM_PULLREQUEST_PULLREQUESTNUMBER"
   fi
   project="${SYSTEM_TEAMPROJECT}"
   server_uri="${SYSTEM_TEAMFOUNDATIONSERVERURI}"
