@@ -389,8 +389,8 @@ function test_drone (){
 
 function test_appveyor (){
     reset
-    export CI="True"
-    export APPVEYOR="True"
+    export CI="true"
+    export APPVEYOR="true"
     export APPVEYOR_REPO_NAME="myowner/myrepo"
     export APPVEYOR_REPO_BRANCH="develop"
     export APPVEYOR_BUILD_VERSION="1.2.3"
