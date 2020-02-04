@@ -10,8 +10,3 @@ Is this covered by existing tests? New ones? If no, why not?
 ## Update the SHA1SUM file
 
 Also make sure that you update the sha1 hash by running `sha1sum codecov` and updating the SHA1SUM file with the output
-Change the `codecov` to `-` in the file before commiting so it can be compared against the server file 
-
-
-
-
