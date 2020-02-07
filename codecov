@@ -769,10 +769,17 @@ then
 
   # https://help.github.com/en/articles/virtual-environments-for-github-actions#environment-variables
   branch="${GITHUB_REF#refs/heads/}"
+  if [  -z "$GITHUB_HEAD_REF" ];
+  then
+    # PR refs are in the format: refs/pull/7/merge 
+    pr="${GITHUB_REF#refs/pull/}"
+    pr="${pr%/merge}"
+    branch="${GITHUB_HEAD_REF}"
+  fi
   commit="${GITHUB_SHA}"
   slug="${GITHUB_REPOSITORY}"
   build="${GITHUB_RUN_ID}"
-  build_url=$(urlencode "http://github.com/${GITHUB_REPOSITORY}/runs/${GITHUB_RUN_ID}")
+  build_url=$(urlencode "http://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}")
 
 elif [ "$SYSTEM_TEAMFOUNDATIONSERVERURI" != "" ];
 then
