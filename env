@@ -236,6 +236,7 @@ then
   add "GITHUB_ACTION"
   add "GITHUB_REF"
   add "GITHUB_REPOSITORY"
+  add "GITHUB_HEAD_REF"
   add "GITHUB_SHA"
   add "GITHUB_RUN_ID"
 
