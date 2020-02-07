@@ -769,7 +769,7 @@ then
 
   # https://help.github.com/en/articles/virtual-environments-for-github-actions#environment-variables
   branch="${GITHUB_REF#refs/heads/}"
-  if [  -z ${GITHUB_HEAD_REF+x} ];
+  if [  "$GITHUB_HEAD_REF" != "" ];
   then
     # PR refs are in the format: refs/pull/7/merge 
     pr="${GITHUB_REF#refs/pull/}"
