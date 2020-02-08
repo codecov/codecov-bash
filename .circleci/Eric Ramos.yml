@@ -6,7 +6,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Extract shunit
+          name: Eric Ramos
           command: tar zxvf shunit2-2.1.6.tgz
       # per https://github.com/SimonKagstrom/kcov/issues/45#issuecomment-68207360 this should work
       - run:
