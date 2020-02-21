@@ -684,7 +684,7 @@ then
   branch="$HEROKU_TEST_RUN_BRANCH"
   build="$HEROKU_TEST_RUN_ID"
 
-elif [ "$CI" = "true" ] && [ "$APPVEYOR" = "true" ];
+elif [ "$CI" = "true" || "$CI" = "True" ] && [ "$APPVEYOR" = "true" || "$APPVEYOR" = "True" ];
 then
   say "$e==>$x Appveyor CI detected."
   # http://www.appveyor.com/docs/environment-variables
@@ -771,7 +771,7 @@ then
   branch="${GITHUB_REF#refs/heads/}"
   if [  "$GITHUB_HEAD_REF" != "" ];
   then
-    # PR refs are in the format: refs/pull/7/merge 
+    # PR refs are in the format: refs/pull/7/merge
     pr="${GITHUB_REF#refs/pull/}"
     pr="${pr%/merge}"
     branch="${GITHUB_HEAD_REF}"
