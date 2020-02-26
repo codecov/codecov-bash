@@ -239,7 +239,7 @@ function assertURL () {
 # Test an AWS Codebuild upload not from a PR
 function test_codebuild () {
     reset
-    export CODEBUILD_BUILD_ARN="true"
+    export CODEBUILD_CI="true"
     export CODEBUILD_WEBHOOK_HEAD_REF="refs/heads/codebuild-master"
     export CODEBUILD_RESOLVED_SOURCE_VERSION="$TEST_DATA_GIT_COMMIT"
     export CODEBUILD_SOURCE_VERSION="pr/42"
@@ -251,7 +251,7 @@ function test_codebuild () {
 # Test an AWS Codebuild upload from a PR
 function test_codebuild_pr () {
     reset
-    export CODEBUILD_BUILD_ARN="true"
+    export CODEBUILD_CI="true"
     export CODEBUILD_WEBHOOK_HEAD_REF="refs/heads/codebuild-master"
     export CODEBUILD_RESOLVED_SOURCE_VERSION="$TEST_DATA_GIT_COMMIT"
     export CODEBUILD_SOURCE_VERSION="$TEST_DATA_GIT_COMMIT"

@@ -89,6 +89,7 @@ bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverag
 | [Buildkite](https://buildkite.com)                  | Yes                                                                                                                                              | Public & Private |
 | [GitHub Actions](https://github.com/features/actions)    | Yes                                                                                                                                              | Public & Private |
 | [Cirrus CI](https://cirrus-ci.org/)                 | Yes                                                                                                                                              | Public & Private |
+| [AWS CodeBuild](https://aws.amazon.com/codebuild/)  | Yes                                                                                                                                              | Public & Private |
 | git                                                 | Yes (as a fallback)                                                                                                                              | Public & Private |
 
 
