@@ -43,7 +43,7 @@ then
   add "ghprbPullId"
   add "BUILD_URL"
   
-if [ "$CODEBUILD_BUILD_ARN" != "" ];
+elif [ "$CODEBUILD_CI" = "true" ];
 then
   add "CODEBUILD_WEBHOOK_HEAD_REF"
   add "CODEBUILD_RESOLVED_SOURCE_VERSION"
