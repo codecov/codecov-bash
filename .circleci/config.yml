@@ -1,0 +1,31 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: particleflux/circleci-bats-kcov:1.0.0
+    steps:
+      - checkout
+      - run:
+          name: Extract shunit
+          command: tar zxvf shunit2-2.1.6.tgz
+      # per https://github.com/SimonKagstrom/kcov/issues/45#issuecomment-68207360 this should work
+      - run:
+          name: Run Tests
+          command: |
+            kcov --include-path=./codecov coverage/ tests/test
+      - run:
+          name: Upload Codecov
+          command: |
+            bash <(curl -s https://codecov.io/bash) -s coverage -d > upload.txt
+            bash <(curl -s https://codecov.io/bash) -s coverage
+      - store_artifacts:
+          path: codecov.txt
+      - store_artifacts:
+          path: coverage
+
+workflows:
+  version: 2.1
+  build-test:
+    jobs:
+      - build
+
