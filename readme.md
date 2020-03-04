@@ -93,7 +93,18 @@ bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverag
 | git                                                 | Yes (as a fallback)                                                                                                                              | Public & Private |
 
 
-## Caveat
+### Caveats
 
 1. **Jenkins**: Unable to find reports? Try `PWD=WORKSPACE bash <(curl -s https://codecov.io/bash)`
  
+
+
+### Development
+
+Once you made a change to the codecov uploader script, please also update the hash file via:
+
+```bash
+shasum codecov > SHA1SUM
+```
+
+and add the change to your pull request.
