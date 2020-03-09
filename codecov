@@ -514,7 +514,7 @@ then
     pr="$(echo $CODEBUILD_SOURCE_VERSION | sed 's/^pr\///')"
   fi
   job="$CODEBUILD_BUILD_ID"
-  slug="$(echo $CODEBUILD_SOURCE_REPO_URL | sed 's/^.*github.com\///' | sed 's/\.git$//')"
+  slug="$(echo $CODEBUILD_SOURCE_REPO_URL | sed 's/^.*github.com\///' | sed 's/^.*bitbucket.org\///' | sed 's/\.git$//')"
 
 elif [ "$DOCKER_REPO" != "" ];
 then
