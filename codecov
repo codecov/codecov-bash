@@ -1508,7 +1508,7 @@ then
       || echo ''
   fi
 
-  if echo "$network" | grep -m1 '\(.cpp\|.h\|.cxx\|.c\|.hpp\|.m\)$' 1>/dev/null;
+  if echo "$network" | grep -m1 '\(.cpp\|.h\|.cxx\|.c\|.hpp\|.m\|.swift\)$' 1>/dev/null;
   then
     # skip brackets
     find "$git_root" -type f \
@@ -1520,6 +1520,7 @@ then
            -or -name '*.m' \
            -or -name '*.c' \
            -or -name '*.hpp' \
+           -or -name '*.swift' \
          \) -exec \
       grep -nIHE \
            -e $empty_line \
@@ -1540,6 +1541,7 @@ then
            -or -name '*.m' \
            -or -name '*.c' \
            -or -name '*.hpp' \
+           -or -name '*.swift' \
          \) -exec \
       grep -nIH '// LCOV_EXCL' \
            {} \; \
