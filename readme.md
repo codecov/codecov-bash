@@ -87,12 +87,24 @@ bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverag
 | [Shippable](http://www.shippable.com/)              | Yes                                                                                                                                              | Public & Private |
 | [Gitlab CI](https://about.gitlab.com/gitlab-ci/)    | Yes                                                                                                                                              | Public & Private |
 | [Buildkite](https://buildkite.com)                  | Yes                                                                                                                                              | Public & Private |
-| [GitHub Actions](https://github.com/features/actions)    | Yes                                                                                                                                              | Public & Private |
+| [GitHub Actions](https://github.com/features/actions)    | Yes                                                                                                                                              | Private only |
 | [Cirrus CI](https://cirrus-ci.org/)                 | Yes                                                                                                                                              | Public & Private |
+| [AWS CodeBuild](https://aws.amazon.com/codebuild/)  | Yes                                                                                                                                              | Public & Private |
 | git                                                 | Yes (as a fallback)                                                                                                                              | Public & Private |
 
 
-## Caveat
+### Caveats
 
 1. **Jenkins**: Unable to find reports? Try `PWD=WORKSPACE bash <(curl -s https://codecov.io/bash)`
  
+
+
+### Development
+
+Once you made a change to the codecov uploader script, please also update the hash file via:
+
+```bash
+shasum codecov > SHA1SUM
+```
+
+and add the change to your pull request.

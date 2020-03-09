@@ -239,7 +239,7 @@ function assertURL () {
 # Test an AWS Codebuild upload not from a PR
 function test_codebuild () {
     reset
-    export CODEBUILD_BUILD_ARN="true"
+    export CODEBUILD_CI="true"
     export CODEBUILD_WEBHOOK_HEAD_REF="refs/heads/codebuild-master"
     export CODEBUILD_RESOLVED_SOURCE_VERSION="$TEST_DATA_GIT_COMMIT"
     export CODEBUILD_SOURCE_VERSION="pr/42"
@@ -251,7 +251,7 @@ function test_codebuild () {
 # Test an AWS Codebuild upload from a PR
 function test_codebuild_pr () {
     reset
-    export CODEBUILD_BUILD_ARN="true"
+    export CODEBUILD_CI="true"
     export CODEBUILD_WEBHOOK_HEAD_REF="refs/heads/codebuild-master"
     export CODEBUILD_RESOLVED_SOURCE_VERSION="$TEST_DATA_GIT_COMMIT"
     export CODEBUILD_SOURCE_VERSION="$TEST_DATA_GIT_COMMIT"
@@ -401,10 +401,27 @@ function test_drone (){
     assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=develop&commit=$TEST_DATA_GIT_COMMIT&build=7.5&build_url=http%3A%2F%2Fdrone&name=&tag=&slug=codecov%2Fcodecov-bash&service=drone.io&flags=&pr=&job="
 }
 
-function test_appveyor (){
+function test_appveyor_linux (){
     reset
     export CI="true"
     export APPVEYOR="true"
+    export APPVEYOR_REPO_NAME="myowner/myrepo"
+    export APPVEYOR_REPO_BRANCH="develop"
+    export APPVEYOR_BUILD_VERSION="1.2.3"
+    export APPVEYOR_PULL_REQUEST_NUMBER="1"
+    export APPVEYOR_ACCOUNT_NAME="a"
+    export APPVEYOR_PROJECT_SLUG="b"
+    export APPVEYOR_JOB_ID="9r2qufuu8"
+    export APPVEYOR_REPO_COMMIT="$TEST_DATA_GIT_COMMIT"
+    export APPVEYOR_URL="https://ci.appveyor.com"
+    export APPVEYOR_BUILD_ID="123456789"
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=develop&commit=$TEST_DATA_GIT_COMMIT&build=9r2qufuu8&build_url=https%3A%2F%2Fci.appveyor.com%2Fproject%2Fmyowner%2Fmyrepo%2Fbuilds%2F123456789%2Fjob%2F9r2qufuu8&name=&tag=&slug=myowner%2Fmyrepo&service=appveyor&flags=&pr=1&job=a%2Fb%2F1.2.3"
+}
+
+function test_appveyor_windows (){
+    reset
+    export CI="True"
+    export APPVEYOR="True"
     export APPVEYOR_REPO_NAME="myowner/myrepo"
     export APPVEYOR_REPO_BRANCH="develop"
     export APPVEYOR_BUILD_VERSION="1.2.3"

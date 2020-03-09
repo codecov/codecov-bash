@@ -500,7 +500,7 @@ then
     env="$env,${!language}"
   fi
 
-elif [ "$CODEBUILD_BUILD_ARN" != "" ];
+elif [ "$CODEBUILD_CI" = "true" ];
 then
   say "$e==>$x AWS Codebuild detected."
   # https://docs.aws.amazon.com/codebuild/latest/userguide/build-env-ref-env-vars.html
@@ -684,7 +684,7 @@ then
   branch="$HEROKU_TEST_RUN_BRANCH"
   build="$HEROKU_TEST_RUN_ID"
 
-elif [ "$CI" = "true" ] && [ "$APPVEYOR" = "true" ];
+elif [[ "$CI" = "true" || "$CI" = "True" ]] && [[ "$APPVEYOR" = "true" || "$APPVEYOR" = "True" ]];
 then
   say "$e==>$x Appveyor CI detected."
   # http://www.appveyor.com/docs/environment-variables
@@ -771,7 +771,7 @@ then
   branch="${GITHUB_REF#refs/heads/}"
   if [  "$GITHUB_HEAD_REF" != "" ];
   then
-    # PR refs are in the format: refs/pull/7/merge 
+    # PR refs are in the format: refs/pull/7/merge
     pr="${GITHUB_REF#refs/pull/}"
     pr="${pr%/merge}"
     branch="${GITHUB_HEAD_REF}"
@@ -923,7 +923,11 @@ yaml=$(echo "$yaml" | head -1)
 if [ "$yaml" != "" ];
 then
   say "    ${e}Yaml found at:${x} $yaml"
-  config=$(parse_yaml "$git_root/$yaml" || echo '')
+  if [[ "$yaml" != /* ]]; then
+    # relative path for yaml file given, assume relative to the repo root
+    yaml="$git_root/$yaml"
+  fi
+  config=$(parse_yaml "$yaml" || echo '')
 
   # TODO validate the yaml here
 
