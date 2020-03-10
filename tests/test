@@ -236,7 +236,7 @@ function assertURL () {
     assertTrue 'Expected output differs.' $?
 }
 
-# Test an AWS Codebuild upload not from a PR
+# Test an AWS Codebuild upload from a PR
 function test_codebuild () {
     reset
     export CODEBUILD_CI="true"
@@ -248,7 +248,7 @@ function test_codebuild () {
     assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=codebuild-master&commit=$TEST_DATA_GIT_COMMIT&build=33116958&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=codebuild&flags=&pr=42&job=33116958"
 }
 
-# Test an AWS Codebuild upload from a PR
+# Test an AWS Codebuild upload not from a PR
 function test_codebuild_pr () {
     reset
     export CODEBUILD_CI="true"
@@ -258,6 +258,18 @@ function test_codebuild_pr () {
     export CODEBUILD_BUILD_ID="33116958"
     export CODEBUILD_SOURCE_REPO_URL="https://github.com/codecov/codecov-bash.git"
     assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=codebuild-master&commit=$TEST_DATA_GIT_COMMIT&build=33116958&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=codebuild&flags=&pr=false&job=33116958"
+}
+
+# Test an AWS Codebuild upload with Bitbucket repo
+function test_codebuild_with_bitbucket_repo () {
+    reset
+    export CODEBUILD_CI="true"
+    export CODEBUILD_WEBHOOK_HEAD_REF="refs/heads/codebuild-master"
+    export CODEBUILD_RESOLVED_SOURCE_VERSION="$TEST_DATA_GIT_COMMIT"
+    export CODEBUILD_SOURCE_VERSION="$TEST_DATA_GIT_COMMIT"
+    export CODEBUILD_BUILD_ID="33116958"
+    export CODEBUILD_SOURCE_REPO_URL="https://owner@bitbucket.org/owner/repo.git"
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=codebuild-master&commit=$TEST_DATA_GIT_COMMIT&build=33116958&build_url=&name=&tag=&slug=owner%2Frepo&service=codebuild&flags=&pr=false&job=33116958"
 }
 
 function test_travis () {
