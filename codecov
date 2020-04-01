@@ -816,6 +816,20 @@ then
   then
     commit=$(git rev-parse "$BITBUCKET_COMMIT")
   fi
+
+elif [ "$CI" = "true" ] && [ "$BUDDY" = "true" ];
+then
+  say "$e==>$x Buddy CI detected."
+  # https://buddy.works/docs/pipelines/environment-variables
+  service="buddy"
+  branch="$BUDDY_EXECUTION_BRANCH"
+  build="$BUDDY_EXECUTION_ID"
+  build_url=$(urlencode "$BUDDY_EXECUTION_URL")
+  commit="$BUDDY_EXECUTION_REVISION"
+  pr="$BUDDY_EXECUTION_PULL_REQUEST_NO"
+  tag="$BUDDY_EXECUTION_TAG"
+  slug="$BUDDY_REPO_SLUG"
+
 elif [ "$CIRRUS_CI" != "" ];
 then
   say "$e==>$x Cirrus CI detected."
@@ -827,6 +841,7 @@ then
   commit="$CIRRUS_CHANGE_IN_REPO"
   build="$CIRRUS_TASK_ID"
   job="$CIRRUS_TASK_NAME"
+
 else
   say "${r}x>${x} No CI provider detected."
   say "    Testing inside Docker? ${b}http://docs.codecov.io/docs/testing-with-docker${x}"

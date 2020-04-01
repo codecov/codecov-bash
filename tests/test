@@ -540,6 +540,18 @@ function test_bitbucket_pull_request() {
     assertTrue 'Expected output differs.' $?
 }
 
+function test_buddy () {
+    reset
+    export CI="true"
+    export BUDDY="true"
+    export BUDDY_EXECUTION_BRANCH="master"
+    export BUDDY_EXECUTION_REVISION="$TEST_DATA_GIT_COMMIT"
+    export BUDDY_EXECUTION_ID="1"
+    export BUDDY_EXECUTION_PULL_REQUEST_NO="1"
+    export BUDDY_REPO_SLUG="codecov/ci-repo"
+    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=master&commit=$TEST_DATA_GIT_COMMIT&build=1&build_url=&name=&tag=&slug=codecov%2Fci-repo&service=buddy&flags=&pr=1&job="
+}
+
 function test_cirrus () {
     reset
     export CIRRUS_CI="true"

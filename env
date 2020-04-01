@@ -250,4 +250,16 @@ then
   add "BITBUCKET_PR_ID"
   add "BITBUCKET_COMMIT"
 
+elif [ "$CI" = "true" ] && [ "$BUDDY" = "true" ];
+then
+  add "CI"
+  add "BUDDY"
+  add "BUDDY_EXECUTION_BRANCH"
+  add "BUDDY_EXECUTION_REVISION"
+  add "BUDDY_EXECUTION_ID"
+  add "BUDDY_EXECUTION_URL"
+  add "BUDDY_EXECUTION_PULL_REQUEST_NO"
+  add "BUDDY_EXECUTION_TAG"
+  add "BUDDY_REPO_SLUG"
+
 fi
