@@ -1071,13 +1071,13 @@ then
   # Gcov Coverage
   if [ "$ft_gcov" = "1" ];
   then
-    say "${e}==>${x} Running gcov in $proj_root ${e}(disable via -X gcov)${x}"
+    say "${e}==>${x} Running $gcov_exe in $proj_root ${e}(disable via -X gcov)${x}"
     if [ "$ft_gcovout" = "0" ];
     then
       # suppress gcov output
-      bash -c "find $proj_root -type f -name '*.gcno' $gcov_include $gcov_ignore -execdir $gcov_exe -pb $gcov_arg {} \;" >/dev/null 2>&1 || true
+      bash -c "find $proj_root -type f -name '*.gcno' $gcov_include $gcov_ignore -exec $gcov_exe -pb $gcov_arg {} +" >/dev/null 2>&1 || true
     else
-      bash -c "find $proj_root -type f -name '*.gcno' $gcov_include $gcov_ignore -execdir $gcov_exe -pb $gcov_arg {} \;" || true
+      bash -c "find $proj_root -type f -name '*.gcno' $gcov_include $gcov_ignore -exec $gcov_exe -pb $gcov_arg {} +" || true
     fi
   else
     say "${e}==>${x} gcov disabled"
