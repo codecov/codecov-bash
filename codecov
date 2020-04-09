@@ -816,7 +816,6 @@ then
   then
     commit=$(git rev-parse "$BITBUCKET_COMMIT")
   fi
-
 elif [ "$CI" = "true" ] && [ "$BUDDY" = "true" ];
 then
   say "$e==>$x Buddy CI detected."
