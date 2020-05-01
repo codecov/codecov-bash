@@ -930,7 +930,7 @@ yaml=$(test -n "$codecov_yml" && echo "$codecov_yml" \
        || cd "$git_root" && \
           git ls-files "*codecov.yml" "*codecov.yaml" 2>/dev/null \
        || hg locate "*codecov.yml" "*codecov.yaml" 2>/dev/null \
-       || cd $proj_root && find . -type f -name '*codecov.y*ml' -depth 1 2>/dev/null \
+       || cd $proj_root && find . -maxdepth 1 -type f -name '*codecov.y*ml' 2>/dev/null \
        || echo '')
 yaml=$(echo "$yaml" | head -1)
 
@@ -1433,7 +1433,7 @@ fi
 if [ "$ft_fix" = "1" ];
 then
   say "${e}==>${x} Appending adjustments"
-  say "    ${b}http://docs.codecov.io/docs/fixing-reports${x}"
+  say "    ${b}https://docs.codecov.io/docs/fixing-reports${x}"
 
   empty_line='^[[:space:]]*$'
   # //
