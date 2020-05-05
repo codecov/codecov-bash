@@ -132,7 +132,7 @@ cat << EOF
                  the closest ancestor to the commit.
 
     -R root dir  Used when not in git/hg project to identify project root directory
-    -y conf file Used to specify the location of the .codecov.yml config file
+    -y conf file Used to specify the location of the codecov.yml config file
     -F flag      Flag the upload to group coverage metrics
 
                  -F unittests        This upload is only unittests
