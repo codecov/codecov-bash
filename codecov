@@ -926,6 +926,9 @@ then
   fi
 fi
 
+test -n "$codecov_yml" && echo -e "    ${r}DeprecationWarning${x}: The -y flag is no longer supported by Codecov."`
+                                 `"\n      codecov.yml must be located underneath the root, dev/, or .github/ directories"
+
 yaml=$(test -n "$codecov_yml" && echo "$codecov_yml" \
        || cd "$git_root" && \
           git ls-files "*codecov.yml" "*codecov.yaml" 2>/dev/null \
