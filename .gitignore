@@ -1,3 +1,4 @@
 .DS_Store
 coverage
 temp
+shunit2-2.1.6/*
