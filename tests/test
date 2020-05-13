@@ -236,10 +236,10 @@ function assertURL () {
     assertTrue 'Expected output differs.' $?
 }
 
-# Test an AWS Codebuild upload not from a PR
+# Test an AWS Codebuild upload from a PR
 function test_codebuild () {
     reset
-    export CODEBUILD_BUILD_ARN="true"
+    export CODEBUILD_CI="true"
     export CODEBUILD_WEBHOOK_HEAD_REF="refs/heads/codebuild-master"
     export CODEBUILD_RESOLVED_SOURCE_VERSION="$TEST_DATA_GIT_COMMIT"
     export CODEBUILD_SOURCE_VERSION="pr/42"
@@ -248,15 +248,38 @@ function test_codebuild () {
     assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=codebuild-master&commit=$TEST_DATA_GIT_COMMIT&build=33116958&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=codebuild&flags=&pr=42&job=33116958"
 }
 
-# Test an AWS Codebuild upload from a PR
+# Test an AWS Codebuild upload not from a PR
 function test_codebuild_pr () {
     reset
-    export CODEBUILD_BUILD_ARN="true"
+    export CODEBUILD_CI="true"
     export CODEBUILD_WEBHOOK_HEAD_REF="refs/heads/codebuild-master"
     export CODEBUILD_RESOLVED_SOURCE_VERSION="$TEST_DATA_GIT_COMMIT"
     export CODEBUILD_SOURCE_VERSION="$TEST_DATA_GIT_COMMIT"
     export CODEBUILD_BUILD_ID="33116958"
     export CODEBUILD_SOURCE_REPO_URL="https://github.com/codecov/codecov-bash.git"
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=codebuild-master&commit=$TEST_DATA_GIT_COMMIT&build=33116958&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=codebuild&flags=&pr=false&job=33116958"
+}
+
+# Test an AWS Codebuild upload with Bitbucket repo
+function test_codebuild_with_bitbucket_repo () {
+    reset
+    export CODEBUILD_CI="true"
+    export CODEBUILD_WEBHOOK_HEAD_REF="refs/heads/codebuild-master"
+    export CODEBUILD_RESOLVED_SOURCE_VERSION="$TEST_DATA_GIT_COMMIT"
+    export CODEBUILD_SOURCE_VERSION="$TEST_DATA_GIT_COMMIT"
+    export CODEBUILD_BUILD_ID="33116958"
+    export CODEBUILD_SOURCE_REPO_URL="https://owner@bitbucket.org/owner/repo.git"
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=codebuild-master&commit=$TEST_DATA_GIT_COMMIT&build=33116958&build_url=&name=&tag=&slug=owner%2Frepo&service=codebuild&flags=&pr=false&job=33116958"
+}
+
+function test_codebuild_with_nonpublic_github_host () {
+    reset
+    export CODEBUILD_CI="true"
+    export CODEBUILD_WEBHOOK_HEAD_REF="refs/heads/codebuild-master"
+    export CODEBUILD_RESOLVED_SOURCE_VERSION="$TEST_DATA_GIT_COMMIT"
+    export CODEBUILD_SOURCE_VERSION="$TEST_DATA_GIT_COMMIT"
+    export CODEBUILD_BUILD_ID="33116958"
+    export CODEBUILD_SOURCE_REPO_URL="https://github-enterprise.example.com/codecov/codecov-bash.git"
     assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=codebuild-master&commit=$TEST_DATA_GIT_COMMIT&build=33116958&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=codebuild&flags=&pr=false&job=33116958"
 }
 
@@ -341,7 +364,20 @@ function test_github_action () {
     export GITHUB_RUN_ID="32402849"
     export GITHUB_SHA="$TEST_DATA_GIT_COMMIT"
 
-    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=master&commit=$TEST_DATA_GIT_COMMIT&build=32402849&build_url=http%3A%2F%2Fgithub.com%2Fcodecov%2Fci-repo%2Fruns%2F32402849&name=&tag=&slug=codecov%2Fci-repo&service=github-actions&flags=&pr=&job="
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=master&commit=$TEST_DATA_GIT_COMMIT&build=32402849&build_url=http%3A%2F%2Fgithub.com%2Fcodecov%2Fci-repo%2Factions%2Fruns%2F32402849&name=&tag=&slug=codecov%2Fci-repo&service=github-actions&flags=&pr=&job="
+}
+
+function test_github_action_pr () {
+    reset
+
+    export GITHUB_ACTION="my-fancy-github-action"
+    export GITHUB_REF="refs/pull/7/merge"
+    export GITHUB_HEAD_REF="patch-2"
+    export GITHUB_REPOSITORY="codecov/ci-repo"
+    export GITHUB_RUN_ID="32402849"
+    export GITHUB_SHA="$TEST_DATA_GIT_COMMIT"
+
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=patch-2&commit=$TEST_DATA_GIT_COMMIT&build=32402849&build_url=http%3A%2F%2Fgithub.com%2Fcodecov%2Fci-repo%2Factions%2Fruns%2F32402849&name=&tag=&slug=codecov%2Fci-repo&service=github-actions&flags=&pr=7&job="
 }
 
 function test_semaphore (){
@@ -388,10 +424,27 @@ function test_drone (){
     assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=develop&commit=$TEST_DATA_GIT_COMMIT&build=7.5&build_url=http%3A%2F%2Fdrone&name=&tag=&slug=codecov%2Fcodecov-bash&service=drone.io&flags=&pr=&job="
 }
 
-function test_appveyor (){
+function test_appveyor_linux (){
     reset
     export CI="true"
     export APPVEYOR="true"
+    export APPVEYOR_REPO_NAME="myowner/myrepo"
+    export APPVEYOR_REPO_BRANCH="develop"
+    export APPVEYOR_BUILD_VERSION="1.2.3"
+    export APPVEYOR_PULL_REQUEST_NUMBER="1"
+    export APPVEYOR_ACCOUNT_NAME="a"
+    export APPVEYOR_PROJECT_SLUG="b"
+    export APPVEYOR_JOB_ID="9r2qufuu8"
+    export APPVEYOR_REPO_COMMIT="$TEST_DATA_GIT_COMMIT"
+    export APPVEYOR_URL="https://ci.appveyor.com"
+    export APPVEYOR_BUILD_ID="123456789"
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=develop&commit=$TEST_DATA_GIT_COMMIT&build=9r2qufuu8&build_url=https%3A%2F%2Fci.appveyor.com%2Fproject%2Fmyowner%2Fmyrepo%2Fbuilds%2F123456789%2Fjob%2F9r2qufuu8&name=&tag=&slug=myowner%2Fmyrepo&service=appveyor&flags=&pr=1&job=a%2Fb%2F1.2.3"
+}
+
+function test_appveyor_windows (){
+    reset
+    export CI="True"
+    export APPVEYOR="True"
     export APPVEYOR_REPO_NAME="myowner/myrepo"
     export APPVEYOR_REPO_BRANCH="develop"
     export APPVEYOR_BUILD_VERSION="1.2.3"
@@ -496,6 +549,18 @@ function test_bitbucket_pull_request() {
     url=$(./codecov -d | grep 'https://codecov.io/')
     diff <(echo "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=bb_develop&commit=$_SHA&build=2&build_url=&name=&tag=&slug=test_owner%2Ftest_slug&service=bitbucket&flags=&pr=&job=2") <(echo "$url")
     assertTrue 'Expected output differs.' $?
+}
+
+function test_buddy () {
+    reset
+    export CI="true"
+    export BUDDY="true"
+    export BUDDY_EXECUTION_BRANCH="master"
+    export BUDDY_EXECUTION_REVISION="$TEST_DATA_GIT_COMMIT"
+    export BUDDY_EXECUTION_ID="1"
+    export BUDDY_EXECUTION_PULL_REQUEST_NO="1"
+    export BUDDY_REPO_SLUG="codecov/ci-repo"
+    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=master&commit=$TEST_DATA_GIT_COMMIT&build=1&build_url=&name=&tag=&slug=codecov%2Fci-repo&service=buddy&flags=&pr=1&job="
 }
 
 function test_cirrus () {
