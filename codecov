@@ -1637,7 +1637,6 @@ else
             --data-binary @$upload_file.gz \
             -H 'Content-Type: application/x-gzip' \
             -H 'Content-Encoding: gzip' \
-             -H 'x-amz-acl: public-read' \
             "$s3target" || true)
 
 
