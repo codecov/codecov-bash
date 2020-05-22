@@ -132,7 +132,7 @@ cat << EOF
                  the closest ancestor to the commit.
 
     -R root dir  Used when not in git/hg project to identify project root directory
-    -y conf file Used to specify the location of the .codecov.yml config file
+    -y conf file Used to specify the location of the codecov.yml config file
     -F flag      Flag the upload to group coverage metrics
 
                  -F unittests        This upload is only unittests
@@ -514,7 +514,7 @@ then
     pr="$(echo $CODEBUILD_SOURCE_VERSION | sed 's/^pr\///')"
   fi
   job="$CODEBUILD_BUILD_ID"
-  slug="$(echo $CODEBUILD_SOURCE_REPO_URL | sed 's/^.*github.com\///' | sed 's/^.*bitbucket.org\///' | sed 's/\.git$//')"
+  slug="$(echo $CODEBUILD_SOURCE_REPO_URL | sed 's/^.*:\/\/[^\/]*\///' | sed 's/\.git$//')"
 
 elif [ "$DOCKER_REPO" != "" ];
 then
@@ -926,11 +926,14 @@ then
   fi
 fi
 
+test -n "$codecov_yml" && echo -e "    ${r}DeprecationWarning${x}: The -y flag is no longer supported by Codecov."`
+                                 `"\n      codecov.yml must be located underneath the root, dev/, or .github/ directories"
+
 yaml=$(test -n "$codecov_yml" && echo "$codecov_yml" \
        || cd "$git_root" && \
           git ls-files "*codecov.yml" "*codecov.yaml" 2>/dev/null \
        || hg locate "*codecov.yml" "*codecov.yaml" 2>/dev/null \
-       || cd $proj_root && find . -type f -name '*codecov.y*ml' -depth 1 2>/dev/null \
+       || cd $proj_root && find . -maxdepth 1 -type f -name '*codecov.y*ml' 2>/dev/null \
        || echo '')
 yaml=$(echo "$yaml" | head -1)
 
@@ -1433,7 +1436,7 @@ fi
 if [ "$ft_fix" = "1" ];
 then
   say "${e}==>${x} Appending adjustments"
-  say "    ${b}http://docs.codecov.io/docs/fixing-reports${x}"
+  say "    ${b}https://docs.codecov.io/docs/fixing-reports${x}"
 
   empty_line='^[[:space:]]*$'
   # //
@@ -1634,7 +1637,6 @@ else
             --data-binary @$upload_file.gz \
             -H 'Content-Type: application/x-gzip' \
             -H 'Content-Encoding: gzip' \
-             -H 'x-amz-acl: public-read' \
             "$s3target" || true)
 
 
