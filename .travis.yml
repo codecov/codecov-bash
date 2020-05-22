@@ -1,7 +1,13 @@
+dist: bionic
 language: ruby
+addons:
+  apt:
+    packages:
+      - libdigest-sha-perl
+      - shunit2
 notifications:
   email: false
 sudo: false
-before_install:
-  - tar zxvf shunit2-2.1.6.tgz
-script: env -i PATH="$PATH" tests/test
+script:
+  - env -i PATH="$PATH" tests/test
+  - shasum --algorithm 1 --check --strict ./SHA1SUM

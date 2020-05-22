@@ -2,7 +2,7 @@ Codecov Global Uploader
 =======================
 > Upload reports to Codecov for almost every supported language.
 
-[![Deployed Version](https://codecov.io/bash)](https://codecov.io/bash)
+[Deployed Version](https://codecov.io/bash)
 
 SHA1Sum:  [hash file](https://raw.githubusercontent.com/codecov/codecov-bash/master/SHA1SUM)
 
@@ -14,7 +14,7 @@ bash <(curl -s https://codecov.io/bash)
 
 # Pipe to bash (Jenkins)
 curl -s https://codecov.io/bash | bash -s - -t token
-                                            ^ add your extra config here
+#                                           ^ add your extra config here
 
 # No bash method
 curl -s https://codecov.io/bash > .codecov
@@ -87,12 +87,24 @@ bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverag
 | [Shippable](http://www.shippable.com/)              | Yes                                                                                                                                              | Public & Private |
 | [Gitlab CI](https://about.gitlab.com/gitlab-ci/)    | Yes                                                                                                                                              | Public & Private |
 | [Buildkite](https://buildkite.com)                  | Yes                                                                                                                                              | Public & Private |
-| [GitHub Actions](https://github.com/features/actions)    | Yes                                                                                                                                              | Public & Private |
+| [GitHub Actions](https://github.com/features/actions)    | Yes                                                                                                                                              | Private only |
 | [Cirrus CI](https://cirrus-ci.org/)                 | Yes                                                                                                                                              | Public & Private |
+| [AWS CodeBuild](https://aws.amazon.com/codebuild/)  | Yes                                                                                                                                              | Public & Private |
 | git                                                 | Yes (as a fallback)                                                                                                                              | Public & Private |
 
 
-## Caveat
+### Caveats
 
 1. **Jenkins**: Unable to find reports? Try `PWD=WORKSPACE bash <(curl -s https://codecov.io/bash)`
  
+
+
+### Development
+
+Once you made a change to the codecov uploader script, please also update the hash file via:
+
+```bash
+shasum codecov > SHA1SUM
+```
+
+and add the change to your pull request.
