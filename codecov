@@ -1378,7 +1378,7 @@ echo "<<<<<< network" >> $upload_file
 
 fr=0
 say "${e}==>${x} Reading reports"
-while IFS='' read -r file;
+while IFS='' read -r -d '' file;
 do
   # read the coverage file
   if [ "$(echo "$file" | tr -d ' ')" != '' ];
