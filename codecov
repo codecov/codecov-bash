@@ -1378,7 +1378,7 @@ echo "<<<<<< network" >> $upload_file
 
 fr=0
 say "${e}==>${x} Reading reports"
-while IFS='' read -r -d '' file;
+while IFS='' read -r file;
 do
   # read the coverage file
   if [ "$(echo "$file" | tr -d ' ')" != '' ];
@@ -1395,7 +1395,7 @@ do
         then
           echo "# path=$(echo "$file.reduced" | sed "s|^$git_root/||")" >> $upload_file
           # get file name
-          head -1 $file >> $upload_file
+          head -1 "$file" >> $upload_file
           # 1. remove source code
           # 2. remove ending bracket lines
           # 3. remove whitespace
