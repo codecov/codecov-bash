@@ -147,7 +147,7 @@ cat << EOF
     -- xcode --
     -D           Custom Derived Data Path for Coverage.profdata and gcov processing
                  Default '~/Library/Developer/Xcode/DerivedData'
-    -J           Specify packages to build coverage.
+    -J           Specify packages to build coverage. Uploader will only build these packages.
                  This can significantly reduces time to build coverage reports.
 
                  -J 'MyAppName'      Will match "MyAppName" and "MyAppNameTests"
