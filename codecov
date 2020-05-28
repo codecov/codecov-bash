@@ -39,6 +39,7 @@ ft_network="1"
 ft_xcodellvm="1"
 ft_xcodeplist="0"
 ft_gcovout="1"
+ft_html="0"
 
 _git_root=$(git rev-parse --show-toplevel 2>/dev/null || hg root 2>/dev/null || echo $PWD)
 git_root="$_git_root"
@@ -125,6 +126,7 @@ cat << EOF
                  -X xcode         Disable xcode processing
                  -X network       Disable uploading the file network
                  -X gcovout       Disable gcov output
+                 -X html          Enable coverage for HTML files
 
     -N           The commit SHA of the parent for which you are uploading coverage. If not present,
                  the parent will be determined using the API of your repository provider.
@@ -415,6 +417,9 @@ $OPTARG"
         elif [ "$OPTARG" = "s3" ];
         then
           ft_s3="0"
+        elif [ "$OPTARG" = "html" ];
+        then
+          ft_html="1"
         fi
         ;;
       "y")
@@ -1370,8 +1375,14 @@ if [ "$ft_network" == "1" ];
 then
   i="woff|eot|otf"  # fonts
   i="$i|gif|png|jpg|jpeg|psd"  # images
-  i="$i|ptt|pptx|numbers|pages|md|txt|xlsx|docx|doc|pdf|html|csv"  # docs
+  i="$i|ptt|pptx|numbers|pages|md|txt|xlsx|docx|doc|pdf|csv"  # docs
   i="$i|yml|yaml|.gitignore"  # supporting docs
+
+  if [ "$ft_html" != "1" ];
+  then
+    i="$i|html"
+  fi
+
   echo "$network" | grep -vwE "($i)$" >> $upload_file
 fi
 echo "<<<<<< network" >> $upload_file
@@ -1401,7 +1412,7 @@ do
           # 3. remove whitespace
           # 4. remove contextual lines
           # 5. remove function names
-          awk -F': *' '{print $1":"$2":"}' $file \
+          awk -F': *' '{print $1":"$2":"}' "$file" \
             | sed '\/: *} *$/d' \
             | sed 's/^ *//' \
             | sed '/^-/d' \
