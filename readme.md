@@ -104,7 +104,7 @@ bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverag
 Once you made a change to the codecov uploader script, please also update the hash file via:
 
 ```bash
-shasum codecov > SHA1SUM
+for i in 1 256 512; do shasum -a "${i}" codecov > "SHA${i}SUM"; done
 ```
 
 and add the change to your pull request.
