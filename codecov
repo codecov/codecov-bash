@@ -43,7 +43,6 @@ ft_html="0"
 
 _git_root=$(git rev-parse --show-toplevel 2>/dev/null || hg root 2>/dev/null || echo $PWD)
 git_root="$_git_root"
-codecov_yml=""
 remote_addr=""
 if [ "$git_root" = "$PWD" ];
 then
@@ -423,7 +422,8 @@ $OPTARG"
         fi
         ;;
       "y")
-        codecov_yml="$OPTARG"
+        echo -e "${r}DeprecationWarning${x}: The -y flag is no longer supported by Codecov."`
+               `"\n  codecov.yml must be located underneath the root, dev/, or .github/ directories"
         ;;
       "Z")
         exit_with=1
@@ -931,11 +931,7 @@ then
   fi
 fi
 
-test -n "$codecov_yml" && echo -e "    ${r}DeprecationWarning${x}: The -y flag is no longer supported by Codecov."`
-                                 `"\n      codecov.yml must be located underneath the root, dev/, or .github/ directories"
-
-yaml=$(test -n "$codecov_yml" && echo "$codecov_yml" \
-       || cd "$git_root" && \
+yaml=$(cd "$git_root" && \
           git ls-files "*codecov.yml" "*codecov.yaml" 2>/dev/null \
        || hg locate "*codecov.yml" "*codecov.yaml" 2>/dev/null \
        || cd $proj_root && find . -maxdepth 1 -type f -name '*codecov.y*ml' 2>/dev/null \
