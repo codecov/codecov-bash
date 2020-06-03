@@ -1476,10 +1476,10 @@ then
     find "$git_root" -type f \
                      -name '*.kt' \
                      -exec \
-      grep -nIHE -e $syntax_bracket \
-                 -e $syntax_comment_block {} \; \
+      grep -nIHE -e "$syntax_bracket" \
+                 -e "$syntax_comment_block" {} \; \
       | cut_and_join \
-      >> $adjustments_file \
+      >> "$adjustments_file" \
       || echo ''
 
     # last line in file
@@ -1488,7 +1488,7 @@ then
       wc -l {} \; \
       | while read l; do echo "EOF: $l"; done \
       2>/dev/null \
-      >> $adjustments_file \
+      >> "$adjustments_file" \
       || echo ''
 
   fi
