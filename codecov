@@ -1486,7 +1486,7 @@ then
     find "$git_root" -type f \
                      -name '*.kt' -exec \
       wc -l {} \; \
-      | while read l; do echo "EOF: $l"; done \
+      | while read -r l; do echo "EOF: $l"; done \
       2>/dev/null \
       >> "$adjustments_file" \
       || echo ''
@@ -1501,13 +1501,13 @@ then
                      -name '*.go' \
                      -exec \
       grep -nIHE \
-           -e $empty_line \
-           -e $syntax_comment \
-           -e $syntax_comment_block \
-           -e $syntax_bracket \
+           -e "$empty_line" \
+           -e "$syntax_comment" \
+           -e "$syntax_comment_block" \
+           -e "$syntax_bracket" \
            {} \; \
       | cut_and_join \
-      >> $adjustments_file \
+      >> "$adjustments_file" \
       || echo ''
   fi
 
@@ -1518,10 +1518,10 @@ then
                      -name '*.dart' \
                      -exec \
       grep -nIHE \
-           -e $syntax_bracket \
+           -e "$syntax_bracket" \
            {} \; \
       | cut_and_join \
-      >> $adjustments_file \
+      >> "$adjustments_file" \
       || echo ''
   fi
 
@@ -1533,12 +1533,12 @@ then
                      -name '*.php' \
                      -exec \
       grep -nIHE \
-           -e $syntax_list \
-           -e $syntax_bracket \
+           -e "$syntax_list" \
+           -e "$syntax_bracket" \
            -e '^[[:space:]]*\);[[:space:]]*(//.*)?$' \
            {} \; \
       | cut_and_join \
-      >> $adjustments_file \
+      >> "$adjustments_file" \
       || echo ''
   fi
 
@@ -1557,12 +1557,12 @@ then
            -or -name '*.swift' \
          \) -exec \
       grep -nIHE \
-           -e $empty_line \
-           -e $syntax_bracket \
+           -e "$empty_line" \
+           -e "$syntax_bracket" \
            -e '// LCOV_EXCL' \
            {} \; \
       | cut_and_join \
-      >> $adjustments_file \
+      >> "$adjustments_file" \
       || echo ''
 
     # skip brackets
