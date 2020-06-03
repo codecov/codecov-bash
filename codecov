@@ -431,6 +431,9 @@ $OPTARG"
       "Z")
         exit_with=1
         ;;
+      *)
+        echo -e "${r}Unexpected flag not supported${x}"
+        ;;
     esac
   done
 fi
