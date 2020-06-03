@@ -981,7 +981,6 @@ then
   fi
 else
   say "    ${g}Yaml not found, that's ok! Learn more at${x} ${b}http://docs.codecov.io/docs/codecov-yaml${x}"
-
 fi
 
 if [ "$branch_o" != "" ];
@@ -993,9 +992,9 @@ fi
 
 if [ "$slug_o" = "" ];
 then
-  urlencoded_slug=urlencode "$slug"
+  urlencoded_slug=$(urlencode "$slug")
 else
-  urlencoded_slug=urlencode "$slug_o"
+  urlencoded_slug=$(urlencode "$slug_o")
 fi
 
 query="branch=$branch\
@@ -1004,7 +1003,7 @@ query="branch=$branch\
        &build_url=$build_url\
        &name=$(urlencode "$name")\
        &tag=$([ "$tag_o" = "" ] && echo "$tag" || echo "$tag_o")\
-       &slug=$(urlencoded_slug)\
+       &slug=$urlencoded_slug\
        &service=$service\
        &flags=$flags\
        &pr=$([ "$pr_o" = "" ] && echo "${pr##\#}" || echo "${pr_o##\#}")\
