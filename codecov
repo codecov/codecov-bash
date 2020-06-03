@@ -484,6 +484,7 @@ then
   fi
 
   build="$BUILD_NUMBER"
+  # shellcheck disable=SC2153
   build_url=$(urlencode "$BUILD_URL")
 
 elif [ "$CI" = "true" ] && [ "$TRAVIS" = "true" ] && [ "$SHIPPABLE" != "true" ];
@@ -624,9 +625,13 @@ then
   # https://confluence.atlassian.com/bamboo/bamboo-variables-289277087.html#Bamboovariables-Build-specificvariables
   service="bamboo"
   commit="${bamboo_planRepository_revision}"
+  # shellcheck disable=SC2154
   branch="${bamboo_planRepository_branch}"
+  # shellcheck disable=SC2154
   build="${bamboo_buildNumber}"
+  # shellcheck disable=SC2154
   build_url="${bamboo_buildResultsUrl}"
+  # shellcheck disable=SC2154
   remote_addr="${bamboo_planRepository_repositoryUrl}"
 
 elif [ "$CI" = "true" ] && [ "$BITRISE_IO" = "true" ];
@@ -729,11 +734,13 @@ then
   say "$e==>$x Shippable CI detected."
   # http://docs.shippable.com/ci_configure/
   service="shippable"
+  # shellcheck disable=SC2153
   branch=$([ "$HEAD_BRANCH" != "" ] && echo "$HEAD_BRANCH" || echo "$BRANCH")
   build="$BUILD_NUMBER"
   build_url=$(urlencode "$BUILD_URL")
   pr="$PULL_REQUEST"
   slug="$REPO_FULL_NAME"
+  # shellcheck disable=SC2153
   commit="$COMMIT"
 
 elif [ "$TDDIUM" = "true" ];
