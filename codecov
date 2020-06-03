@@ -1563,6 +1563,8 @@ then
   if echo "$network" | grep -m1 '\(.cpp\|.h\|.cxx\|.c\|.hpp\|.m\|.swift\)$' 1>/dev/null;
   then
     # skip brackets
+    echo "MEOW"
+    echo "${skip_dirs[@]}"
     find "$git_root" -type f \
                      $skip_dirs \
          \( \
