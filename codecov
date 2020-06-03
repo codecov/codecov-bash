@@ -1478,6 +1478,8 @@ then
   # [ or ]
   syntax_list='^[[:space:]]*[][][[:space:]]*(//.*)?$'
 
+  old_skip_dirs="-not -path '*/$bower_components/*' \
+                 -not -path '*/node_modules/*'"
   skip_dirs=(-not -path "*/$bower_components/*" -not -path '*/node_modules/*')
 
   cut_and_join() {
@@ -1565,6 +1567,7 @@ then
     # skip brackets
     echo "MEOW"
     echo "${skip_dirs[@]}"
+    echo "${old_skip_dirs}"
     find "$git_root" -type f \
                      $skip_dirs \
          \( \
