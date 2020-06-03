@@ -1111,7 +1111,7 @@ then
   then
     if [ ! -f coverage.xml ];
     then
-      if which coverage >/dev/null 2>&1;
+      if command -v coverage >/dev/null 2>&1;
       then
         say "${e}==>${x} Python coveragepy exists ${e}disable via -X coveragepy${x}"
 
