@@ -1070,7 +1070,7 @@ then
         if [ "$plist" != "" ];
         then
           say "    ${g}Found${x} plist file at $plist"
-          plutil -convert xml1 -o "$(basename "$plist").plist" -- $plist
+          plutil -convert xml1 -o "$(basename "$plist").plist" -- "$plist"
         fi
       done <<< "$plists_files"
     fi
@@ -1328,7 +1328,7 @@ then
                    -name vendor \
                    -name __pycache__ \
                    -name node_modules \
-                   -path '*/$bower_components/*' \
+                   -path "*/$bower_components/*" \
                    -path '*/target/delombok/*' \
                    -path '*/build/lib/*' \
                    -path '*/js/generated/coverage/*' \
@@ -1342,11 +1342,11 @@ then
   fi
 fi
 
-upload_file=`mktemp /tmp/codecov.XXXXXX`
-adjustments_file=`mktemp /tmp/codecov.adjustments.XXXXXX`
+upload_file=$(mktemp /tmp/codecov.XXXXXX)
+adjustments_file=$(mktemp /tmp/codecov.adjustments.XXXXXX)
 
 cleanup() {
-    rm -f $upload_file $adjustments_file $upload_file.gz
+    rm -f "$upload_file" "$adjustments_file" "$upload_file.gz"
 }
 
 trap cleanup INT ABRT TERM
