@@ -1478,9 +1478,9 @@ then
   # [ or ]
   syntax_list='^[[:space:]]*[][][[:space:]]*(//.*)?$'
 
-  old_skip_dirs="-not -path '*/$bower_components/*' \
-                 -not -path '*/node_modules/*'"
-  skip_dirs=(-not -path '*/$bower_components/*' -not -path '*/node_modules/*')
+  # shellcheck disable=SC2089
+  skip_dirs="-not -path '*/$bower_components/*' \
+             -not -path '*/node_modules/*'"
 
   cut_and_join() {
     awk 'BEGIN { FS=":" }
@@ -1565,11 +1565,8 @@ then
   if echo "$network" | grep -m1 '\(.cpp\|.h\|.cxx\|.c\|.hpp\|.m\|.swift\)$' 1>/dev/null;
   then
     # skip brackets
-    echo "MEOW"
-    echo "${skip_dirs[@]}"
-    echo "${old_skip_dirs}"
     find "$git_root" -type f \
-                     $skip_dirs \
+                     "$skip_dirs" \
          \( \
            -name '*.h' \
            -or -name '*.cpp' \
@@ -1590,7 +1587,7 @@ then
 
     # skip brackets
     find "$git_root" -type f \
-                     $skip_dirs \
+                     "$skip_dirs" \
          \( \
            -name '*.h' \
            -or -name '*.cpp' \
