@@ -580,4 +580,4 @@ function test_cirrus () {
 
 # Call and Run all Tests
 # shellcheck disable=SC1090
-. "$(which shunit2)"
+. "$(command -v shunit2)"
