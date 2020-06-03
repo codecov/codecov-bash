@@ -225,7 +225,8 @@ swiftcov() {
 parse_yaml() {
    local prefix=$2
    local s='[[:space:]]*' w='[a-zA-Z0-9_]*'
-   local fs=$(echo @|tr @ '\034')
+   local fs
+   fs=$(echo @|tr @ '\034')
    sed -ne "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" \
         -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p" "$1" |
    awk -F$fs '{
@@ -515,14 +516,14 @@ then
   service="codebuild"
   commit="$CODEBUILD_RESOLVED_SOURCE_VERSION"
   build="$CODEBUILD_BUILD_ID"
-  branch="$(echo $CODEBUILD_WEBHOOK_HEAD_REF | sed 's/^refs\/heads\///')"
+  branch="$(echo "$CODEBUILD_WEBHOOK_HEAD_REF" | sed 's/^refs\/heads\///')"
   if [ "${CODEBUILD_SOURCE_VERSION/pr}" = "$CODEBUILD_SOURCE_VERSION" ] ; then
     pr="false"
   else
-    pr="$(echo $CODEBUILD_SOURCE_VERSION | sed 's/^pr\///')"
+    pr="$(echo "$CODEBUILD_SOURCE_VERSION" | sed 's/^pr\///')"
   fi
   job="$CODEBUILD_BUILD_ID"
-  slug="$(echo $CODEBUILD_SOURCE_REPO_URL | sed 's/^.*:\/\/[^\/]*\///' | sed 's/\.git$//')"
+  slug="$(echo "$CODEBUILD_SOURCE_REPO_URL" | sed 's/^.*:\/\/[^\/]*\///' | sed 's/\.git$//')"
 
 elif [ "$DOCKER_REPO" != "" ];
 then
