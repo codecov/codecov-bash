@@ -1579,20 +1579,20 @@ then
          \) -exec \
       grep -nIH '// LCOV_EXCL' \
            {} \; \
-      >> $adjustments_file \
+      >> "$adjustments_file" \
       || echo ''
 
   fi
 
-  found=$(cat $adjustments_file | tr -d ' ')
+  found=$(cat "$adjustments_file" | tr -d ' ')
 
   if [ "$found" != "" ];
   then
     say "    ${g}+${x} Found adjustments"
-    echo "# path=fixes" >> $upload_file
-    cat $adjustments_file >> $upload_file
-    echo "<<<<<< EOF" >> $upload_file
-    rm -rf $adjustments_file
+    echo "# path=fixes" >> "$upload_file"
+    cat "$adjustments_file" >> "$upload_file"
+    echo "<<<<<< EOF" >> "$upload_file"
+    rm -rf "$adjustments_file"
   else
     say "    ${e}->${x} No adjustments found"
   fi
