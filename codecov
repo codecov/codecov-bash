@@ -1608,11 +1608,11 @@ then
   # trim whitespace from query
   say "    ${e}->${x} Dumping upload file (no upload)"
   echo "$url/upload/v4?$(echo "package=bash-$VERSION&token=$token&$query" | tr -d ' ')"
-  cat $upload_file
+  cat "$upload_file"
 else
 
   say "${e}==>${x} Gzipping contents"
-  gzip -nf9 $upload_file
+  gzip -nf9 "$upload_file"
 
   query=$(echo "${query}" | tr -d ' ')
   say "${e}==>${x} Uploading reports"
@@ -1629,10 +1629,10 @@ else
     i="0"
     while [ $i -lt 4 ]
     do
-      i=$[$i+1]
+      i=$i+1
       say "    ${e}->${x} Pinging Codecov"
       say "$url/upload/v4?$queryNoToken"
-      res=$(curl $curl_s -X POST $curlargs $cacert \
+      res=$(curl "$curl_s" -X POST "$curlargs" "$cacert" \
             -H 'X-Reduced-Redundancy: false' \
             -H 'X-Content-Type: application/x-gzip' \
             "$url/upload/v4?$query" || true)
@@ -1644,8 +1644,8 @@ else
         say "    ${e}->${x} Uploading"
 
 
-        s3=$(curl $curl_s -fiX PUT $curlawsargs \
-            --data-binary @$upload_file.gz \
+        s3=$(curl "$curl_s" -fiX PUT "$curlawsargs" \
+            --data-binary @"$upload_file.gz" \
             -H 'Content-Type: application/x-gzip' \
             -H 'Content-Encoding: gzip' \
             "$s3target" || true)
@@ -1673,10 +1673,10 @@ else
   i="0"
   while [ $i -lt 4 ]
   do
-    i=$[$i+1]
+    i=$i+1
 
-    res=$(curl $curl_s -X POST $curlargs $cacert \
-          --data-binary @$upload_file.gz \
+    res=$(curl "$curl_s" -X POST "$curlargs" "$cacert" \
+          --data-binary @"$upload_file.gz" \
           -H 'Content-Type: text/plain' \
           -H 'Content-Encoding: gzip' \
           -H 'X-Content-Encoding: gzip' \
