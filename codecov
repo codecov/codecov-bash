@@ -1591,7 +1591,7 @@ then
 
   fi
 
-  found=$(cat "$adjustments_file" | tr -d ' ')
+  found=$(< "$adjustments_file" tr -d ' ')
 
   if [ "$found" != "" ];
   then
