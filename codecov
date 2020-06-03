@@ -1565,6 +1565,16 @@ then
   if echo "$network" | grep -m1 '\(.cpp\|.h\|.cxx\|.c\|.hpp\|.m\|.swift\)$' 1>/dev/null;
   then
     # skip brackets
+    echo "MEOW MEOW"
+    echo "$skip_dirs"
+    echo "find $git_root -type f \
+                         "$skip_dirs" \
+                         \(\)"
+    echo "OLD VERSION"
+    echo "find $git_root -type f \
+                         $skip_dirs \
+                         \(\)"
+
     find "$git_root" -type f \
                      "$skip_dirs" \
          \( \
