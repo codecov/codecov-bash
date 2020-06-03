@@ -1596,9 +1596,11 @@ then
   if [ "$found" != "" ];
   then
     say "    ${g}+${x} Found adjustments"
-    echo "# path=fixes" >> "$upload_file"
-    cat "$adjustments_file" >> "$upload_file"
-    echo "<<<<<< EOF" >> "$upload_file"
+    {
+      echo "# path=fixes";
+      cat "$adjustments_file";
+      echo "<<<<<< EOF";
+    } >> "$upload_file"
     rm -rf "$adjustments_file"
   else
     say "    ${e}->${x} No adjustments found"
