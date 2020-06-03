@@ -21,7 +21,8 @@ function reset () {
     # git commit --amend -m 'nothing special'
     mkdir -p temp
     mkdir -p ~/Library/Developer/Xcode/DerivedData
-     tests/env
+    # shellcheck disable=SC1091
+    . tests/env
     echo '{"file.txt":[null, 1, 0]}' > temp/coverage.json
     echo '{"another.txt":[null, 1, 0]}' > temp/coverage.xml
     touch temp/file.rb
