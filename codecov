@@ -1478,8 +1478,7 @@ then
   # [ or ]
   syntax_list='^[[:space:]]*[][][[:space:]]*(//.*)?$'
 
-  skip_dirs="-not -path '*/$bower_components/*' \
-             -not -path '*/node_modules/*'"
+  skip_dirs=("-not -path '*/$bower_components/* -not -path '*/node_modules/*'")
 
   cut_and_join() {
     awk 'BEGIN { FS=":" }
@@ -1565,7 +1564,7 @@ then
   then
     # skip brackets
     find "$git_root" -type f \
-                     $skip_dirs \
+                     "${skip_dirs[@]}" \
          \( \
            -name '*.h' \
            -or -name '*.cpp' \
@@ -1586,7 +1585,7 @@ then
 
     # skip brackets
     find "$git_root" -type f \
-                     $skip_dirs \
+                     "${skip_dirs[@]}" \
          \( \
            -name '*.h' \
            -or -name '*.cpp' \
