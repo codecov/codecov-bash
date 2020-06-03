@@ -546,7 +546,7 @@ then
   build_url=$(urlencode "$CI_BUILD_URL")
   commit="$CI_COMMIT_ID"
 
-elif [ ! -z "$CF_BUILD_URL" ] && [ ! -z "$CF_BUILD_ID" ];
+elif [ -n "$CF_BUILD_URL" ] && [ -n "$CF_BUILD_ID" ];
 then
   say "$e==>$x Codefresh CI detected."
   # https://docs.codefresh.io/v1.0/docs/variables
@@ -613,7 +613,7 @@ then
   build="$BUDDYBUILD_BUILD_NUMBER"
   build_url="https://dashboard.buddybuild.com/public/apps/$BUDDYBUILD_APP_ID/build/$BUDDYBUILD_BUILD_ID"
   # BUDDYBUILD_TRIGGERED_BY
-  if [ "$ddp" = "$(echo ~)/Library/Developer/Xcode/DerivedData" ];
+  if [ "$ddp" = "$HOME/Library/Developer/Xcode/DerivedData" ];
   then
     ddp="/private/tmp/sandbox/${BUDDYBUILD_APP_ID}/bbtest"
   fi
@@ -938,7 +938,7 @@ fi
 yaml=$(cd "$git_root" && \
           git ls-files "*codecov.yml" "*codecov.yaml" 2>/dev/null \
        || hg locate "*codecov.yml" "*codecov.yaml" 2>/dev/null \
-       || cd $proj_root && find . -maxdepth 1 -type f -name '*codecov.y*ml' 2>/dev/null \
+       || cd "$proj_root" && find . -maxdepth 1 -type f -name '*codecov.y*ml' 2>/dev/null \
        || echo '')
 yaml=$(echo "$yaml" | head -1)
 
@@ -994,7 +994,7 @@ query="branch=$branch\
        &pr=$([ "$pr_o" = "" ] && echo "${pr##\#}" || echo "${pr_o##\#}")\
        &job=$job"
 
-if [ ! -z "$project" ] && [ ! -z "$server_uri" ];
+if [ -n "$project" ] && [ -n "$server_uri" ];
 then
   query=$(echo "$query&project=$project&server_uri=$server_uri" | tr -d ' ')
 fi
