@@ -23,7 +23,7 @@ curl_s="-s"
 name="$CODECOV_NAME"
 include_cov=""
 exclude_cov=""
-ddp="$(echo ~)/Library/Developer/Xcode/DerivedData"
+ddp="$HOME/Library/Developer/Xcode/DerivedData"
 xp=""
 files=""
 cacert="$CODECOV_CA_BUNDLE"
@@ -41,7 +41,7 @@ ft_xcodeplist="0"
 ft_gcovout="1"
 ft_html="0"
 
-_git_root=$(git rev-parse --show-toplevel 2>/dev/null || hg root 2>/dev/null || echo $PWD)
+_git_root=$(git rev-parse --show-toplevel 2>/dev/null || hg root 2>/dev/null || echo "$PWD")
 git_root="$_git_root"
 remote_addr=""
 if [ "$git_root" = "$PWD" ];
@@ -204,7 +204,7 @@ swiftcov() {
   _dir=$(dirname "$1" | sed 's/\(Build\).*/\1/g')
   for _type in app framework xctest
   do
-    find "$_dir" -name "*.$_type" | while read f
+    find "$_dir" -name "*.$_type" | while read -r f
     do
       _proj=${f##*/}
       _proj=${_proj%."$_type"}
@@ -224,7 +224,8 @@ swiftcov() {
 # Credits to: https://gist.github.com/pkuczynski/8665367
 parse_yaml() {
    local prefix=$2
-   local s='[[:space:]]*' w='[a-zA-Z0-9_]*' fs=$(echo @|tr @ '\034')
+   local s='[[:space:]]*' w='[a-zA-Z0-9_]*'
+   local fs=$(echo @|tr @ '\034')
    sed -ne "s|^\($s\)\($w\)$s:$s\"\(.*\)\"$s\$|\1$fs\2$fs\3|p" \
         -e "s|^\($s\)\($w\)$s:$s\(.*\)$s\$|\1$fs\2$fs\3|p" $1 |
    awk -F$fs '{
@@ -451,6 +452,7 @@ then
   # https://wiki.jenkins-ci.org/display/JENKINS/GitHub+pull+request+builder+plugin#GitHubpullrequestbuilderplugin-EnvironmentVariables
   service="jenkins"
 
+  # shellcheck disable=SC2154
   if [ "$ghprbSourceBranch" != "" ];
   then
      branch="$ghprbSourceBranch"
@@ -462,6 +464,7 @@ then
     branch="$BRANCH_NAME"
   fi
 
+  # shellcheck disable=SC2154
   if [ "$ghprbActualCommit" != "" ];
   then
     commit="$ghprbActualCommit"
@@ -470,6 +473,7 @@ then
     commit="$GIT_COMMIT"
   fi
 
+  # shellcheck disable=SC2154
   if [ "$ghprbPullId" != "" ];
   then
     pr="$ghprbPullId"
