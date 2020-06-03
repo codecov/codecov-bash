@@ -1,14 +1,14 @@
 #!/bin/bash
 
 urlencode() {
-  echo "$1" | curl -Gso /dev/null -w %{url_effective} --data-urlencode @- "" | cut -c 3- | sed -e 's/%0A//'
+  echo "$1" | curl -Gso /dev/null -w %\{url_effective\} --data-urlencode @- "" | cut -c 3- | sed -e 's/%0A//'
 }
 
 TEST_DATA_GIT_COMMIT="180c0d097354fc1a451da8a3be5aba255f2ffd9f"
 VERSION=$(grep  "VERSION=" codecov | tr -d 'VERSION=' | tr -d '"')
 _SHA=$(git rev-parse HEAD)
 _BRANCH=$(git rev-parse --abbrev-ref HEAD)
-_BRANCH=$(urlencode $_BRANCH)
+_BRANCH=$(urlencode "$_BRANCH")
 if [ "$_BRANCH" = "HEAD" ];
 then
   _BRANCH=""
@@ -21,7 +21,7 @@ function reset () {
     # git commit --amend -m 'nothing special'
     mkdir -p temp
     mkdir -p ~/Library/Developer/Xcode/DerivedData
-    . tests/env
+     tests/env
     echo '{"file.txt":[null, 1, 0]}' > temp/coverage.json
     echo '{"another.txt":[null, 1, 0]}' > temp/coverage.xml
     touch temp/file.rb
@@ -52,7 +52,7 @@ function test_help () {
 function test_fixes () {
     reset
     res=$(./codecov -d)
-    while read l; do
+    while read -r l; do
       assertContains "$res" "$l"
     done <ignores/results.txt
 }
@@ -187,7 +187,7 @@ function test_slug_env () {
 
 function test_gcov () {
     reset
-    ./codecov -d -X gcov -K | grep '**> gcov disable'
+    ./codecov -d -X gcov -K | grep '==> gcov disable'
     assertTrue 'gcov was disabled' $?
 }
 
@@ -544,7 +544,8 @@ function test_bitbucket_pull_request() {
     # So, to mimic a real Bitbucket Pipeline for a rebased PR in a test run on Travis
     # we have to NOT set the BITBUCKET_PR_ID variable
     # export BITBUCKET_PR_ID="3"
-    export BITBUCKET_COMMIT=$(echo "$_SHA" | head -c 12)
+    export BITBUCKET_COMMIT
+    BITBUCKET_COMMIT=$(echo "$_SHA" | head -c 12)
 
     url=$(./codecov -d | grep 'https://codecov.io/')
     diff <(echo "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=bb_develop&commit=$_SHA&build=2&build_url=&name=&tag=&slug=test_owner%2Ftest_slug&service=bitbucket&flags=&pr=&job=2") <(echo "$url")
@@ -577,4 +578,5 @@ function test_cirrus () {
 }
 
 # Call and Run all Tests
-. $(which shunit2)
+# shellcheck disable=SC1090
+. "$(which shunit2)"
