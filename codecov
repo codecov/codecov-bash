@@ -1565,18 +1565,9 @@ then
   if echo "$network" | grep -m1 '\(.cpp\|.h\|.cxx\|.c\|.hpp\|.m\|.swift\)$' 1>/dev/null;
   then
     # skip brackets
-    echo "MEOW MEOW"
-    echo "$skip_dirs"
-    echo "find $git_root -type f \
-                         "$skip_dirs" \
-                         \(\)"
-    echo "OLD VERSION"
-    echo "find $git_root -type f \
-                         $skip_dirs \
-                         \(\)"
-
+    # shellcheck disable=SC2086,SC2090
     find "$git_root" -type f \
-                     "$skip_dirs" \
+                     $skip_dirs \
          \( \
            -name '*.h' \
            -or -name '*.cpp' \
@@ -1596,8 +1587,9 @@ then
       || echo ''
 
     # skip brackets
+    # shellcheck disable=SC2086,SC2090
     find "$git_root" -type f \
-                     "$skip_dirs" \
+                     $skip_dirs \
          \( \
            -name '*.h' \
            -or -name '*.cpp' \
