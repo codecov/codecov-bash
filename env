@@ -43,7 +43,7 @@ then
   add "ghprbPullId"
   add "BUILD_URL"
   
-if [ "$CODEBUILD_BUILD_ARN" != "" ];
+elif [ "$CODEBUILD_CI" = "true" ];
 then
   add "CODEBUILD_WEBHOOK_HEAD_REF"
   add "CODEBUILD_RESOLVED_SOURCE_VERSION"
@@ -249,5 +249,17 @@ then
   add "BITBUCKET_REPO_SLUG"
   add "BITBUCKET_PR_ID"
   add "BITBUCKET_COMMIT"
+
+elif [ "$CI" = "true" ] && [ "$BUDDY" = "true" ];
+then
+  add "CI"
+  add "BUDDY"
+  add "BUDDY_EXECUTION_BRANCH"
+  add "BUDDY_EXECUTION_REVISION"
+  add "BUDDY_EXECUTION_ID"
+  add "BUDDY_EXECUTION_URL"
+  add "BUDDY_EXECUTION_PULL_REQUEST_NO"
+  add "BUDDY_EXECUTION_TAG"
+  add "BUDDY_REPO_SLUG"
 
 fi
