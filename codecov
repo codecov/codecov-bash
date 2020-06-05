@@ -1725,7 +1725,6 @@ else
 
     else
       say "    ${g}${res}${x}"
-      exit 0
       exit ${exit_with}
     fi
 
