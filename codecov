@@ -432,7 +432,7 @@ $OPTARG"
         exit_with=1
         ;;
       *)
-        echo -e "${r}Unexpected flag not supported${x}"
+        echo -e "${r}Unexpected flag not supported by uploader${x}"
         ;;
     esac
   done
