@@ -26,6 +26,7 @@ exclude_cov=""
 ddp="$HOME/Library/Developer/Xcode/DerivedData"
 xp=""
 files=""
+save_to=""
 cacert="$CODECOV_CA_BUNDLE"
 gcov_ignore="-not -path './bower_components/**' -not -path './node_modules/**' -not -path './vendor/**'"
 gcov_include=""
@@ -185,6 +186,7 @@ cat << EOF
 
     -- Debugging --
     -d           Don't upload, but dump upload file to stdout
+    -q PATH      Write reports to file system to path
     -K           Remove color from the output
     -v           Verbose mode
 
@@ -245,7 +247,7 @@ parse_yaml() {
 
 if [ $# != 0 ];
 then
-  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:k:Kn:p:P:r:R:y:s:S:t:T:u:U:vx:X:ZN:" o
+  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:k:Kn:p:P:q:r:R:y:s:S:t:T:u:U:vx:X:ZN:" o
   do
     case "$o" in
       "N")
@@ -344,6 +346,9 @@ $OPTARG"
         ;;
       "P")
         pr_o="$OPTARG"
+        ;;
+      "q")
+        save_to="$OPTARG"
         ;;
       "r")
         slug_o="$OPTARG"
@@ -1638,6 +1643,11 @@ then
   echo "$url/upload/v4?$(echo "package=bash-$VERSION&token=$token&$query" | tr -d ' ')"
   cat "$upload_file"
 else
+  if [ "$save_to" != "" ];
+  then
+    say "${e}==>${x} Copying upload file to ${save_to}"
+    cp "$upload_file" "$save_to"
+  fi
 
   say "${e}==>${x} Gzipping contents"
   gzip -nf9 "$upload_file"
