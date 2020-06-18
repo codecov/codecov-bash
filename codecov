@@ -186,7 +186,7 @@ cat << EOF
 
     -- Debugging --
     -d           Don't upload, but dump upload file to stdout
-    -q PATH      Write reports to file system to path
+    -q PATH      Write upload file to path
     -K           Remove color from the output
     -v           Verbose mode
 
