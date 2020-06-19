@@ -1682,7 +1682,7 @@ else
         say "    ${e}->${x} Uploading"
 
 
-        s3=$(curl "$curl_s" -fiX PUT "$curlawsargs" \
+        s3=$(curl -fiX PUT "$curlawsargs" \
             --data-binary @"$upload_file.gz" \
             -H 'Content-Type: application/x-gzip' \
             -H 'Content-Encoding: gzip' \
