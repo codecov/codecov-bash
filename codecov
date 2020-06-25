@@ -217,7 +217,7 @@ swiftcov() {
         say "    $g+$x Building reports for $_proj $_type"
         dest=$([ -f "$f/$_proj" ] && echo "$f/$_proj" || echo "$f/Contents/MacOS/$_proj")
         _proj_name="${_proj//[[:space:]]//g}"
-        xcrun llvm-cov show "$beta_xcode_partials" -instr-profile "$1" "$dest" > "$_proj_name.$_type.coverage.txt" \
+        xcrun llvm-cov show $beta_xcode_partials -instr-profile "$1" "$dest" > "$_proj_name.$_type.coverage.txt" \
          || say "    ${r}x>${x} llvm-cov failed to produce results for $dest"
       fi
     done
