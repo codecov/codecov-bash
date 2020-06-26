@@ -1707,13 +1707,13 @@ else
     done
   fi
 
-  say "    ${e}->${x} Uploading to Codecov"
+  say "${e}==>${x} Uploading to Codecov"
   i="0"
   while [ $i -lt 4 ]
   do
     i=$i+1
 
-    res=$(curl "$curl_s" -X POST "$curlargs" "$cacert" \
+    res=$(curl -X POST "$curlargs" "$cacert" \
           --data-binary @"$upload_file.gz" \
           -H 'Content-Type: text/plain' \
           -H 'Content-Encoding: gzip' \
@@ -1723,7 +1723,7 @@ else
     # HTTP 200
     # http://....
     status=$(echo "$res" | head -1 | cut -d' ' -f2)
-    if [ "$status" = "" ];
+    if [ "$status" = "" ] || [ "$status" = "200" ];
     then
       say "    View reports at ${b}$(echo "$res" | head -2 | tail -1)${x}"
       exit 0
