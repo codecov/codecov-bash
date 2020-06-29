@@ -1682,11 +1682,20 @@ else
         say "${e}->${x}  Uploading to"
         say "${s3target}"
 
-        s3=$(curl -fiX PUT "$curlawsargs" \
-            --data-binary @"$upload_file.gz" \
-            -H 'Content-Type: application/x-gzip' \
-            -H 'Content-Encoding: gzip' \
-            "$s3target" || true)
+        if [ "$curlawsargs" != "" ];
+        then
+          s3=$(curl -fiX PUT "$curlawsargs" \
+              --data-binary @"$upload_file.gz" \
+              -H 'Content-Type: application/x-gzip' \
+              -H 'Content-Encoding: gzip' \
+              "$s3target" || true)
+        else
+          s3=$(curl -fiX PUT \
+              --data-binary @"$upload_file.gz" \
+              -H 'Content-Type: application/x-gzip' \
+              -H 'Content-Encoding: gzip' \
+              "$s3target" || true)
+        fi
 
 
         if [ "$s3" != "" ];
