@@ -217,6 +217,7 @@ swiftcov() {
         say "    $g+$x Building reports for $_proj $_type"
         dest=$([ -f "$f/$_proj" ] && echo "$f/$_proj" || echo "$f/Contents/MacOS/$_proj")
         _proj_name="${_proj//[[:space:]]//g}"
+        # shellcheck disable=SC2086
         xcrun llvm-cov show $beta_xcode_partials -instr-profile "$1" "$dest" > "$_proj_name.$_type.coverage.txt" \
          || say "    ${r}x>${x} llvm-cov failed to produce results for $dest"
       fi
@@ -365,6 +366,7 @@ $OPTARG"
         fi
         ;;
       "S")
+        # shellcheck disable=SC2089
         cacert="--cacert \"$OPTARG\""
         ;;
       "t")
@@ -1670,6 +1672,7 @@ else
       ((i+=1))
       say "${e}->${x}  Pinging Codecov"
       say "$url/upload/v4?$queryNoToken"
+      # shellcheck disable=SC2086,2090
       res=$(curl $curl_s -X POST $curlargs $cacert \
             -H 'X-Reduced-Redundancy: false' \
             -H 'X-Content-Type: application/x-gzip' \
@@ -1682,7 +1685,8 @@ else
         say "${e}->${x}  Uploading to"
         say "${s3target}"
 
-        s3=$(curl -fiX PUT $curlawsargs $cacert \
+        # shellcheck disable=SC2086
+        s3=$(curl -fiX PUT $curlawsargs \
             --data-binary @"$upload_file.gz" \
             -H 'Content-Type: application/x-gzip' \
             -H 'Content-Encoding: gzip' \
@@ -1712,6 +1716,7 @@ else
   do
     ((i+=1))
 
+    # shellcheck disable=SC2086,2090
     res=$(curl -X POST $curlargs $cacert \
           --data-binary @"$upload_file.gz" \
           -H 'Content-Type: text/plain' \
