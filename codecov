@@ -8,6 +8,7 @@ set -e +o pipefail
 
 VERSION="tbd"
 
+codecov_flags=( )
 url="https://codecov.io"
 env="$CODECOV_ENV"
 service=""
@@ -249,6 +250,7 @@ if [ $# != 0 ];
 then
   while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:k:Kn:p:P:q:r:R:s:S:t:T:u:U:vx:X:ZN:" o
   do
+    codecov_flags+=( "$o" )
     case "$o" in
       "N")
         parent=$OPTARG
@@ -1011,7 +1013,8 @@ query="branch=$branch\
        &service=$service\
        &flags=$flags\
        &pr=$([ "$pr_o" = "" ] && echo "${pr##\#}" || echo "${pr_o##\#}")\
-       &job=$job"
+       &job=$job\
+       &cmd_args=$(IFS=,; echo "${codecov_flags[*]}")"
 
 if [ -n "$project" ] && [ -n "$server_uri" ];
 then
