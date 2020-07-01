@@ -270,7 +270,7 @@ function test_codebuild_with_bitbucket_repo () {
     export CODEBUILD_SOURCE_VERSION="$TEST_DATA_GIT_COMMIT"
     export CODEBUILD_BUILD_ID="33116958"
     export CODEBUILD_SOURCE_REPO_URL="https://owner@bitbucket.org/owner/repo.git"
-    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=codebuild-master&commit=$TEST_DATA_GIT_COMMIT&build=33116958&build_url=&name=&tag=&slug=owner%2Frepo&service=codebuild&flags=&pr=false&job=33116958cmd_args=d,C"
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=codebuild-master&commit=$TEST_DATA_GIT_COMMIT&build=33116958&build_url=&name=&tag=&slug=owner%2Frepo&service=codebuild&flags=&pr=false&job=33116958&cmd_args=d,C"
 }
 
 function test_codebuild_with_nonpublic_github_host () {
@@ -306,7 +306,7 @@ function test_jenkins (){
     export BUILD_NUMBER="15.1"
     export BUILD_URL="http://endpoint"
     export WORKSPACE="."
-    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=develop&commit=$TEST_DATA_GIT_COMMIT&build=15.1&build_url=http%3A%2F%2Fendpoint&name=&tag=&slug=codecov%2Fcodecov-bash&service=jenkins&flags=&pr=&job="
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=develop&commit=$TEST_DATA_GIT_COMMIT&build=15.1&build_url=http%3A%2F%2Fendpoint&name=&tag=&slug=codecov%2Fcodecov-bash&service=jenkins&flags=&pr=&job=&cmd_args=d,C"
 }
 
 function test_jenkins_blue (){
@@ -501,7 +501,7 @@ function test_azure_pipelines (){
     export BUILD_BUILDID="3"
     export BUILD_SOURCEBRANCHNAME="develop"
     export SYSTEM_TEAMPROJECT="project"
-    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=develop&commit=$TEST_DATA_GIT_COMMIT&build=1.2&build_url=https%3A%2F%2Fdev.azure.com%2Fproject%2F_build%2Fresults%3FbuildId%3D3&name=&tag=&slug=codecov%2Fcodecov-bash&service=azure_pipelines&flags=&pr=2&job=3&project=project&server_uri=https://dev.azure.com/&cmd_args=d,C"
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=develop&commit=$TEST_DATA_GIT_COMMIT&build=1.2&build_url=https%3A%2F%2Fdev.azure.com%2Fproject%2F_build%2Fresults%3FbuildId%3D3&name=&tag=&slug=codecov%2Fcodecov-bash&service=azure_pipelines&flags=&pr=2&job=3&cmd_args=d,C&project=project&server_uri=https://dev.azure.com/"
 }
 
 function test_azure_pipelines_2 (){
@@ -513,7 +513,7 @@ function test_azure_pipelines_2 (){
     export BUILD_BUILDID="3"
     export BUILD_SOURCEBRANCHNAME="develop"
     export SYSTEM_TEAMPROJECT="project"
-    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=develop&commit=$TEST_DATA_GIT_COMMIT&build=1.2&build_url=https%3A%2F%2Fdev.azure.com%2Fproject%2F_build%2Fresults%3FbuildId%3D3&name=&tag=&slug=codecov%2Fcodecov-bash&service=azure_pipelines&flags=&pr=33&job=3&project=project&server_uri=https://dev.azure.com/&cmd_args=d,C"
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=develop&commit=$TEST_DATA_GIT_COMMIT&build=1.2&build_url=https%3A%2F%2Fdev.azure.com%2Fproject%2F_build%2Fresults%3FbuildId%3D3&name=&tag=&slug=codecov%2Fcodecov-bash&service=azure_pipelines&flags=&pr=33&job=3&cmd_args=d,C&project=project&server_uri=https://dev.azure.com/"
 }
 
 function test_bitbucket() {
