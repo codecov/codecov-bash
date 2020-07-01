@@ -247,7 +247,7 @@ parse_yaml() {
 
 if [ $# != 0 ];
 then
-  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:k:Kn:p:P:q:r:R:y:s:S:t:T:u:U:vx:X:ZN:" o
+  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:k:Kn:p:P:q:r:R:s:S:t:T:u:U:vx:X:ZN:" o
   do
     case "$o" in
       "N")
@@ -428,10 +428,6 @@ $OPTARG"
         then
           ft_html="1"
         fi
-        ;;
-      "y")
-        echo -e "${r}DeprecationWarning${x}: The -y flag is no longer supported by Codecov."`
-               `"\n  codecov.yml must be located underneath the root, dev/, or .github/ directories"
         ;;
       "Z")
         exit_with=1
