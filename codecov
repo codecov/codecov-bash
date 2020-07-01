@@ -1664,10 +1664,10 @@ else
 
   if [ "$ft_s3" = "1" ];
   then
-    i="0"
+    i=0
     while [ $i -lt 4 ]
     do
-      i=$i+1
+      ((i+=1))
       say "${e}->${x}  Pinging Codecov"
       say "$url/upload/v4?$queryNoToken"
       res=$(curl $curl_s -X POST $curlargs $cacert \
@@ -1707,10 +1707,10 @@ else
   fi
 
   say "${e}==>${x} Uploading to Codecov"
-  i="0"
+  i=0
   while [ $i -lt 4 ]
   do
-    i=$i+1
+    ((i+=1))
 
     res=$(curl -X POST $curlargs $cacert \
           --data-binary @"$upload_file.gz" \
