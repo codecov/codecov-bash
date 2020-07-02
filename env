@@ -42,14 +42,6 @@ then
   add "BUILD_NUMBER"
   add "ghprbPullId"
   add "BUILD_URL"
-  
-elif [ "$CODEBUILD_CI" = "true" ];
-then
-  add "CODEBUILD_WEBHOOK_HEAD_REF"
-  add "CODEBUILD_RESOLVED_SOURCE_VERSION"
-  add "CODEBUILD_SOURCE_VERSION"
-  add "CODEBUILD_BUILD_ID"
-  add "CODEBUILD_SOURCE_REPO_URL"
 
 elif [ "$CI" = "true" ] && [ "$TRAVIS" = "true" ] && [ "$SHIPPABLE" != "true" ];
 then
@@ -65,6 +57,21 @@ then
   add "TRAVIS_TAG"
   add "TRAVIS_OS_NAME"
 
+elif [ "$CODEBUILD_CI" = "true" ];
+then
+  add "CODEBUILD_WEBHOOK_HEAD_REF"
+  add "CODEBUILD_RESOLVED_SOURCE_VERSION"
+  add "CODEBUILD_SOURCE_VERSION"
+  add "CODEBUILD_BUILD_ID"
+  add "CODEBUILD_SOURCE_REPO_URL"
+
+elif [ "$DOCKER_REPO" != "" ];
+then
+  add "SOURCE_BRANCH"
+  add "SOURCE_COMMIT"
+  add "DOCER_REPO"
+  add "CACHE_TAG"
+
 elif [ "$CI" = "true" ] && [ "$CI_NAME" = "codeship" ];
 then
   add "CI"
@@ -73,6 +80,13 @@ then
   add "CI_BUILD_NUMBER"
   add "CI_BUILD_URL"
   add "CI_COMMIT_ID"
+
+elif [ -n "$CF_BUILD_URL" ] && [ -n "$CF_BUILD_ID" ];
+then
+  add "CF_BRANCH"
+  add "CF_BUILD_ID"
+  add "CF_BUILD_URL"
+  add "CF_REVISION"
 
 elif [ "$TEAMCITY_VERSION" != "" ];
 then
@@ -148,7 +162,7 @@ then
   add "BUILDKITE_PROJECT_SLUG"
   add "BUILDKITE_COMMIT"
 
-elif [ "$CI" = "drone" ];
+elif [ "$CI" = "drone" ] || [ "$DRONE" = "true" ];
 then
   add "CI"
   add "DRONE_BRANCH"
@@ -164,7 +178,7 @@ then
   add "HEROKU_TEST_RUN_BRANCH"
   add "HEROKU_TEST_RUN_ID"
 
-elif [ "$CI" = "True" ] && [ "$APPVEYOR" = "True" ];
+elif [[ "$CI" = "true" || "$CI" = "True" ]] && [[ "$APPVEYOR" = "true" || "$APPVEYOR" = "True" ]];
 then
   add "CI"
   add "APPVEYOR"
@@ -205,7 +219,7 @@ then
   add "REPO_FULL_NAME"
   add "COMMIT"
 
-elif [ "$TDDIUM" != "" ];
+elif [ "$TDDIUM" = "true" ];
 then
   add "TDDIUM"
   add "TDDIUM_CURRENT_COMMIT"
@@ -240,6 +254,16 @@ then
   add "GITHUB_SHA"
   add "GITHUB_RUN_ID"
 
+elif [ "$SYSTEM_TEAMFOUNDATIONSERVERURI" != "" ];
+then
+  add "BUILD_SOURCEVERSION"
+  add "BUILD_BUILDNUMBER"
+  add "SYSTEM_PULLREQUEST_PULLREQUESTNUMBER"
+  add "SYSTEM_PULLREQUEST_PULLREQUESTID"
+  add "SYSTEM_TEAMPROJECT"
+  add "SYSTEM_TEAMFOUNDATIONSERVERURI"
+  add "BUILD_BUILDID"
+
 elif [ "$CI" = "true" ] && [ "$BITBUCKET_BUILD_NUMBER" != "" ];
 then
   add "CI"
@@ -261,5 +285,14 @@ then
   add "BUDDY_EXECUTION_PULL_REQUEST_NO"
   add "BUDDY_EXECUTION_TAG"
   add "BUDDY_REPO_SLUG"
+
+elif [ "$CIRRUS_CI" != "" ];
+then
+  add "CIRRUS_REPO_FULL_NAME"
+  add "CIRRUS_BRANCH"
+  add "CIRRUS_PR"
+  add "CIRRUS_CHANGE_IN_REPO"
+  add "CIRRUS_TASK_ID"
+  add "CIRRUS_TASK_NAME"
 
 fi
