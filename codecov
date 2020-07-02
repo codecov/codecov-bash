@@ -218,6 +218,7 @@ swiftcov() {
         say "    $g+$x Building reports for $_proj $_type"
         dest=$([ -f "$f/$_proj" ] && echo "$f/$_proj" || echo "$f/Contents/MacOS/$_proj")
         _proj_name="${_proj//[[:space:]]//g}"
+        # shellcheck disable=SC2086
         xcrun llvm-cov show $beta_xcode_partials -instr-profile "$1" "$dest" > "$_proj_name.$_type.coverage.txt" \
          || say "    ${r}x>${x} llvm-cov failed to produce results for $dest"
       fi
@@ -367,6 +368,7 @@ $OPTARG"
         fi
         ;;
       "S")
+        # shellcheck disable=SC2089
         cacert="--cacert \"$OPTARG\""
         ;;
       "t")
@@ -1663,13 +1665,14 @@ else
 
   if [ "$ft_s3" = "1" ];
   then
-    i="0"
+    i=0
     while [ $i -lt 4 ]
     do
-      i=$i+1
+      ((i+=1))
       say "${e}->${x}  Pinging Codecov"
       say "$url/upload/v4?$queryNoToken"
-      res=$(curl "$curl_s" -X POST "$curlargs" "$cacert" \
+      # shellcheck disable=SC2086,2090
+      res=$(curl $curl_s -X POST $curlargs $cacert \
             -H 'X-Reduced-Redundancy: false' \
             -H 'X-Content-Type: application/x-gzip' \
             "$url/upload/v4?$query" || true)
@@ -1681,21 +1684,12 @@ else
         say "${e}->${x}  Uploading to"
         say "${s3target}"
 
-        if [ "$curlawsargs" != "" ];
-        then
-          s3=$(curl -fiX PUT "$curlawsargs" \
-              --data-binary @"$upload_file.gz" \
-              -H 'Content-Type: application/x-gzip' \
-              -H 'Content-Encoding: gzip' \
-              "$s3target" || true)
-        else
-          s3=$(curl -fiX PUT \
-              --data-binary @"$upload_file.gz" \
-              -H 'Content-Type: application/x-gzip' \
-              -H 'Content-Encoding: gzip' \
-              "$s3target" || true)
-        fi
-
+        # shellcheck disable=SC2086
+        s3=$(curl -fiX PUT $curlawsargs \
+            --data-binary @"$upload_file.gz" \
+            -H 'Content-Type: application/x-gzip' \
+            -H 'Content-Encoding: gzip' \
+            "$s3target" || true)
 
         if [ "$s3" != "" ];
         then
@@ -1716,12 +1710,13 @@ else
   fi
 
   say "${e}==>${x} Uploading to Codecov"
-  i="0"
+  i=0
   while [ $i -lt 4 ]
   do
-    i=$i+1
+    ((i+=1))
 
-    res=$(curl -X POST "$curlargs" "$cacert" \
+    # shellcheck disable=SC2086,2090
+    res=$(curl -X POST $curlargs $cacert \
           --data-binary @"$upload_file.gz" \
           -H 'Content-Type: text/plain' \
           -H 'Content-Encoding: gzip' \
