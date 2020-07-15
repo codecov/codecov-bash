@@ -1679,7 +1679,7 @@ else
             "$url/upload/v4?$query" || true)
       # a good replay is "https://codecov.io" + "\n" + "https://codecov.s3.amazonaws.com/..."
       status=$(echo "$res" | head -1 | grep 'HTTP ' | cut -d' ' -f2)
-      if [ "$status" = "" ];
+      if [ "$status" = "" ] && [ "$res" != "" ];
       then
         s3target=$(echo "$res" | sed -n 2p)
         say "${e}->${x}  Uploading to"
@@ -1705,8 +1705,8 @@ else
           say "${g}${res}${x}"
           exit ${exit_with}
       fi
-      say "    ${e}->${x} Sleeping for 30s and trying again..."
-      sleep 30
+      say "    ${e}->${x} Sleeping for 10s and trying again..."
+      sleep 10
     done
   fi
 
