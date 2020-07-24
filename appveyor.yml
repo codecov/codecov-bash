@@ -3,9 +3,6 @@ build: false
 image:
   - Visual Studio 2017
 
-build_script:
-  - tar zxvf shunit2-2.1.6.tgz
-
 test_script:
   - env -i PATH="$PATH" tests/test
   - curl -s https://codecov.io/bash | bash -s -- -s coverage
