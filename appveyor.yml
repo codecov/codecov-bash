@@ -7,5 +7,5 @@ build_script:
   - tar zxvf shunit2-2.1.6.tgz
 
 test_script:
-  - kcov --include-path=./codecov coverage/ tests/test
+  - env -i PATH="$PATH" tests/test
   - curl -s https://codecov.io/bash | bash -s -- -s coverage
