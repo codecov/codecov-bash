@@ -721,6 +721,7 @@ then
   slug="$APPVEYOR_REPO_NAME"
   commit="$APPVEYOR_REPO_COMMIT"
   build_url=$(urlencode "${APPVEYOR_URL}/project/${APPVEYOR_REPO_NAME}/builds/$APPVEYOR_BUILD_ID/job/${APPVEYOR_JOB_ID}")
+
 elif [ "$CI" = "true" ] && [ "$WERCKER_GIT_BRANCH" != "" ];
 then
   say "$e==>$x Wercker CI detected."
@@ -1293,7 +1294,6 @@ $PWD/coverage.xml"
                     -not -name '*.cpp' \
                     -not -name '*.gradle' \
                     -not -name '*.tar.tz' \
-                    -not -name '*.lst' \
                     -not -name '*.scss' \
                     -not -name 'include.lst' \
                     -not -name 'fullLocaleNames.lst' \
@@ -1671,15 +1671,15 @@ else
     do
       ((i+=1))
       say "${e}->${x}  Pinging Codecov"
-      say "$url/upload/v4?$queryNoToken"
+      say "$url/upload/v4?$queryNoToken?attempt=$i"
       # shellcheck disable=SC2086,2090
       res=$(curl $curl_s -X POST $curlargs $cacert \
             -H 'X-Reduced-Redundancy: false' \
             -H 'X-Content-Type: application/x-gzip' \
-            "$url/upload/v4?$query" || true)
+            "$url/upload/v4?$query?attempt=$i" || true)
       # a good replay is "https://codecov.io" + "\n" + "https://codecov.s3.amazonaws.com/..."
       status=$(echo "$res" | head -1 | grep 'HTTP ' | cut -d' ' -f2)
-      if [ "$status" = "" ];
+      if [ "$status" = "" ] && [ "$res" != "" ];
       then
         s3target=$(echo "$res" | sed -n 2p)
         say "${e}->${x}  Uploading to"
@@ -1705,8 +1705,8 @@ else
           say "${g}${res}${x}"
           exit ${exit_with}
       fi
-      say "    ${e}->${x} Sleeping for 30s and trying again..."
-      sleep 30
+      say "    ${e}->${x} Sleeping for 10s and trying again..."
+      sleep 10
     done
   fi
 
@@ -1723,7 +1723,7 @@ else
           -H 'Content-Encoding: gzip' \
           -H 'X-Content-Encoding: gzip' \
           -H 'Accept: text/plain' \
-          "$url/upload/v2?$query" || echo 'HTTP 500')
+          "$url/upload/v2?$query&attempt=$i" || echo 'HTTP 500')
     # HTTP 200
     # http://....
     status=$(echo "$res" | head -1 | cut -d' ' -f2)
@@ -1734,8 +1734,8 @@ else
 
     elif [ "${status:0:1}" = "5" ];
     then
-      say "    ${e}->${x} Sleeping for 30s and trying again..."
-      sleep 30
+      say "    ${e}->${x} Sleeping for 10s and trying again..."
+      sleep 10
 
     else
       say "    ${g}${res}${x}"
