@@ -64,7 +64,7 @@ function test_fixes () {
 function test_url_opt () {
     reset
     res=$(./codecov -d -u http://example.com | grep "http://example.com/")
-    diff <(echo "http://example.com/upload/v4?package=bash-$VERSION&token=&branch=$_BRANCH&commit=$_SHA&build=&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=&flags=&pr=&job=&cmd_args=d,u") <(echo "$res")
+    diff <(echo "http://example.com/upload/v4?package=bash-$VERSION&token=&branch=$_BRANCH&commit=$_SHA&build=&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=&flags=&pr=&job=&cmd_args=d,u&attempt=1") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
