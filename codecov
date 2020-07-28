@@ -77,8 +77,6 @@ proj_root="$git_root"
 gcov_exe="gcov"
 gcov_arg=""
 
-bamboo_planRepository_revision=""
-
 b="\033[0;36m"
 g="\033[0;32m"
 r="\033[0;31m"
@@ -457,6 +455,7 @@ say "
 
 search_in="$proj_root"
 
+#shellcheck disable=SC2154
 if [ "$JENKINS_URL" != "" ];
 then
   say "$e==>$x Jenkins CI detected."
