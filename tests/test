@@ -359,7 +359,7 @@ function test_codeship (){
 function test_github_action () {
     reset
 
-    export GITHUB_ACTION="my-fancy-github-action"
+    export GITHUB_ACTIONS="true"
     export GITHUB_REF="refs/heads/master"
     export GITHUB_REPOSITORY="codecov/ci-repo"
     export GITHUB_RUN_ID="32402849"
@@ -371,7 +371,7 @@ function test_github_action () {
 function test_github_action_pr () {
     reset
 
-    export GITHUB_ACTION="my-fancy-github-action"
+    export GITHUB_ACTIONS="true"
     export GITHUB_REF="refs/pull/7/merge"
     export GITHUB_HEAD_REF="patch-2"
     export GITHUB_REPOSITORY="codecov/ci-repo"

@@ -787,7 +787,7 @@ then
   commit="${CI_BUILD_REF:-$CI_COMMIT_SHA}"
   slug="${CI_PROJECT_PATH}"
 
-elif [ "$GITHUB_ACTION" != "" ];
+elif [ "$GITHUB_ACTIONS" != "" ];
 then
   say "$e==>$x GitHub Actions detected."
 
