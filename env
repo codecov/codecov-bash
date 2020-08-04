@@ -245,7 +245,7 @@ then
   add "CI_BUILD_REPO"
   add "CI_BUILD_REF"
 
-elif [ "$GITHUB_ACTION" != '' ]
+elif [ "$GITHUB_ACTIONS" != '' ]
 then
   add "GITHUB_ACTION"
   add "GITHUB_REF"
