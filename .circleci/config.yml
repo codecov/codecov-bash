@@ -2,9 +2,12 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: supergarotinho/docker-bashtest:latest
+      - image: particleflux/circleci-bats-kcov:1.0.0
     steps:
       - checkout
+     - run:
+          name: Extract shunit
+          command: tar zxvf tests/shunit2-2.1.8.tar.gz
       - run:
           name: Run Tests
           command: |
