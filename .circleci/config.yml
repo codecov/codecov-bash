@@ -7,7 +7,7 @@ jobs:
       - checkout
       - run:
           name: Install shunit2
-          command: apt-get install -y shunit2
+          command: sudo apt-get install -y shunit2
       - run:
           name: Run Tests
           command: |
