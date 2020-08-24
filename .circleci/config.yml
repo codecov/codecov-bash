@@ -5,7 +5,7 @@ jobs:
       - image: particleflux/circleci-bats-kcov:1.0.0
     steps:
       - checkout
-     - run:
+      - run:
           name: Extract shunit
           command: tar zxvf tests/shunit2-2.1.8.tar.gz
       - run:
