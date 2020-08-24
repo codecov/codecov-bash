@@ -10,8 +10,8 @@ jobs:
           command: tar zxvf tests/shunit2-2.1.8.tar.gz
       - run:
           name: Run Tests
-          command: |
-            kcov --include-path=./codecov coverage/ tests/test
+          command: env -i PATH="$PATH" tests/test
+          # kcov --include-path=./codecov coverage/ tests/test
       - run:
           name: Upload Codecov
           command: |
