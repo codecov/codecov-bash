@@ -2,12 +2,9 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: particleflux/circleci-bats-kcov:1.0.0
+      - image: supergarotinho/docker-bashtest:latest
     steps:
       - checkout
-      - run:
-          name: Install shunit2
-          command: sudo apt-get install -y shunit2
       - run:
           name: Run Tests
           command: |
