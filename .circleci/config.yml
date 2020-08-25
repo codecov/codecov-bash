@@ -7,7 +7,7 @@ jobs:
       - checkout
       - run:
           name: Extract shunit
-          command: tar --strip-components=1 zxvf tests/shunit2-2.1.8.tar.gz
+          command: tar --strip-components=1 -zxvf tests/shunit2-2.1.8.tar.gz
       - run:
           name: Run Tests
           command: env -i PATH="$PATH" tests/test
