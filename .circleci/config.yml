@@ -33,6 +33,9 @@ jobs:
             gcloud --quiet config set project ${GCLOUD_PROJECT_ID}
             gcloud --quiet config set compute/zone ${GCLOUD_COMPUTE_ZONE}
       - run:
+          name: Update uploader and env with versions
+          command: ./scripts/version.sh
+      - run:
           name: Upload Bash Uploader
           command: gsutil -m cp codecov gs://codecov-bash-uploader/codecov
       - run:
@@ -41,10 +44,7 @@ jobs:
 
 workflows:
   version: 2.1
-  build-test:
-    jobs:
-      - build
-  deploy:
+  build-deploy:
     jobs:
       - build
       - deploy:
