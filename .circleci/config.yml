@@ -25,6 +25,7 @@ jobs:
     docker:
       - image: google/cloud-sdk
     steps:
+      - checkout
       - run:
           name: Init GCloud
           command: |
