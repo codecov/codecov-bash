@@ -31,8 +31,6 @@ clear_branch () {
   git stash
 }
 
-cd codecov-bash || return
-
 clear_branch
 # update_branch
 short_git=$(git rev-parse --short HEAD)
