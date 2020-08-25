@@ -52,7 +52,6 @@ workflows:
             branches:
               only:
                 - production
-                - add_cdn_deploy
           requires:
             - build
           context: "circleci google deploy context"

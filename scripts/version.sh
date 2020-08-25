@@ -32,10 +32,10 @@ clear_branch () {
 }
 
 clear_branch
-# update_branch
+update_branch
 short_git=$(git rev-parse --short HEAD)
 date=$(date +%Y%m%d)
 RELEASE_TAG="$date-$short_git"
 change_bash_file
 change_env_file
-# tag_and_push
+tag_and_push
