@@ -4,12 +4,12 @@ set -x
 
 change_bash_file () {
   sed -i -e "s|.*VERSION=.*|VERSION=\"$RELEASE_TAG\"|g" codecov
-  rm codecov-e
+  rm codecov-e || return
 }
 
 change_env_file () {
   sed -i -e "s|.*VERSION=.*|VERSION=\"$RELEASE_TAG\"|g" env
-  rm env-e
+  rm env-e || return
 }
 
 update_branch () {
