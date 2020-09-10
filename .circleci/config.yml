@@ -25,6 +25,9 @@ jobs:
     docker:
       - image: google/cloud-sdk
     steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "42:e9:e4:e6:59:80:63:01:eb:19:ae:e0:ff:e8:75:86"
       - checkout
       - run:
           name: Init GCloud
