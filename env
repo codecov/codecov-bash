@@ -177,10 +177,11 @@ then
   add "DRONE_TAG"
   add "CI_BUILD_URL"
 
-elif [ "$HEROKU_TEST_RUN_BRANCH" != "" ];
+elif [ "$CI" = "true" ] && [ "$HEROKU_TEST_RUN_BRANCH" != "" ];
 then
   add "HEROKU_TEST_RUN_BRANCH"
   add "HEROKU_TEST_RUN_ID"
+  add "HEROKU_TEST_RUN_COMMIT_VERSION"
 
 elif [[ "$CI" = "true" || "$CI" = "True" ]] && [[ "$APPVEYOR" = "true" || "$APPVEYOR" = "True" ]];
 then
