@@ -7,6 +7,6 @@ Are there any changes that need to be called out as particularly tricky or signi
 ## Tests and Risks?
 Is this covered by existing tests? New ones? If no, why not?
 
-## Update the SHA1SUM file
+## Update the SHA hash files
 
-Also make sure that you update the sha1 hash by running `sha1sum codecov` and updating the SHA1SUM file with the output
+Also make sure that you update all the hash files by running `for i in 1 256 512; do shasum -a "${i}" codecov > "SHA${i}SUM"; done`.

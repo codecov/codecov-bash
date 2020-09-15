@@ -68,7 +68,8 @@ bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverag
 
 |                       Company                       |                                                                    Supported                                                                     | Token Required   |
 | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------- |
-| [Travis CI](https://travis-ci.org/)                 | Yes [![Build Status](https://secure.travis-ci.org/codecov/codecov-bash.svg?branch=master)](http://travis-ci.org/codecov/codecov-bash)                                                         | Private only     |
+| [Travis CI](https://travis-ci.org/)                 | Yes [![Build Status](https://secure.travis-ci.org/codecov/codecov-bash.svg?branch=master)](http://travis-ci.org/codecov/codecov-bash) [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcodecov%2Fcodecov-bash.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcodecov%2Fcodecov-bash?ref=badge_shield)
+                                                        | Private only     |
 | [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) | Yes                                     | Private only |
 | [CircleCI](https://circleci.com/)                   | Yes                                                                 | Private only     |
 | [Codeship](https://codeship.com/)                   | Yes                                                                                                                  | Public & Private |
@@ -104,7 +105,11 @@ bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverag
 Once you made a change to the codecov uploader script, please also update the hash file via:
 
 ```bash
-shasum codecov > SHA1SUM
+for i in 1 256 512; do shasum -a "${i}" codecov > "SHA${i}SUM"; done
 ```
 
 and add the change to your pull request.
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcodecov%2Fcodecov-bash.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcodecov%2Fcodecov-bash?ref=badge_large)
