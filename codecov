@@ -1489,6 +1489,8 @@ then
   syntax_bracket='^[[:space:]]*[\{\}][[:space:]]*(//.*)?$'
   # [ or ]
   syntax_list='^[[:space:]]*[][][[:space:]]*(//.*)?$'
+  # func ... {
+  syntax_go_func='^[[:space:]]*[func].*[\{][[:space:]]*$'
 
   # shellcheck disable=SC2089
   skip_dirs="-not -path '*/$bower_components/*' \
@@ -1522,7 +1524,6 @@ then
       2>/dev/null \
       >> "$adjustments_file" \
       || echo ''
-
   fi
 
   if echo "$network" | grep -m1 '.go$' 1>/dev/null;
@@ -1537,6 +1538,7 @@ then
            -e "$syntax_comment" \
            -e "$syntax_comment_block" \
            -e "$syntax_bracket" \
+           -e "$syntax_go_func" \
            {} \; \
       | cut_and_join \
       >> "$adjustments_file" \
