@@ -701,13 +701,14 @@ then
   job="$DRONE_JOB_NUMBER"
   tag="$DRONE_TAG"
 
-elif [ "$HEROKU_TEST_RUN_BRANCH" != "" ];
+elif [ "$CI" = "true" ] && [ "$HEROKU_TEST_RUN_BRANCH" != "" ];
 then
   say "$e==>$x Heroku CI detected."
   # https://devcenter.heroku.com/articles/heroku-ci#environment-variables
   service="heroku"
   branch="$HEROKU_TEST_RUN_BRANCH"
   build="$HEROKU_TEST_RUN_ID"
+  commit="$HEROKU_TEST_RUN_COMMIT_VERSION"
 
 elif [[ "$CI" = "true" || "$CI" = "True" ]] && [[ "$APPVEYOR" = "true" || "$APPVEYOR" = "True" ]];
 then
