@@ -1194,111 +1194,112 @@ $PWD/coverage.xml"
                         -or -name 'conftest_*.c.gcov' \
                     \) -prune -or \
                     -type f \( -name '*coverage*.*' \
-                     -or -name 'nosetests.xml' \
-                     -or -name 'jacoco*.xml' \
-                     -or -name 'clover.xml' \
-                     -or -name 'report.xml' \
-                     -or -name '*.codecov.*' \
-                     -or -name 'codecov.*' \
-                     -or -name 'cobertura.xml' \
-                     -or -name 'excoveralls.json' \
-                     -or -name 'luacov.report.out' \
-                     -or -name 'coverage-final.json' \
-                     -or -name 'naxsi.info' \
-                     -or -name 'lcov.info' \
-                     -or -name 'lcov.dat' \
-                     -or -name '*.lcov' \
                      -or -name '*.clover' \
-                     -or -name 'cover.out' \
-                     -or -name 'gcov.info' \
+                     -or -name '*.codecov.*' \
                      -or -name '*.gcov' \
+                     -or -name '*.lcov' \
                      -or -name '*.lst' \
+                     -or -name 'clover.xml' \
+                     -or -name 'cobertura.xml' \
+                     -or -name 'codecov.*' \
+                     -or -name 'cover.out' \
+                     -or -name 'coverage-final.json' \
+                     -or -name 'excoveralls.json' \
+                     -or -name 'gcov.info' \
+                     -or -name 'jacoco*.xml' \
+                     -or -name 'lcov.dat' \
+                     -or -name 'lcov.info' \
+                     -or -name 'luacov.report.out' \
+                     -or -name 'naxsi.info' \
+                     -or -name 'nosetests.xml' \
+                     -or -name 'report.xml' \
                      $include_cov \) \
                     $exclude_cov \
-                    -not -name '*.profdata' \
-                    -not -name 'coverage-summary.json' \
-                    -not -name 'phpunit-code-coverage.xml' \
-                    -not -name '*/classycle/report.xml' \
-                    -not -name 'remapInstanbul.coverage*.json' \
-                    -not -name 'phpunit-coverage.xml' \
-                    -not -name '*codecov.yml' \
-                    -not -name '*.serialized' \
-                    -not -name '.coverage*' \
-                    -not -name '.*coveragerc' \
-                    -not -name '*.sh' \
+                    -not -name '*.am' \
+                    -not -name '*.bash' \
                     -not -name '*.bat' \
-                    -not -name '*.ps1' \
-                    -not -name '*.env' \
+                    -not -name '*.bw' \
+                    -not -name '*.cfg' \
+                    -not -name '*.class' \
                     -not -name '*.cmake' \
+                    -not -name '*.cmake' \
+                    -not -name '*.conf' \
+                    -not -name '*.coverage' \
+                    -not -name '*.cp' \
+                    -not -name '*.cpp' \
+                    -not -name '*.crt' \
+                    -not -name '*.css' \
+                    -not -name '*.csv' \
+                    -not -name '*.csv' \
+                    -not -name '*.data' \
+                    -not -name '*.db' \
                     -not -name '*.dox' \
                     -not -name '*.ec' \
-                    -not -name '*.rst' \
-                    -not -name '*.h' \
-                    -not -name '*.scss' \
-                    -not -name '*.o' \
-                    -not -name '*.proto' \
-                    -not -name '*.sbt' \
-                    -not -name '*.xcoverage.*' \
-                    -not -name '*.gz' \
-                    -not -name '*.conf' \
-                    -not -name '*.p12' \
-                    -not -name '*.csv' \
-                    -not -name '*.rsp' \
-                    -not -name '*.m4' \
-                    -not -name '*.pem' \
-                    -not -name '*~' \
-                    -not -name '*.exe' \
-                    -not -name '*.am' \
-                    -not -name '*.template' \
-                    -not -name '*.cp' \
-                    -not -name '*.bw' \
-                    -not -name '*.crt' \
-                    -not -name '*.log' \
-                    -not -name '*.cmake' \
-                    -not -name '*.pth' \
-                    -not -name '*.in' \
-                    -not -name '*.jar*' \
-                    -not -name '*.pom*' \
-                    -not -name '*.png' \
-                    -not -name '*.jpg' \
-                    -not -name '*.sql' \
-                    -not -name '*.jpeg' \
-                    -not -name '*.svg' \
-                    -not -name '*.gif' \
-                    -not -name '*.csv' \
-                    -not -name '*.snapshot' \
-                    -not -name '*.mak*' \
-                    -not -name '*.bash' \
-                    -not -name '*.data' \
-                    -not -name '*.py' \
-                    -not -name '*.class' \
-                    -not -name '*.xcconfig' \
                     -not -name '*.ec' \
-                    -not -name '*.coverage' \
-                    -not -name '*.pyc' \
-                    -not -name '*.cfg' \
                     -not -name '*.egg' \
-                    -not -name '*.ru' \
-                    -not -name '*.css' \
-                    -not -name '*.less' \
-                    -not -name '*.pyo' \
-                    -not -name '*.whl' \
-                    -not -name '*.html' \
-                    -not -name '*.ftl' \
+                    -not -name '*.el' \
+                    -not -name '*.env' \
                     -not -name '*.erb' \
-                    -not -name '*.rb' \
-                    -not -name '*.js' \
-                    -not -name '*.jade' \
-                    -not -name '*.db' \
-                    -not -name '*.md' \
-                    -not -name '*.cpp' \
+                    -not -name '*.exe' \
+                    -not -name '*.ftl' \
+                    -not -name '*.gif' \
                     -not -name '*.gradle' \
-                    -not -name '*.tar.tz' \
+                    -not -name '*.gz' \
+                    -not -name '*.h' \
+                    -not -name '*.html' \
+                    -not -name '*.in' \
+                    -not -name '*.jade' \
+                    -not -name '*.jar*' \
+                    -not -name '*.jpeg' \
+                    -not -name '*.jpg' \
+                    -not -name '*.js' \
+                    -not -name '*.less' \
+                    -not -name '*.log' \
+                    -not -name '*.m4' \
+                    -not -name '*.mak*' \
+                    -not -name '*.md' \
+                    -not -name '*.o' \
+                    -not -name '*.p12' \
+                    -not -name '*.pem' \
+                    -not -name '*.png' \
+                    -not -name '*.pom*' \
+                    -not -name '*.profdata' \
+                    -not -name '*.proto' \
+                    -not -name '*.ps1' \
+                    -not -name '*.pth' \
+                    -not -name '*.py' \
+                    -not -name '*.pyc' \
+                    -not -name '*.pyo' \
+                    -not -name '*.rb' \
+                    -not -name '*.rsp' \
+                    -not -name '*.rst' \
+                    -not -name '*.ru' \
+                    -not -name '*.sbt' \
                     -not -name '*.scss' \
-                    -not -name 'include.lst' \
-                    -not -name 'fullLocaleNames.lst' \
-                    -not -name 'inputFiles.lst' \
+                    -not -name '*.scss' \
+                    -not -name '*.serialized' \
+                    -not -name '*.sh' \
+                    -not -name '*.snapshot' \
+                    -not -name '*.sql' \
+                    -not -name '*.svg' \
+                    -not -name '*.tar.tz' \
+                    -not -name '*.template' \
+                    -not -name '*.whl' \
+                    -not -name '*.xcconfig' \
+                    -not -name '*.xcoverage.*' \
+                    -not -name '*/classycle/report.xml' \
+                    -not -name '*codecov.yml' \
+                    -not -name '*~' \
+                    -not -name '.*coveragerc' \
+                    -not -name '.coverage*' \
+                    -not -name 'coverage-summary.json' \
                     -not -name 'createdFiles.lst' \
+                    -not -name 'fullLocaleNames.lst' \
+                    -not -name 'include.lst' \
+                    -not -name 'inputFiles.lst' \
+                    -not -name 'phpunit-code-coverage.xml' \
+                    -not -name 'phpunit-coverage.xml' \
+                    -not -name 'remapInstanbul.coverage*.json' \
                     -not -name 'scoverage.measurements.*' \
                     -not -name 'test_*_coverage.txt' \
                     -not -name 'testrunner-coverage*' \
