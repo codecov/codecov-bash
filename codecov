@@ -61,6 +61,7 @@ tag_o=""
 branch_o=""
 slug_o=""
 prefix_o=""
+git_ls_files_recurse_submodules_o=""
 
 commit="$VCS_COMMIT_ID"
 branch="$VCS_BRANCH_NAME"
@@ -135,6 +136,7 @@ cat << EOF
                  When using the repository provider's API, the parent is determined via finding
                  the closest ancestor to the commit.
 
+    -E           For git projects, recurse submodules when searching for source files
     -R root dir  Used when not in git/hg project to identify project root directory
     -F flag      Flag the upload to group coverage metrics
 
@@ -249,7 +251,7 @@ parse_yaml() {
 
 if [ $# != 0 ];
 then
-  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:k:Kn:p:P:q:r:R:s:S:t:T:u:U:vx:X:ZN:" o
+  while getopts "a:A:b:B:cC:dD:Ee:f:F:g:G:hJ:k:Kn:p:P:q:r:R:s:S:t:T:u:U:vx:X:ZN:" o
   do
     codecov_flags+=( "$o" )
     case "$o" in
@@ -282,6 +284,9 @@ then
         ;;
       "e")
         env="$env,$OPTARG"
+        ;;
+      "E")
+        git_ls_files_recurse_submodules_o="--recurse-submodules"
         ;;
       "f")
         if [ "${OPTARG::1}" = "!" ];
@@ -1329,7 +1334,7 @@ fi
 if [ "$ft_network" == "1" ];
 then
   say "${e}==>${x} Detecting git/mercurial file structure"
-  network=$(cd "$git_root" && git ls-files 2>/dev/null || hg locate 2>/dev/null || echo "")
+  network=$(cd "$git_root" && git ls-files "$git_ls_files_recurse_submodules_o" 2>/dev/null || hg locate 2>/dev/null || echo "")
   if [ "$network" = "" ];
   then
     network=$(find "$git_root" \( \
