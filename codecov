@@ -130,7 +130,7 @@ cat << EOF
                  -X network       Disable uploading the file network
                  -X gcovout       Disable gcov output
                  -X html          Enable coverage for HTML files
-                 -X recursesubs   For git projects, recurse submodules when searching for source files
+                 -X recursesubs   Enable recurse submodules in git projects when searching for source files
 
     -N           The commit SHA of the parent for which you are uploading coverage. If not present,
                  the parent will be determined using the API of your repository provider.
