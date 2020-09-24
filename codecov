@@ -130,13 +130,13 @@ cat << EOF
                  -X network       Disable uploading the file network
                  -X gcovout       Disable gcov output
                  -X html          Enable coverage for HTML files
+                 -X recursesubs   For git projects, recurse submodules when searching for source files
 
     -N           The commit SHA of the parent for which you are uploading coverage. If not present,
                  the parent will be determined using the API of your repository provider.
                  When using the repository provider's API, the parent is determined via finding
                  the closest ancestor to the commit.
 
-    -E           For git projects, recurse submodules when searching for source files
     -R root dir  Used when not in git/hg project to identify project root directory
     -F flag      Flag the upload to group coverage metrics
 
@@ -284,9 +284,6 @@ then
         ;;
       "e")
         env="$env,$OPTARG"
-        ;;
-      "E")
-        git_ls_files_recurse_submodules_o="--recurse-submodules"
         ;;
       "f")
         if [ "${OPTARG::1}" = "!" ];
@@ -436,6 +433,9 @@ $OPTARG"
         elif [ "$OPTARG" = "html" ];
         then
           ft_html="1"
+        elif [ "$OPTARG" = "recursesubs" ];
+        then
+          git_ls_files_recurse_submodules_o="--recurse-submodules"
         fi
         ;;
       "Z")
