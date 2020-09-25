@@ -61,6 +61,7 @@ tag_o=""
 branch_o=""
 slug_o=""
 prefix_o=""
+git_ls_files_recurse_submodules_o=""
 
 commit="$VCS_COMMIT_ID"
 branch="$VCS_BRANCH_NAME"
@@ -129,6 +130,7 @@ cat << EOF
                  -X network       Disable uploading the file network
                  -X gcovout       Disable gcov output
                  -X html          Enable coverage for HTML files
+                 -X recursesubs   Enable recurse submodules in git projects when searching for source files
 
     -N           The commit SHA of the parent for which you are uploading coverage. If not present,
                  the parent will be determined using the API of your repository provider.
@@ -431,6 +433,9 @@ $OPTARG"
         elif [ "$OPTARG" = "html" ];
         then
           ft_html="1"
+        elif [ "$OPTARG" = "recursesubs" ];
+        then
+          git_ls_files_recurse_submodules_o="--recurse-submodules"
         fi
         ;;
       "Z")
@@ -1329,7 +1334,7 @@ fi
 if [ "$ft_network" == "1" ];
 then
   say "${e}==>${x} Detecting git/mercurial file structure"
-  network=$(cd "$git_root" && git ls-files 2>/dev/null || hg locate 2>/dev/null || echo "")
+  network=$(cd "$git_root" && git ls-files "$git_ls_files_recurse_submodules_o" 2>/dev/null || hg locate 2>/dev/null || echo "")
   if [ "$network" = "" ];
   then
     network=$(find "$git_root" \( \
