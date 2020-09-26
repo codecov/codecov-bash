@@ -376,7 +376,7 @@ $OPTARG"
       "t")
         if [ "${OPTARG::1}" = "@" ];
         then
-          token=$(> "${OPTARG:1}" tr -d ' \n')
+          token=$(< "${OPTARG:1}" tr -d ' \n')
         else
           token="$OPTARG"
         fi
