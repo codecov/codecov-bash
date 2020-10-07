@@ -1536,6 +1536,7 @@ then
   then
     # skip empty lines, comments, and brackets
     find "$git_root" -not -path '*/vendor/*' \
+                     -not -path '*/caches/*' \
                      -type f \
                      -name '*.go' \
                      -exec \
