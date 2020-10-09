@@ -1335,7 +1335,7 @@ fi
 if [ "$ft_network" == "1" ];
 then
   say "${e}==>${x} Detecting git/mercurial file structure"
-  network=$(cd "$git_root" && git ls-files "$git_ls_files_recurse_submodules_o" 2>/dev/null || hg locate 2>/dev/null || echo "")
+  network=$(cd "$git_root" && git ls-files $git_ls_files_recurse_submodules_o 2>/dev/null || hg locate 2>/dev/null || echo "")
   if [ "$network" = "" ];
   then
     network=$(find "$git_root" \( \
