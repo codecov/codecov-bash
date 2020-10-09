@@ -1213,6 +1213,7 @@ $PWD/coverage.xml"
                      -or -name 'excoveralls.json' \
                      -or -name 'gcov.info' \
                      -or -name 'jacoco*.xml' \
+                     -or -name '*Jacoco*.xml' \
                      -or -name 'lcov.dat' \
                      -or -name 'lcov.info' \
                      -or -name 'luacov.report.out' \
@@ -1536,6 +1537,7 @@ then
   then
     # skip empty lines, comments, and brackets
     find "$git_root" -not -path '*/vendor/*' \
+                     -not -path '*/caches/*' \
                      -type f \
                      -name '*.go' \
                      -exec \
