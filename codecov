@@ -1514,9 +1514,10 @@ then
   if echo "$network" | grep -m1 '.kt$' 1>/dev/null;
   then
     # skip brackets and comments
-    find "$git_root" -type f \
-                     -name '*.kt' \
-                     -exec \
+    cd "$git_root" && \
+      find . -type f \
+             -name '*.kt' \
+             -exec \
       grep -nIHE -e "$syntax_bracket" \
                  -e "$syntax_comment_block" {} \; \
       | cut_and_join \
@@ -1524,8 +1525,9 @@ then
       || echo ''
 
     # last line in file
-    find "$git_root" -type f \
-                     -name '*.kt' -exec \
+    cd "$git_root" && \
+      find . -type f \
+             -name '*.kt' -exec \
       wc -l {} \; \
       | while read -r l; do echo "EOF: $l"; done \
       2>/dev/null \
@@ -1536,11 +1538,12 @@ then
   if echo "$network" | grep -m1 '.go$' 1>/dev/null;
   then
     # skip empty lines, comments, and brackets
-    find "$git_root" -not -path '*/vendor/*' \
-                     -not -path '*/caches/*' \
-                     -type f \
-                     -name '*.go' \
-                     -exec \
+    cd "$git_root" && \
+      find . -type f \
+             -not -path '*/vendor/*' \
+             -not -path '*/caches/*' \
+             -name '*.go' \
+             -exec \
       grep -nIHE \
            -e "$empty_line" \
            -e "$syntax_comment" \
@@ -1556,9 +1559,10 @@ then
   if echo "$network" | grep -m1 '.dart$' 1>/dev/null;
   then
     # skip brackets
-    find "$git_root" -type f \
-                     -name '*.dart' \
-                     -exec \
+    cd "$git_root" && \
+      find . -type f \
+             -name '*.dart' \
+             -exec \
       grep -nIHE \
            -e "$syntax_bracket" \
            {} \; \
@@ -1570,10 +1574,11 @@ then
   if echo "$network" | grep -m1 '.php$' 1>/dev/null;
   then
     # skip empty lines, comments, and brackets
-    find "$git_root" -not -path "*/vendor/*" \
-                     -type f \
-                     -name '*.php' \
-                     -exec \
+    cd "$git_root" && \
+      find . -type f \
+             -not -path "*/vendor/*" \
+             -name '*.php' \
+             -exec \
       grep -nIHE \
            -e "$syntax_list" \
            -e "$syntax_bracket" \
@@ -1588,8 +1593,9 @@ then
   then
     # skip brackets
     # shellcheck disable=SC2086,SC2090
-    find "$git_root" -type f \
-                     $skip_dirs \
+    cd "$git_root" && \
+      find . -type f \
+             $skip_dirs \
          \( \
            -name '*.h' \
            -or -name '*.cpp' \
@@ -1610,8 +1616,9 @@ then
 
     # skip brackets
     # shellcheck disable=SC2086,SC2090
-    find "$git_root" -type f \
-                     $skip_dirs \
+    cd "$git_root" && \
+      find . -type f \
+             $skip_dirs \
          \( \
            -name '*.h' \
            -or -name '*.cpp' \
