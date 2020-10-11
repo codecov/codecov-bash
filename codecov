@@ -617,7 +617,7 @@ then
     # owner/repo.git
     slug="${slug%%.git}"
   fi
-  pr="$CIRCLE_PR_NUMBER"
+  pr="${CIRCLE_PULL_REQUEST##*/}"
   commit="$CIRCLE_SHA1"
   search_in="$search_in $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS"
 
