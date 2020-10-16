@@ -55,6 +55,13 @@ after_success:
   - bash <(curl -s https://codecov.io/bash) -e TOX_ENV,CUSTOM_VAR
 ```
 
+> When running the codecov-bash uploader on Alpine Linux, you are likely to run into a parsing issue because of the default shell. To be able to upload reports, you need to issue the following commands.
+
+```yaml
+after_success:
+  - apk -U add git curl bash findutils
+  - bash -c '/bin/bash <(curl -s https://codecov.io/bash)'
+```
 
 ### Prevent build failures
 If Codecov fails to upload reports, you can ensure the CI build does not fail by adding a catch-all:
