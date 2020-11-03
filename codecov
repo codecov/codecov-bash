@@ -1691,12 +1691,14 @@ else
           --retry 5 --retry-delay 2 --connect-timeout 2 \
           -H 'X-Reduced-Redundancy: false' \
           -H 'X-Content-Type: application/x-gzip' \
+          --write-out "\n%{response_code}\n" \
           "$url/upload/v4?$query" || true)
     # a good reply is "https://codecov.io" + "\n" + "https://storage.googleapis.com/codecov/..."
-    status=$(echo "$res" | head -1 | grep 'HTTP ' | cut -d' ' -f2)
-    if [ "$status" = "" ] && [ "$res" != "" ];
+    s3target=$(echo "$res" | sed -n 2p)
+    status=$(tail -n1 <<< "$res")
+
+    if [ "$status" = "200" ] && [ "$s3target" != "" ];
     then
-      s3target=$(echo "$res" | sed -n 2p)
       say "${e}->${x}  Uploading to"
       say "${s3target}"
 
@@ -1717,8 +1719,10 @@ else
     elif [ "$status" = "400" ];
     then
         # 400 Error
-        say "${g}${res}${x}"
+        say "${r}${res}${x}"
         exit ${exit_with}
+    else
+        say "${r}${res}${x}"
     fi
   fi
 
