@@ -900,17 +900,7 @@ fi
 
 if [ "$commit_o" = "" ];
 then
-  # merge commit -> actual commit
-  mc=
-  if [ -n "$pr" ] && [ "$pr" != false ];
-  then
-    mc=$(git show --no-patch --format="%P" 2>/dev/null || echo "")
-  fi
-  if [[ "$mc" =~ ^[a-z0-9]{40}[[:space:]][a-z0-9]{40}$ ]];
-  then
-    say "    Fixing merge commit SHA"
-    commit=$(echo "$mc" | cut -d' ' -f2)
-  elif [ "$GIT_COMMIT" != "" ];
+  if [ "$GIT_COMMIT" != "" ];
   then
     commit="$GIT_COMMIT"
   elif [ "$commit" = "" ];
