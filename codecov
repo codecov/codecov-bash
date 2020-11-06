@@ -1681,6 +1681,7 @@ else
           --retry 5 --retry-delay 2 --connect-timeout 2 \
           -H 'X-Reduced-Redundancy: false' \
           -H 'X-Content-Type: application/x-gzip' \
+          -H 'Content-Length: 0' \
           --write-out "\n%{response_code}\n" \
           "$url/upload/v4?$query" || true)
     # a good reply is "https://codecov.io" + "\n" + "https://storage.googleapis.com/codecov/..."
