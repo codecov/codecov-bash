@@ -517,7 +517,7 @@ then
   tag="$TRAVIS_TAG"
   if [ "$TRAVIS_BRANCH" != "$TRAVIS_TAG" ];
   then
-    branch="$TRAVIS_BRANCH"
+    branch="${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
   fi
 
   language=$(compgen -A variable | grep "^TRAVIS_.*_VERSION$" | head -1)
