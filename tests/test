@@ -300,7 +300,7 @@ function test_travis () {
     # Uses original branch name (not the target branch).
     export TRAVIS_PULL_REQUEST_BRANCH=frompr
     export TRAVIS_PULL_REQUEST="12345"
-    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=frompr&commit=$TEST_DATA_GIT_COMMIT&build=4.1&build_url=&name=&tag=&slug=codecov%2Fci-repo&service=travis&flags=&pr=false&job=33116958&cmd_args=d,C"
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=frompr&commit=$TEST_DATA_GIT_COMMIT&build=4.1&build_url=&name=&tag=&slug=codecov%2Fci-repo&service=travis&flags=&pr=12345&job=33116958&cmd_args=d,C"
 }
 
 function test_jenkins (){
