@@ -139,17 +139,21 @@ then
   add "BITRISE_PULL_REQUEST"
   add "BITRISE_GIT_COMMIT"
 
+# https://docs.semaphoreci.com/ci-cd-environment/environment-variables/#semaphore-related
 elif [ "$CI" = "true" ] && [ "$SEMAPHORE" = "true" ];
 then
   add "CI"
   add "SEMAPHORE"
-  add "BRANCH_NAME"
-  add "SEMAPHORE_BUILD_NUMBER"
-  add "SEMAPHORE_CURRENT_THREAD"
-  add "PULL_REQUEST_NUMBER"
-  add "SEMAPHORE_REPO_SLUG"
-  add "REVISION"
-  add "SEMAPHORE_TRIGGER_SOURCE"
+  add "SEMAPHORE_PROJECT_NAME"
+  add "SEMAPHORE_PROJECT_ID"
+  add "SEMAPHORE_ORGANIZATION_URL"
+  add "SEMAPHORE_JOB_NAME"
+  add "SEMAPHORE_WORKFLOW_NUMBER"
+  add "SEMAPHORE_JOB_ID"
+  add "SEMAPHORE_GIT_SHA"
+  add "SEMAPHORE_GIT_BRANCH"
+  add "SEMAPHORE_GIT_REPO_SLUG"
+  add "SEMAPHORE_GIT_PR_NUMBER"
 
 elif [ "$CI" = "true" ] && [ "$BUILDKITE" = "true" ];
 then
@@ -173,10 +177,11 @@ then
   add "DRONE_TAG"
   add "CI_BUILD_URL"
 
-elif [ "$HEROKU_TEST_RUN_BRANCH" != "" ];
+elif [ "$CI" = "true" ] && [ "$HEROKU_TEST_RUN_BRANCH" != "" ];
 then
   add "HEROKU_TEST_RUN_BRANCH"
   add "HEROKU_TEST_RUN_ID"
+  add "HEROKU_TEST_RUN_COMMIT_VERSION"
 
 elif [[ "$CI" = "true" || "$CI" = "True" ]] && [[ "$APPVEYOR" = "true" || "$APPVEYOR" = "True" ]];
 then
@@ -247,7 +252,7 @@ then
 
 elif [ "$GITHUB_ACTIONS" != '' ]
 then
-  add "GITHUB_ACTION"
+  add "GITHUB_ACTIONS"
   add "GITHUB_REF"
   add "GITHUB_REPOSITORY"
   add "GITHUB_HEAD_REF"

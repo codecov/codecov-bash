@@ -391,11 +391,24 @@ function test_semaphore (){
     export CI="true"
     export SEMAPHORE="true"
     export SEMAPHORE_REPO_SLUG="myowner/myrepo"
-    export BRANCH_NAME="develop"
-    export SEMAPHORE_BUILD_NUMBER="8"
-    export SEMAPHORE_CURRENT_THREAD="2"
+    export SEMAPHORE_GIT_BRANCH="develop"
+    export SEMAPHORE_WORKFLOW_NUMBER="8"
+    export SEMAPHORE_JOB_ID="2"
     export REVISION="$TEST_DATA_GIT_COMMIT"
-    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=develop&commit=$TEST_DATA_GIT_COMMIT&build=8&build_url=&name=&tag=&slug=myowner%2Fmyrepo&service=semaphore&flags=&pr=&job=2&cmd_args=d,C"
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=$SEMAPHORE_GIT_BRANCH&commit=$TEST_DATA_GIT_COMMIT&build=8&build_url=&name=&tag=&slug=myowner%2Fmyrepo&service=semaphore&flags=&pr=&job=2&cmd_args=d,C"
+}
+
+function test_semaphore_pr (){
+    reset
+    export CI="true"
+    export SEMAPHORE="true"
+    export SEMAPHORE_REPO_SLUG="myowner/myrepo"
+    export SEMAPHORE_GIT_BRANCH="develop"
+    export SEMAPHORE_WORKFLOW_NUMBER="8"
+    export SEMAPHORE_JOB_ID="2"
+    export SEMAPHORE_GIT_PR_NUMBER="42"
+    export REVISION="$TEST_DATA_GIT_COMMIT"
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=$SEMAPHORE_GIT_BRANCH&commit=$TEST_DATA_GIT_COMMIT&build=8&build_url=&name=&tag=&slug=myowner%2Fmyrepo&service=semaphore&flags=&pr=&job=2&cmd_args=d,C"
 }
 
 function test_buildkite (){
@@ -554,7 +567,7 @@ function test_bitbucket_pull_request() {
     BITBUCKET_COMMIT=$(echo "$_SHA" | head -c 12)
 
     url=$(./codecov -d | grep 'https://codecov.io/')
-    diff <(echo "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=bb_develop&commit=$_SHA&build=2&build_url=&name=&tag=&slug=test_owner%2Ftest_slug&service=bitbucket&flags=&pr=&job=2&cmd_args=d") <(echo "$url")
+    diff <(echo "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=$BITBUCKET_BRANCH&commit=$_SHA&build=2&build_url=&name=&tag=&slug=test_owner%2Ftest_slug&service=bitbucket&flags=&pr=&job=2&cmd_args=d") <(echo "$url")
     assertTrue 'Expected output differs.' $?
 }
 
@@ -580,7 +593,16 @@ function test_cirrus () {
     export CIRRUS_BUILD_ID="777"
     export CIRRUS_TASK_ID="239"
     export CIRRUS_TASK_NAME="test"
-    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=master&commit=$TEST_DATA_GIT_COMMIT&build=239&build_url=&name=&tag=&slug=codecov%2Fci-repo&service=cirrus-ci&flags=&pr=1&job=test&cmd_args=d,C"
+    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=$CIRRUS_BRANCH&commit=$TEST_DATA_GIT_COMMIT&build=239&build_url=&name=&tag=&slug=codecov%2Fci-repo&service=cirrus-ci&flags=&pr=1&job=test&cmd_args=d,C"
+}
+
+function test_heroku () {
+    reset
+    export CI="true"
+    export HEROKU_TEST_RUN_BRANCH="master"
+    export HEROKU_TEST_RUN_ID="1"
+    export HEROKU_TEST_RUN_COMMIT_VERSION="$TEST_DATA_GIT_COMMIT"
+    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=master&commit=$TEST_DATA_GIT_COMMIT&build=1&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=heroku&flags=&pr=&job=&cmd_args=d,C"
 }
 
 # Call and Run all Tests

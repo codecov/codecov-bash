@@ -7,12 +7,11 @@ jobs:
       - checkout
       - run:
           name: Extract shunit
-          command: tar zxvf shunit2-2.1.6.tgz
-      # per https://github.com/SimonKagstrom/kcov/issues/45#issuecomment-68207360 this should work
+          command: tar --strip-components=1 -zxvf tests/shunit2-2.1.8.tar.gz
       - run:
           name: Run Tests
-          command: |
-            kcov --include-path=./codecov coverage/ tests/test
+          command: env -i PATH="$PATH" tests/test
+          # kcov --include-path=./codecov coverage/ tests/test
       - run:
           name: Upload Codecov
           command: |
@@ -22,10 +21,40 @@ jobs:
           path: codecov.txt
       - store_artifacts:
           path: coverage
+  deploy:
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - "42:e9:e4:e6:59:80:63:01:eb:19:ae:e0:ff:e8:75:86"
+      - checkout
+      - run:
+          name: Init GCloud
+          command: |
+            echo $GCLOUD_SERVICE_KEY | gcloud auth activate-service-account --key-file=-
+            gcloud --quiet config set project ${GCLOUD_PROJECT_ID}
+            gcloud --quiet config set compute/zone ${GCLOUD_COMPUTE_ZONE}
+      - run:
+          name: Update uploader and env with versions
+          command: ./scripts/version.sh
+      - run:
+          name: Upload Bash Uploader
+          command: gsutil -m cp codecov gs://codecov-bash-uploader/codecov
+      - run:
+          name: Upload ENV
+          command: gsutil -m cp env gs://codecov-bash-uploader/env
 
 workflows:
   version: 2.1
-  build-test:
+  build-deploy:
     jobs:
       - build
-
+      - deploy:
+          filters:
+            branches:
+              only:
+                - production
+          requires:
+            - build
+          context: "circleci google deploy context"
