@@ -62,6 +62,7 @@ branch_o=""
 slug_o=""
 prefix_o=""
 git_ls_files_recurse_submodules_o=""
+package="bash"
 
 commit="$VCS_COMMIT_ID"
 branch="$VCS_BRANCH_NAME"
@@ -251,7 +252,7 @@ parse_yaml() {
 
 if [ $# != 0 ];
 then
-  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:k:Kn:p:P:q:r:R:s:S:t:T:u:U:vx:X:ZN:" o
+  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:k:Kn:p:P:Q:q:r:R:s:S:t:T:u:U:vx:X:ZN:" o
   do
     codecov_flags+=( "$o" )
     case "$o" in
@@ -351,6 +352,10 @@ $OPTARG"
         ;;
       "P")
         pr_o="$OPTARG"
+        ;;
+      "Q")
+        # this is only meant for Codecov packages to overwrite
+        package="$OPTARG"
         ;;
       "q")
         save_to="$OPTARG"
@@ -1650,7 +1655,7 @@ if [ "$dump" != "0" ];
 then
   # trim whitespace from query
   say "    ${e}->${x} Dumping upload file (no upload)"
-  echo "$url/upload/v4?$(echo "package=bash-$VERSION&token=$token&$query" | tr -d ' ')"
+  echo "$url/upload/v4?$(echo "package=$package-$VERSION&token=$token&$query" | tr -d ' ')"
   cat "$upload_file"
 else
   if [ "$save_to" != "" ];
@@ -1668,9 +1673,9 @@ else
   say "    ${e}query:${x} $query"
 
   # Full query without token (to display on terminal output)
-  queryNoToken=$(echo "package=bash-$VERSION&token=secret&$query" | tr -d ' ')
+  queryNoToken=$(echo "package=$package-$VERSION&token=secret&$query" | tr -d ' ')
   # now add token to query
-  query=$(echo "package=bash-$VERSION&token=$token&$query" | tr -d ' ')
+  query=$(echo "package=$package-$VERSION&token=$token&$query" | tr -d ' ')
 
   if [ "$ft_s3" = "1" ];
   then
