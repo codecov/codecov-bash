@@ -820,6 +820,18 @@ then
   build="${GITHUB_RUN_ID}"
   build_url=$(urlencode "http://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}")
 
+  # actions/checkout runs in detached HEAD
+  mc=
+  if [ -n "$pr" ] && [ "$pr" != false ];
+  then
+    mc=$(git show --no-patch --format="%P" 2>/dev/null || echo "")
+  fi
+  if [[ "$mc" =~ ^[a-z0-9]{40}[[:space:]][a-z0-9]{40}$ ]];
+  then
+    say "    Fixing merge commit SHA"
+    commit=$(echo "$mc" | cut -d' ' -f2)
+  fi
+
 elif [ "$SYSTEM_TEAMFOUNDATIONSERVERURI" != "" ];
 then
   say "$e==>$x Azure Pipelines detected."
