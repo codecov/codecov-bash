@@ -1678,6 +1678,7 @@ else
 
   say "${e}==>${x} Gzipping contents"
   gzip -nf9 "$upload_file"
+  say "        $(du -h "$upload_file.gz")"
 
   query=$(echo "${query}" | tr -d ' ')
   say "${e}==>${x} Uploading reports"
