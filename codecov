@@ -252,10 +252,16 @@ parse_yaml() {
 
 if [ $# != 0 ];
 then
-  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:k:Kn:p:P:Q:q:r:R:s:S:t:T:u:U:vx:X:ZN:" o
+  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:k:Kn:p:P:Q:q:r:R:s:S:t:T:u:U:vx:X:ZN:-" o
   do
     codecov_flags+=( "$o" )
     case "$o" in
+      "-")
+        echo -e "${r}Long options are not supported${x}"
+        exit 2
+        ;;
+      "?")
+        ;;
       "N")
         parent=$OPTARG
         ;;
