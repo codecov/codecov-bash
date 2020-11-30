@@ -1602,7 +1602,7 @@ then
       || echo ''
   fi
 
-  if echo "$network" | grep -m1 '\(.cpp\|.h\|.cxx\|.c\|.hpp\|.m\|.swift\)$' 1>/dev/null;
+  if echo "$network" | grep -m1 '\(.c\.cpp\|.cxx\|.h\|.hpp\|.m\|.swift\|.vala\)$' 1>/dev/null;
   then
     # skip brackets
     # shellcheck disable=SC2086,SC2090
@@ -1610,13 +1610,14 @@ then
       find . -type f \
              $skip_dirs \
          \( \
-           -name '*.h' \
+           -name '*.c' \
            -or -name '*.cpp' \
            -or -name '*.cxx' \
-           -or -name '*.m' \
-           -or -name '*.c' \
+           -or -name '*.h' \
            -or -name '*.hpp' \
+           -or -name '*.m' \
            -or -name '*.swift' \
+           -or -name '*.vala' \
          \) -exec \
       grep -nIHE \
            -e "$empty_line" \
@@ -1633,13 +1634,14 @@ then
       find . -type f \
              $skip_dirs \
          \( \
-           -name '*.h' \
+           -name '*.c' \
            -or -name '*.cpp' \
            -or -name '*.cxx' \
-           -or -name '*.m' \
-           -or -name '*.c' \
+           -or -name '*.h' \
            -or -name '*.hpp' \
+           -or -name '*.m' \
            -or -name '*.swift' \
+           -or -name '*.vala' \
          \) -exec \
       grep -nIH '// LCOV_EXCL' \
            {} \; \
