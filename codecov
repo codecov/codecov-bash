@@ -707,10 +707,9 @@ then
 elif [ "$CI" = "drone" ] || [ "$DRONE" = "true" ];
 then
   say "$e==>$x Drone CI detected."
-  # http://docs.drone.io/env.html
-  # drone commits are not full shas
   service="drone.io"
   branch="$DRONE_BRANCH"
+  commit="$DRONE_COMMIT"
   build="$DRONE_BUILD_NUMBER"
   build_url=$(urlencode "${DRONE_BUILD_LINK}")
   pr="$DRONE_PULL_REQUEST"
