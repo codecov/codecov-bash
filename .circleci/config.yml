@@ -2,16 +2,20 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: particleflux/circleci-bats-kcov:1.0.0
+      - image: circleci/ruby:2.7
     steps:
       - checkout
       - run:
           name: Extract shunit
           command: tar --strip-components=1 -zxvf tests/shunit2-2.1.8.tar.gz
       - run:
+          name: Install bashcov
+          command: gem install bashcov
+      - run:
           name: Run Tests
-          command: env -i PATH="$PATH" tests/test
-          # kcov --include-path=./codecov coverage/ tests/test
+          command: |
+            env -i PATH="$PATH"
+            bashcov tests/test
       - run:
           name: Upload Codecov
           command: |
