@@ -855,7 +855,7 @@ then
   project="${SYSTEM_TEAMPROJECT}"
   server_uri="${SYSTEM_TEAMFOUNDATIONSERVERURI}"
   job="${BUILD_BUILDID}"
-  branch="$BUILD_SOURCEBRANCHNAME"
+  branch="${BUILD_SOURCEBRANCH#"refs/heads/"}"
   build_url=$(urlencode "${SYSTEM_TEAMFOUNDATIONSERVERURI}${SYSTEM_TEAMPROJECT}/_build/results?buildId=${BUILD_BUILDID}")
 elif [ "$CI" = "true" ] && [ "$BITBUCKET_BUILD_NUMBER" != "" ];
 then
