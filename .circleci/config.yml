@@ -20,6 +20,9 @@ jobs:
           name: View coverage dir
           command: ls -al /home/circleci/project/coverage
       - run:
+          name: Resultset
+          command: cat /home/circleci/project/coverage/.resultset.json
+      - run:
           name: Upload Codecov
           command: |
             bash <(curl -s https://codecov.io/bash) -s /home/circleci/project/coverage
