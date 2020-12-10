@@ -1,6 +1,6 @@
 #!/usr/bin/ruby
 
-require 'JSON'
+require 'json'
 
 def convert_resultset(file_path)
   result = JSON.parse(File.read(file_path))

@@ -9,8 +9,10 @@ jobs:
           name: Extract shunit
           command: tar --strip-components=1 -zxvf tests/shunit2-2.1.8.tar.gz
       - run:
-          name: Install bashcov
-          command: gem install bashcov
+          name: Install bashcov and json
+          command: |
+            gem install bashcov
+            gem install json
       - run:
           name: Run Tests
           command: |
