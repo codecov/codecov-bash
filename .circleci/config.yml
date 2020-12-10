@@ -18,7 +18,7 @@ jobs:
             bashcov tests/test
       - run:
           name: Convert coverage file
-          command: ruby convert_resultset.rb ./coverage/.resultset.json
+          command: ruby convert_resultset.rb /home/circleci/project/coverage/.resultset.json
       - run:
           name: Upload Codecov
           command: |
