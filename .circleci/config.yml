@@ -18,11 +18,11 @@ jobs:
             bashcov tests/test
       - run:
           name: Convert coverage file
-          command: python -v
+          command: ruby convert_resultset.rb ./coverage/.resultset.json
       - run:
           name: Upload Codecov
           command: |
-            bash <(curl -s https://codecov.io/bash) -f ./coverage/.resultset.json
+            bash <(curl -s https://codecov.io/bash) -f ./coverage/converted_resultset.json
       - store_artifacts:
           path: coverage
   deploy:
