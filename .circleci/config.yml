@@ -17,10 +17,13 @@ jobs:
             env -i PATH="$PATH"
             bashcov tests/test
       - run:
+          name: View coverage dir
+          command: ls -al /home/circleci/project/coverage
+      - run:
           name: Upload Codecov
           command: |
-            bash <(curl -s https://codecov.io/bash) -s coverage -d > upload.txt
-            bash <(curl -s https://codecov.io/bash) -s coverage
+            # bash <(curl -s https://codecov.io/bash) -s /home/circleci/project/coverage -d > upload.txt
+            bash <(curl -s https://codecov.io/bash)
       - store_artifacts:
           path: codecov.txt
       - store_artifacts:
