@@ -553,17 +553,6 @@ then
   job="$CODEBUILD_BUILD_ID"
   slug="$(echo "$CODEBUILD_SOURCE_REPO_URL" | sed 's/^.*:\/\/[^\/]*\///' | sed 's/\.git$//')"
 
-elif [ "$DOCKER_REPO" != "" ];
-then
-  say "$e==>$x Docker detected."
-  # https://docs.docker.com/docker-cloud/builds/advanced/
-  service="docker"
-  branch="$SOURCE_BRANCH"
-  commit="$SOURCE_COMMIT"
-  slug="$DOCKER_REPO"
-  tag="$CACHE_TAG"
-  env="$env,IMAGE_NAME"
-
 elif [ "$CI" = "true" ] && [ "$CI_NAME" = "codeship" ];
 then
   say "$e==>$x Codeship CI detected."
@@ -857,6 +846,7 @@ then
   job="${BUILD_BUILDID}"
   branch="${BUILD_SOURCEBRANCH#"refs/heads/"}"
   build_url=$(urlencode "${SYSTEM_TEAMFOUNDATIONSERVERURI}${SYSTEM_TEAMPROJECT}/_build/results?buildId=${BUILD_BUILDID}")
+
 elif [ "$CI" = "true" ] && [ "$BITBUCKET_BUILD_NUMBER" != "" ];
 then
   say "$e==>$x Bitbucket detected."
@@ -873,6 +863,7 @@ then
   then
     commit=$(git rev-parse "$BITBUCKET_COMMIT")
   fi
+
 elif [ "$CI" = "true" ] && [ "$BUDDY" = "true" ];
 then
   say "$e==>$x Buddy CI detected."
@@ -897,6 +888,17 @@ then
   commit="$CIRRUS_CHANGE_IN_REPO"
   build="$CIRRUS_TASK_ID"
   job="$CIRRUS_TASK_NAME"
+
+elif [ "$DOCKER_REPO" != "" ];
+then
+  say "$e==>$x Docker detected."
+  # https://docs.docker.com/docker-cloud/builds/advanced/
+  service="docker"
+  branch="$SOURCE_BRANCH"
+  commit="$SOURCE_COMMIT"
+  slug="$DOCKER_REPO"
+  tag="$CACHE_TAG"
+  env="$env,IMAGE_NAME"
 
 else
   say "${r}x>${x} No CI provider detected."
