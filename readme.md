@@ -103,12 +103,17 @@ bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverag
 ### Caveats
 
 1. **Jenkins**: Unable to find reports? Try `PWD=WORKSPACE bash <(curl -s https://codecov.io/bash)`
- 
 
 
 ### Development
 
-Once you made a change to the codecov uploader script, please also update the hash file via:
+To automatically update the hash files after a change to the Codecov uploader script, run
+
+```
+./install.sh
+```
+
+which will add the `pre-commit` hooks. You can also update the has files manually via:
 
 ```bash
 for i in 1 256 512; do shasum -a "${i}" codecov > "SHA${i}SUM"; done
