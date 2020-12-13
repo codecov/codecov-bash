@@ -83,6 +83,7 @@ b="\033[0;36m"
 g="\033[0;32m"
 r="\033[0;31m"
 e="\033[0;90m"
+y="\033[0;33m"
 x="\033[0m"
 
 show_help() {
@@ -469,6 +470,23 @@ say "
                               Bash-$VERSION
 
 "
+
+# check for installed tools
+# git/hg
+if ! [ -x "$(command -v git)" ];
+then
+  say "$y==>$x git not installed, testing for mercurial"
+  if ! [ -x "$(command -v hg)" ];
+  then
+    say "$r==>$x git nor mercurial are installed. Uploader may fail or have unintended consequences"
+  fi
+fi
+# curl
+if ! [ -x "$(command -v curl)" ];
+then
+  say "$r==>$x curl not installed. Exiting."
+  exit ${exit_with};
+fi
 
 search_in="$proj_root"
 
