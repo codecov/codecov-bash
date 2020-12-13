@@ -113,7 +113,7 @@ To automatically update the hash files after a change to the Codecov uploader sc
 ./install.sh
 ```
 
-which will add the `pre-commit` hooks. You can also update the has files manually via:
+which will add the `pre-commit` hooks. You can also update the hash files manually via:
 
 ```bash
 for i in 1 256 512; do shasum -a "${i}" codecov > "SHA${i}SUM"; done
