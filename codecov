@@ -472,17 +472,23 @@ say "
 
 # check for installed tools
 # git/hg
-if ! [ -x "$(command -v git)" ];
+if [ -x "$(command -v git)" ];
 then
+  say "   $(git --version) found"
+else
   say "$y==>$x git not installed, testing for mercurial"
-  if ! [ -x "$(command -v hg)" ];
+  if [ -x "$(command -v hg)" ];
   then
+    say "   $(hg --version) found"
+  else
     say "$r==>$x git nor mercurial are installed. Uploader may fail or have unintended consequences"
   fi
 fi
 # curl
-if ! [ -x "$(command -v curl)" ];
+if [ -x "$(command -v curl)" ];
 then
+  say "   $(curl --version) found"
+else
   say "$r==>$x curl not installed. Exiting."
   exit ${exit_with};
 fi
