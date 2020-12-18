@@ -1,4 +1,4 @@
 require 'simplecov'
-require "simplecov_json_formatter"
+require 'simplecov-cobertura'
 
-SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
+SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
