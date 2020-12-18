@@ -1,3 +1,4 @@
 require 'simplecov'
+require "simplecov_json_formatter"
 
-SimpleCov.formatter = SimpleCov::Formatter::SimpleFormatter
+SimpleCov.formatter = SimpleCov::Formatter::JSONFormatter
