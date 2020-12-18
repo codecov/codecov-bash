@@ -12,6 +12,7 @@ jobs:
           name: Install bashcov and json
           command: |
             gem install json
+            gem install simplecov -v 0.18.5
             gem install --local ./bashcov-2.0.0.gem
       - run:
           name: Run Tests
