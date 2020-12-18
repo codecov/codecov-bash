@@ -1,8 +1,11 @@
 Codecov Global Uploader
 =======================
+[![codecov](https://codecov.io/gh/codecov/codecov-bash/branch/master/graph/badge.svg?token=iEvSTnW9Qm)](https://codecov.io/gh/codecov/codecov-bash)
+
 > Upload reports to Codecov for almost every supported language.
 
 [Deployed Version](https://codecov.io/bash)
+
 
 SHA1Sum:  [hash file](https://raw.githubusercontent.com/codecov/codecov-bash/master/SHA1SUM)
 
