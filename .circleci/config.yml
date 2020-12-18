@@ -11,20 +11,17 @@ jobs:
       - run:
           name: Install bashcov and json
           command: |
-            gem install bashcov
             gem install json
+            gem install --local ./bashcov-2.0.0.gem
       - run:
           name: Run Tests
           command: |
             env -i PATH="$PATH"
             bashcov tests/test
       - run:
-          name: Convert coverage file
-          command: ruby convert_resultset.rb /home/circleci/project/coverage/.resultset.json
-      - run:
           name: Upload Codecov
           command: |
-            bash <(curl -s https://codecov.io/bash) -f ./coverage/converted_resultset.json
+            bash <(curl -s https://codecov.io/bash)
       - store_artifacts:
           path: coverage
   deploy:
