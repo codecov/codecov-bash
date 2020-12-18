@@ -12,18 +12,14 @@ jobs:
           name: Install bashcov and json
           command: |
             gem install json
-            gem install simplecov -v 0.18.5
+            gem install simplecov
             gem install simplecov-cobertura
-            gem install --local ./bashcov-2.0.0.gem
+            gem install bashcov
       - run:
           name: Run Tests
           command: |
             env -i PATH="$PATH"
             bashcov tests/test
-      - run:
-          name: Get files
-          command: |
-            ls -al /home/circleci/project/coverage
       - run:
           name: Upload Codecov
           command: |
