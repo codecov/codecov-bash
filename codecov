@@ -474,12 +474,12 @@ say "
 # git/hg
 if [ -x "$(command -v git)" ];
 then
-  say "   $(git --version) found"
+  say "$b==>$x $(git --version) found"
 else
   say "$y==>$x git not installed, testing for mercurial"
   if [ -x "$(command -v hg)" ];
   then
-    say "   $(hg --version) found"
+    say "$b==>$x $(hg --version) found"
   else
     say "$r==>$x git nor mercurial are installed. Uploader may fail or have unintended consequences"
   fi
@@ -487,7 +487,7 @@ fi
 # curl
 if [ -x "$(command -v curl)" ];
 then
-  say "   $(curl --version) found"
+  say "$b==>$x $(curl --version)"
 else
   say "$r==>$x curl not installed. Exiting."
   exit ${exit_with};
@@ -837,6 +837,7 @@ then
   slug="${GITHUB_REPOSITORY}"
   build="${GITHUB_RUN_ID}"
   build_url=$(urlencode "http://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}")
+  job="${GITHUB_WORKFLOW}"
 
   # actions/checkout runs in detached HEAD
   mc=
@@ -849,6 +850,9 @@ then
     mc=$(echo "$mc" | cut -d' ' -f2)
     say "    Fixing merge commit SHA $commit -> $mc"
     commit=$mc
+  elif [[ "$mc" = "" ]];
+  then
+    say "$r->  Issue detecting commit SHA. Please run actions/checkout with fetch-depth > 1 or set to 0$x"
   fi
 
 elif [ "$SYSTEM_TEAMFOUNDATIONSERVERURI" != "" ];
