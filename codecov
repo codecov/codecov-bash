@@ -875,6 +875,19 @@ then
   branch="${BUILD_SOURCEBRANCH#"refs/heads/"}"
   build_url=$(urlencode "${SYSTEM_TEAMFOUNDATIONSERVERURI}${SYSTEM_TEAMPROJECT}/_build/results?buildId=${BUILD_BUILDID}")
 
+  # azure/pipelines runs in detached HEAD
+  mc=
+  if [ -n "$pr" ] && [ "$pr" != false ];
+  then
+    mc=$(git show --no-patch --format="%P" 2>/dev/null || echo "")
+  fi
+  if [[ "$mc" =~ ^[a-z0-9]{40}[[:space:]][a-z0-9]{40}$ ]];
+  then
+    mc=$(echo "$mc" | cut -d' ' -f2)
+    say "    Fixing merge commit SHA $commit -> $mc"
+    commit=$mc
+  fi
+
 elif [ "$CI" = "true" ] && [ "$BITBUCKET_BUILD_NUMBER" != "" ];
 then
   say "$e==>$x Bitbucket detected."
