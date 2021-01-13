@@ -17,16 +17,16 @@ jobs:
             gem install simplecov
             gem install simplecov-cobertura
             gem install bashcov
+      - shellcheck/install
       - run:
           name: Run Tests
           command: |
             env -i PATH="$PATH"
             bashcov tests/test
+            shellcheck codecov tests/test
             shasum --algorithm 1 --check --strict ./SHA1SUM
             shasum --algorithm 256 --check --strict ./SHA256SUM
             shasum --algorithm 512 --check --strict ./SHA512SUM
-      - shellcheck/check:
-          dir: .
       - run:
           name: Upload Codecov
           command: |
