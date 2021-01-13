@@ -15,6 +15,7 @@ jobs:
             gem install simplecov
             gem install simplecov-cobertura
             gem install bashcov
+            apt-get install ShellCheck
       - run:
           name: Run Tests
           command: |
