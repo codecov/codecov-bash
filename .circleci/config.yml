@@ -20,6 +20,10 @@ jobs:
           command: |
             env -i PATH="$PATH"
             bashcov tests/test
+            env -i PATH="$PATH" shellcheck codecov tests/test
+            shasum --algorithm 1 --check --strict ./SHA1SUM
+            shasum --algorithm 256 --check --strict ./SHA256SUM
+            shasum --algorithm 512 --check --strict ./SHA512SUM
       - run:
           name: Upload Codecov
           command: |
