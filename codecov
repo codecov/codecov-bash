@@ -836,7 +836,7 @@ then
   slug="${GITHUB_REPOSITORY}"
   build="${GITHUB_RUN_ID}"
   build_url=$(urlencode "http://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}")
-  job="${GITHUB_WORKFLOW}"
+  job="$(urlencode GITHUB_WORKFLOW)"
 
   # actions/checkout runs in detached HEAD
   mc=
@@ -1080,7 +1080,7 @@ query="branch=$branch\
        &service=$service\
        &flags=$flags\
        &pr=$([ "$pr_o" = "" ] && echo "${pr##\#}" || echo "${pr_o##\#}")\
-       &job=$(urlencode $job)\
+       &job=$job\
        &cmd_args=$(IFS=,; echo "${codecov_flags[*]}")"
 
 if [ -n "$project" ] && [ -n "$server_uri" ];
