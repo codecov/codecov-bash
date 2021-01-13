@@ -206,7 +206,6 @@ urlencode() {
   echo "$1" | curl -Gso /dev/null -w "%{url_effective}" --data-urlencode @- "" | cut -c 3- | sed -e 's/%0A//'
 }
 
-
 swiftcov() {
   _dir=$(dirname "$1" | sed 's/\(Build\).*/\1/g')
   for _type in app framework xctest
@@ -1081,7 +1080,7 @@ query="branch=$branch\
        &service=$service\
        &flags=$flags\
        &pr=$([ "$pr_o" = "" ] && echo "${pr##\#}" || echo "${pr_o##\#}")\
-       &job=$job\
+       &job=$(urlencode $job)\
        &cmd_args=$(IFS=,; echo "${codecov_flags[*]}")"
 
 if [ -n "$project" ] && [ -n "$server_uri" ];
