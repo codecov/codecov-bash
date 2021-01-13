@@ -836,7 +836,7 @@ then
   slug="${GITHUB_REPOSITORY}"
   build="${GITHUB_RUN_ID}"
   build_url=$(urlencode "http://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}")
-  job="$(urlencode GITHUB_WORKFLOW)"
+  job="$(urlencode ${GITHUB_WORKFLOW})"
 
   # actions/checkout runs in detached HEAD
   mc=
