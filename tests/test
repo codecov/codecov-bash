@@ -386,6 +386,19 @@ function test_github_action_pr () {
     assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=patch-2&commit=$TEST_DATA_GIT_COMMIT&build=32402849&build_url=http%3A%2F%2Fgithub.com%2Fcodecov%2Fci-repo%2Factions%2Fruns%2F32402849&name=&tag=&slug=codecov%2Fci-repo&service=github-actions&flags=&pr=7&job=&cmd_args=d,C"
 }
 
+function test_github_action_emoji () {
+    reset
+
+    export GITHUB_ACTIONS="true"
+    export GITHUB_REF="refs/heads/master"
+    export GITHUB_REPOSITORY="codecov/ci-repo"
+    export GITHUB_RUN_ID="32402849"
+    export GITHUB_SHA="$TEST_DATA_GIT_COMMIT"
+    export GITHUB_WORKFLOW="💡🏠"
+
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=master&commit=$TEST_DATA_GIT_COMMIT&build=32402849&build_url=http%3A%2F%2Fgithub.com%2Fcodecov%2Fci-repo%2Factions%2Fruns%2F32402849&name=&tag=&slug=codecov%2Fci-repo&service=github-actions&flags=&pr=&job=%F0%9F%92%A1%F0%9F%8F%A0&cmd_args=d,C"
+}
+
 function test_semaphore (){
     reset
     export CI="true"
