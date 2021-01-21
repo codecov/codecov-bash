@@ -298,7 +298,7 @@ then
 
         elif [[ "$OPTARG" = *"*"* ]];
         then
-          include_cov="$include_cov -or -name '$OPTARG'"
+          include_cov="$include_cov -or -path '$OPTARG'"
 
         else
           ft_search=0
