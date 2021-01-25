@@ -255,7 +255,7 @@ parse_yaml() {
 
 if [ $# != 0 ];
 then
-  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:k:Kn:N:p:P:Q:q:r:R:s:S:t:T:u:U:vx:X:Zz-" o
+  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:k:Kn:N:p:P:Q:q:r:R:s:S:t:T:u:U:vx:X:Zz:-" o
   do
     codecov_flags+=( "$o" )
     case "$o" in
