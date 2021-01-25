@@ -34,7 +34,7 @@ jobs:
       - run:
           name: Upload Codecov
           command: |
-            bash <(curl -s https://codecov.io/bash) -z /home/circleci/project/coverage/codecov-result.json -Z
+            bash <(curl -s https://codecov.io/bash) -z ./coverage/codecov-result.json -Z -v
       - store_artifacts:
           path: coverage
   deploy:
