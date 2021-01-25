@@ -30,7 +30,7 @@ jobs:
       - run:
           name: Upload Codecov
           command: |
-            bash <(curl -s https://codecov.io/bash) -z ./coverage/codecov-result.json -Z -v
+            bash ./codecov -z ./coverage/codecov-result.json -Z
       - store_artifacts:
           path: coverage
   deploy:

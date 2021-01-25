@@ -254,7 +254,7 @@ parse_yaml() {
 
 if [ $# != 0 ];
 then
-  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:k:Km:n:p:P:Q:q:r:R:s:S:t:T:u:U:vx:X:ZN:-" o
+  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:k:Kn:p:P:Q:q:r:R:s:S:t:T:u:U:vx:X:Zz:N:-" o
   do
     codecov_flags+=( "$o" )
     case "$o" in
@@ -351,17 +351,6 @@ $OPTARG"
         r=""
         e=""
         x=""
-        ;;
-      "m")
-        direct_file_upload="$OPTARG"
-        ft_gcov="0"
-        ft_coveragepy="0"
-        ft_fix="0"
-        ft_search="0"
-        ft_network="0"
-        ft_xcodellvm="0"
-        ft_gcovout="0"
-        include_cov=""
         ;;
       "n")
         name="$OPTARG"
@@ -464,6 +453,17 @@ $OPTARG"
         ;;
       "Z")
         exit_with=1
+        ;;
+      "z")
+        direct_file_upload="$OPTARG"
+        ft_gcov="0"
+        ft_coveragepy="0"
+        ft_fix="0"
+        ft_search="0"
+        ft_network="0"
+        ft_xcodellvm="0"
+        ft_gcovout="0"
+        include_cov=""
         ;;
       *)
         echo -e "${r}Unexpected flag not supported${x}"
