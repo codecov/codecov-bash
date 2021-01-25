@@ -485,16 +485,19 @@ say "
 
 # check for installed tools
 # git/hg
-if [ -x "$(command -v git)" ];
+if [ "$direct_file_upload" = "" ];
 then
-  say "$b==>$x $(git --version) found"
-else
-  say "$y==>$x git not installed, testing for mercurial"
-  if [ -x "$(command -v hg)" ];
+  if [ -x "$(command -v git)" ];
   then
-    say "$b==>$x $(hg --version) found"
+    say "$b==>$x $(git --version) found"
   else
-    say "$r==>$x git nor mercurial are installed. Uploader may fail or have unintended consequences"
+    say "$y==>$x git not installed, testing for mercurial"
+    if [ -x "$(command -v hg)" ];
+    then
+      say "$b==>$x $(hg --version) found"
+    else
+      say "$r==>$x git nor mercurial are installed. Uploader may fail or have unintended consequences"
+    fi
   fi
 fi
 # curl
