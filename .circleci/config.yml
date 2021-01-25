@@ -14,7 +14,7 @@ jobs:
           name: Install Ruby dependencies
           command: |
             gem install json
-            gem install simplecov -v '~>0.21.2'
+            gem install simplecov -v '~>0.18.5'
             gem install --local codecov-0.4.1.gem
             gem install bashcov
       - shellcheck/install
