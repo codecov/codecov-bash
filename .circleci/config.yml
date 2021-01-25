@@ -28,10 +28,6 @@ jobs:
             shasum --algorithm 256 --check --strict ./SHA256SUM
             shasum --algorithm 512 --check --strict ./SHA512SUM
       - run:
-          name: Get all files
-          command: |
-            ls -al .
-      - run:
           name: Upload Codecov
           command: |
             bash <(curl -s https://codecov.io/bash) -z ./coverage/codecov-result.json -Z -v
