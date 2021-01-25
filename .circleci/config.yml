@@ -15,7 +15,7 @@ jobs:
           command: |
             gem install json
             gem install simplecov
-            gem install simplecov-cobertura
+            gem install codecov
             gem install bashcov
       - shellcheck/install
       - run:
@@ -27,6 +27,10 @@ jobs:
             shasum --algorithm 1 --check --strict ./SHA1SUM
             shasum --algorithm 256 --check --strict ./SHA256SUM
             shasum --algorithm 512 --check --strict ./SHA512SUM
+      - run:
+          name: Get all files
+          command: |
+            ls -al /home/circleci/project/coverage
       - run:
           name: Upload Codecov
           command: |
