@@ -15,7 +15,7 @@ jobs:
           command: |
             gem install json
             gem install simplecov
-            gem install codecov
+            gem install --local codecov-0.4.1.gem
             gem install bashcov
       - shellcheck/install
       - run:
