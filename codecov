@@ -1757,7 +1757,7 @@ else
   if [ "$save_to" != "" ];
   then
     say "${e}==>${x} Copying upload file to ${save_to}"
-    mkdir -p `dirname "$save_to"`
+    mkdir -p $(dirname "$save_to")
     cp "$upload_file" "$save_to"
   fi
 
