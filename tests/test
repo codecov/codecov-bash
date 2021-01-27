@@ -230,7 +230,7 @@ function test_direct_upload () {
     export CIRCLECI="true"
     export VERSION=$VERSION
     export CIRCLE_BUILD_NUM="${CIRCLE_BUILD_URL##*/}"
-    res=$(./codecov -z "test/reports/direct_report.json" -F test)
+    res=$(./codecov -z "tests/reports/direct_report.json" -F test)
     assertContains "$res" "View reports at"
     assertContains "$res" "https://codecov.io/github/codecov/codecov-bash/commit/"
 }
