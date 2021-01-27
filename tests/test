@@ -219,7 +219,7 @@ function test_upload () {
     export VERSION=$VERSION
     export CIRCLE_BUILD_NUM="${CIRCLE_BUILD_URL##*/}"
     printenv
-    res=$(./codecov)
+    res=$(./codecov -F test)
     echo "$res"
     assertContains "$res" "View reports at"
     assertContains "$res" "https://codecov.io/github/codecov/codecov-bash/commit/"
@@ -231,7 +231,7 @@ function test_direct_upload () {
     export CIRCLECI="true"
     export VERSION=$VERSION
     export CIRCLE_BUILD_NUM="${CIRCLE_BUILD_URL##*/}"
-    res=$(./codecov -z "test/reports/direct_report.json")
+    res=$(./codecov -z "test/reports/direct_report.json" -F test)
     echo "$res"
     assertContains "$res" "View reports at"
     assertContains "$res" "https://codecov.io/github/codecov/codecov-bash/commit/"
