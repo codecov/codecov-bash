@@ -214,6 +214,8 @@ function test_token_env () {
 
 function test_upload () {
     reset
+    export CI="true"
+    export CIRCLECI="true"
     res=$(CODECOV_TOKEN="38cd42da-4df4-4760-a998-4ebeca536904" ./codecov)
     echo "$res"
     assertContains "$res" "Reports queued to"
@@ -222,6 +224,8 @@ function test_upload () {
 
 function test_direct_upload () {
     reset
+    export CI="true"
+    export CIRCLECI="true"
     res=$(CODECOV_TOKEN="38cd42da-4df4-4760-a998-4ebeca536904" ./codecov -z test/reports/direct_report.json)
     echo "$res"
     assertContains "$res" "Reports queued to"
