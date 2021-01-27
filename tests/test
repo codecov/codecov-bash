@@ -212,21 +212,28 @@ function test_token_env () {
     assertTrue 'Expected output differs.' $?
 }
 
-# function test_upload () {
-#     reset
-#     export CI="true"
-#     export TRAVIS_JOB_ID="33116958"
-#     export TRAVIS="true"
-#     export TRAVIS_BRANCH="master"
-#     export TRAVIS_COMMIT="c739768fcac68144a3a6d82305b9c4106934d31a"
-#     export TRAVIS_REPO_SLUG='codecov/ci-repo'
-#     export TRAVIS_JOB_ID="33116958"
-#     export TRAVIS_PULL_REQUEST="false"
-#     export TRAVIS_JOB_NUMBER="4.1"
-#     res=$(./codecov)
-#     assertContains "$res" "Reports queued to"
-#     assertContains "$res" "http://codecov.io/github/codecov/ci-repo?ref=c739768fcac68144a3a6d82305b9c4106934d31a"
-# }
+function test_upload () {
+    reset
+    export CI="true"
+    export CIRCLECI="true"
+    export VERSION=$VERSION
+    export CIRCLE_BUILD_NUM="${CIRCLE_BUILD_URL##*/}"
+    printenv
+    res=$(./codecov -F test)
+    assertContains "$res" "View reports at"
+    assertContains "$res" "https://codecov.io/github/codecov/codecov-bash/commit/"
+}
+
+function test_direct_upload () {
+    reset
+    export CI="true"
+    export CIRCLECI="true"
+    export VERSION=$VERSION
+    export CIRCLE_BUILD_NUM="${CIRCLE_BUILD_URL##*/}"
+    res=$(./codecov -z "tests/reports/direct_report.json" -F test)
+    assertContains "$res" "View reports at"
+    assertContains "$res" "https://codecov.io/github/codecov/codecov-bash/commit/"
+}
 
 # -----------------
 # Test CI Companies

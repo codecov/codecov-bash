@@ -11,7 +11,7 @@ jobs:
           name: Extract shunit
           command: tar --strip-components=1 -zxvf tests/shunit2-2.1.8.tar.gz
       - run:
-          name: Install bashcov and json
+          name: Install Ruby dependencies
           command: |
             gem install json
             gem install simplecov
@@ -30,7 +30,7 @@ jobs:
       - run:
           name: Upload Codecov
           command: |
-            bash <(curl -s https://codecov.io/bash) -s /home/circleci/project/coverage -Z
+            bash ./codecov -s coverage -Z
       - store_artifacts:
           path: coverage
   deploy:

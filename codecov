@@ -28,6 +28,7 @@ ddp="$HOME/Library/Developer/Xcode/DerivedData"
 xp=""
 files=""
 save_to=""
+direct_file_upload=""
 cacert="$CODECOV_CA_BUNDLE"
 gcov_ignore="-not -path './bower_components/**' -not -path './node_modules/**' -not -path './vendor/**'"
 gcov_include=""
@@ -146,6 +147,9 @@ cat << EOF
                  -F ui,chrome        This upload is Chrome - UI tests
 
     -c           Move discovered coverage reports to the trash
+    -z FILE      Upload specified file directly to Codecov and bypass all report generation.
+                 This is inteded to be used only with a pre-formatted Codecov report and is not
+                 expected to work under any other circumstances.
     -Z           Exit with 1 if not successful. Default will Exit with 0
 
     -- xcode --
@@ -248,10 +252,9 @@ parse_yaml() {
    }'
 }
 
-
 if [ $# != 0 ];
 then
-  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:k:Kn:p:P:Q:q:r:R:s:S:t:T:u:U:vx:X:ZN:-" o
+  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:k:Kn:p:P:Q:q:r:R:s:S:t:T:u:U:vx:X:Zz:N:-" o
   do
     codecov_flags+=( "$o" )
     case "$o" in
@@ -451,6 +454,17 @@ $OPTARG"
       "Z")
         exit_with=1
         ;;
+      "z")
+        direct_file_upload="$OPTARG"
+        ft_gcov="0"
+        ft_coveragepy="0"
+        ft_fix="0"
+        ft_search="0"
+        ft_network="0"
+        ft_xcodellvm="0"
+        ft_gcovout="0"
+        include_cov=""
+        ;;
       *)
         echo -e "${r}Unexpected flag not supported${x}"
         ;;
@@ -471,16 +485,19 @@ say "
 
 # check for installed tools
 # git/hg
-if [ -x "$(command -v git)" ];
+if [ "$direct_file_upload" = "" ];
 then
-  say "$b==>$x $(git --version) found"
-else
-  say "$y==>$x git not installed, testing for mercurial"
-  if [ -x "$(command -v hg)" ];
+  if [ -x "$(command -v git)" ];
   then
-    say "$b==>$x $(hg --version) found"
+    say "$b==>$x $(git --version) found"
   else
-    say "$r==>$x git nor mercurial are installed. Uploader may fail or have unintended consequences"
+    say "$y==>$x git not installed, testing for mercurial"
+    if [ -x "$(command -v hg)" ];
+    then
+      say "$b==>$x $(hg --version) found"
+    else
+      say "$r==>$x git nor mercurial are installed. Uploader may fail or have unintended consequences"
+    fi
   fi
 fi
 # curl
@@ -1373,6 +1390,9 @@ $PWD/coverage.xml"
 elif [ "$include_cov" != "" ];
 then
   files=$(eval "find $search_in -type f \( ${include_cov:5} \)$exclude_cov 2>/dev/null" || echo '')
+elif [ "$direct_file_upload" != "" ];
+then
+  files=$direct_file_upload
 fi
 
 num_of_files=$(echo "$files" | wc -l | tr -d ' ')
@@ -1442,6 +1462,7 @@ cleanup() {
 
 trap cleanup INT ABRT TERM
 
+
 if [ "$env" != "" ];
 then
   inc_env=""
@@ -1455,13 +1476,16 @@ then
 "
     fi
   done
-
-echo "$inc_env<<<<<< ENV" >> "$upload_file"
+  echo "$inc_env<<<<<< ENV" >> "$upload_file"
 fi
 
 # Append git file list
 # write discovered yaml location
-echo "$yaml" >> "$upload_file"
+if [ "$direct_file_upload" = "" ];
+then
+  echo "$yaml" >> "$upload_file"
+fi
+
 if [ "$ft_network" == "1" ];
 then
   i="woff|eot|otf"  # fonts
@@ -1473,70 +1497,78 @@ then
   then
     i="$i|html"
   fi
-
   echo "$network" | grep -vwE "($i)$" >> "$upload_file"
 fi
 echo "<<<<<< network" >> "$upload_file"
 
-fr=0
-say "${e}==>${x} Reading reports"
-while IFS='' read -r file;
-do
-  # read the coverage file
-  if [ "$(echo "$file" | tr -d ' ')" != '' ];
-  then
-    if [ -f "$file" ];
+if [ "$direct_file_upload" = "" ];
+then
+  fr=0
+  say "${e}==>${x} Reading reports"
+  while IFS='' read -r file;
+  do
+    # read the coverage file
+    if [ "$(echo "$file" | tr -d ' ')" != '' ];
     then
-      report_len=$(wc -c < "$file")
-      if [ "$report_len" -ne 0 ];
+      if [ -f "$file" ];
       then
-        say "    ${g}+${x} $file ${e}bytes=$(echo "$report_len" | tr -d ' ')${x}"
-        # append to to upload
-        _filename=$(basename "$file")
-        if [ "${_filename##*.}" = 'gcov' ];
+        report_len=$(wc -c < "$file")
+        if [ "$report_len" -ne 0 ];
         then
-          {
-            echo "# path=$(echo "$file.reduced" | sed "s|^$git_root/||")";
-            # get file name
-            head -1 "$file";
-          } >> "$upload_file"
-          # 1. remove source code
-          # 2. remove ending bracket lines
-          # 3. remove whitespace
-          # 4. remove contextual lines
-          # 5. remove function names
-          awk -F': *' '{print $1":"$2":"}' "$file" \
-            | sed '\/: *} *$/d' \
-            | sed 's/^ *//' \
-            | sed '/^-/d' \
-            | sed 's/^function.*/func/' >> "$upload_file"
+          say "    ${g}+${x} $file ${e}bytes=$(echo "$report_len" | tr -d ' ')${x}"
+          # append to to upload
+          _filename=$(basename "$file")
+          if [ "${_filename##*.}" = 'gcov' ];
+          then
+            {
+              echo "# path=$(echo "$file.reduced" | sed "s|^$git_root/||")";
+              # get file name
+              head -1 "$file";
+            } >> "$upload_file"
+            # 1. remove source code
+            # 2. remove ending bracket lines
+            # 3. remove whitespace
+            # 4. remove contextual lines
+            # 5. remove function names
+            awk -F': *' '{print $1":"$2":"}' "$file" \
+              | sed '\/: *} *$/d' \
+              | sed 's/^ *//' \
+              | sed '/^-/d' \
+              | sed 's/^function.*/func/' >> "$upload_file"
+          else
+            {
+              echo "# path=${file//^$git_root/||}";
+              cat "$file";
+            } >> "$upload_file"
+          fi
+          echo "<<<<<< EOF" >> "$upload_file"
+          fr=1
+          if [ "$clean" = "1" ];
+          then
+            rm "$file"
+          fi
         else
-          {
-            echo "# path=${file//^$git_root/||}";
-            cat "$file";
-          } >> "$upload_file"
-        fi
-        echo "<<<<<< EOF" >> "$upload_file"
-        fr=1
-        if [ "$clean" = "1" ];
-        then
-          rm "$file"
+          say "    ${r}-${x} Skipping empty file $file"
         fi
       else
-        say "    ${r}-${x} Skipping empty file $file"
+        say "    ${r}-${x} file not found at $file"
       fi
-    else
-      say "    ${r}-${x} file not found at $file"
     fi
-  fi
-done <<< "$(echo -e "$files")"
+  done <<< "$(echo -e "$files")"
 
-if [ "$fr" = "0" ];
-then
-  say "${r}-->${x} No coverage data found."
-  say "    Please visit ${b}http://docs.codecov.io/docs/supported-languages${x}"
-  say "    search for your projects language to learn how to collect reports."
-  exit ${exit_with};
+  if [ "$fr" = "0" ];
+  then
+    say "${r}-->${x} No coverage data found."
+    say "    Please visit ${b}http://docs.codecov.io/docs/supported-languages${x}"
+    say "    search for your projects language to learn how to collect reports."
+    exit ${exit_with};
+  fi
+else
+  cp "$direct_file_upload" "$upload_file"
+  if [ "$clean" = "1" ];
+  then
+    rm "$direct_file_upload"
+  fi
 fi
 
 if [ "$ft_fix" = "1" ];
@@ -1725,7 +1757,7 @@ else
   if [ "$save_to" != "" ];
   then
     say "${e}==>${x} Copying upload file to ${save_to}"
-    mkdir --parents "$save_to"
+    mkdir -p "$(dirname "$save_to")"
     cp "$upload_file" "$save_to"
   fi
 
