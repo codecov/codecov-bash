@@ -221,8 +221,8 @@ function test_upload () {
     printenv
     res=$(./codecov)
     echo "$res"
-    assertContains "$res" "Reports queued to"
-    assertContains "$res" "http://codecov.io/github/codecov/ci-repo?ref=c739768fcac68144a3a6d82305b9c4106934d31a"
+    assertContains "$res" "View reports at"
+    assertContains "$res" "https://codecov.io/github/codecov/codecov-bash/commit/"
 }
 
 function test_direct_upload () {
@@ -230,10 +230,11 @@ function test_direct_upload () {
     export CI="true"
     export CIRCLECI="true"
     export VERSION=$VERSION
+    export CIRCLE_BUILD_NUM="${CIRCLE_BUILD_URL##*/}"
     res=$(./codecov -z "test/reports/direct_report.json")
     echo "$res"
-    assertContains "$res" "Reports queued to"
-    assertContains "$res" "http://codecov.io/github/codecov/ci-repo?ref=c739768fcac68144a3a6d82305b9c4106934d31a"
+    assertContains "$res" "View reports at"
+    assertContains "$res" "https://codecov.io/github/codecov/codecov-bash/commit/"
 }
 
 # -----------------
