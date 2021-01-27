@@ -217,6 +217,7 @@ function test_upload () {
     export CI="true"
     export CIRCLECI="true"
     export VERSION=$VERSION
+    export CIRCLE_BUILD_NUM="${CIRCLE_BUILD_URL##*/}"
     printenv
     res=$(./codecov)
     echo "$res"
