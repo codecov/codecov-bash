@@ -15,7 +15,7 @@ jobs:
           command: |
             gem install json
             gem install simplecov
-            gem install simplecov-cobertura
+            gem install codecov
             gem install bashcov
       - shellcheck/install
       - run:
@@ -30,7 +30,7 @@ jobs:
       - run:
           name: Upload Codecov
           command: |
-            bash ./codecov -s coverage -Z
+            bash ./codecov -z coverage/codecov-result.json -Z
       - store_artifacts:
           path: coverage
   deploy:
