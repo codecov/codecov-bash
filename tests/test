@@ -214,7 +214,7 @@ function test_token_env () {
 
 function test_upload () {
     reset
-    res=$(./codecov)
+    res=$(CODECOV_TOKEN="38cd42da-4df4-4760-a998-4ebeca536904" ./codecov)
     echo "$res"
     assertContains "$res" "Reports queued to"
     assertContains "$res" "http://codecov.io/github/codecov/ci-repo?ref=c739768fcac68144a3a6d82305b9c4106934d31a"
@@ -222,7 +222,8 @@ function test_upload () {
 
 function test_direct_upload () {
     reset
-    res=$(./codecov -z tests/reports/direct_report.json)
+    res=$(CODECOV_TOKEN="38cd42da-4df4-4760-a998-4ebeca536904" ./codecov -z test/reports/direct_report.json)
+    echo "$res"
     assertContains "$res" "Reports queued to"
     assertContains "$res" "http://codecov.io/github/codecov/ci-repo?ref=c739768fcac68144a3a6d82305b9c4106934d31a"
 }
