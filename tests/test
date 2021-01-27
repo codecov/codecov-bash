@@ -216,6 +216,8 @@ function test_upload () {
     reset
     export CI="true"
     export CIRCLECI="true"
+    export VERSION=$VERSION
+    printenv
     res=$(./codecov)
     echo "$res"
     assertContains "$res" "Reports queued to"
@@ -226,6 +228,7 @@ function test_direct_upload () {
     reset
     export CI="true"
     export CIRCLECI="true"
+    export VERSION=$VERSION
     res=$(./codecov -z "test/reports/direct_report.json")
     echo "$res"
     assertContains "$res" "Reports queued to"
