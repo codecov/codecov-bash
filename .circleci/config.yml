@@ -13,10 +13,8 @@ jobs:
       - run:
           name: Install Ruby dependencies
           command: |
-            gem install json
-            gem install simplecov
-            gem install codecov
             gem install bashcov
+            gem install codecov
       - shellcheck/install
       - run:
           name: Run Tests
@@ -30,7 +28,7 @@ jobs:
       - run:
           name: Upload Codecov
           command: |
-            bash ./codecov -z coverage/codecov-result.json -Z
+            bash ./codecov -Z
       - store_artifacts:
           path: coverage
   deploy:
