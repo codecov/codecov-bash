@@ -1249,30 +1249,30 @@ $PWD/coverage.xml"
 
   patterns="find $search_in \( \
                         -name vendor \
-                        -or -name htmlcov \
-                        -or -name virtualenv \
-                        -or -name js/generated/coverage \
-                        -or -name .virtualenv \
-                        -or -name virtualenvs \
-                        -or -name .virtualenvs \
+                        -or -name '$bower_components' \
+                        -or -name '.egg-info*' \
+                        -or -name 'conftest_*.c.gcov' \
                         -or -name .env \
                         -or -name .envs \
-                        -or -name codecov-result.json \
-                        -or -name env \
-                        -or -name .yarn-cache \
-                        -or -name envs \
-                        -or -name .venv \
-                        -or -name .venvs \
-                        -or -name venv \
-                        -or -name venvs \
                         -or -name .git \
                         -or -name .hg \
                         -or -name .tox \
+                        -or -name .venv \
+                        -or -name .venvs \
+                        -or -name .virtualenv \
+                        -or -name .virtualenvs \
+                        -or -name .yarn-cache \
                         -or -name __pycache__ \
-                        -or -name '.egg-info*' \
-                        -or -name '$bower_components' \
+                        -or -name codecov-result.json \
+                        -or -name env \
+                        -or -name envs \
+                        -or -name htmlcov \
+                        -or -name js/generated/coverage \
                         -or -name node_modules \
-                        -or -name 'conftest_*.c.gcov' \
+                        -or -name venv \
+                        -or -name venvs \
+                        -or -name virtualenv \
+                        -or -name virtualenvs \
                     \) -prune -or \
                     -type f \( -name '*coverage*.*' \
                      -or -name '*.clover' \
