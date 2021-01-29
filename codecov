@@ -1263,7 +1263,6 @@ $PWD/coverage.xml"
                         -or -name .virtualenvs \
                         -or -name .yarn-cache \
                         -or -name __pycache__ \
-                        -or -name coverage/codecov-result.json \
                         -or -name env \
                         -or -name envs \
                         -or -name htmlcov \
@@ -1284,6 +1283,7 @@ $PWD/coverage.xml"
                      -or -name 'cobertura.xml' \
                      -or -name 'codecov.*' \
                      -or -name 'cover.out' \
+                     -or -name 'codecov-result.json' \
                      -or -name 'coverage-final.json' \
                      -or -name 'excoveralls.json' \
                      -or -name 'gcov.info' \
