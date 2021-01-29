@@ -13,10 +13,8 @@ jobs:
       - run:
           name: Install Ruby dependencies
           command: |
-            gem install json
-            gem install simplecov
-            gem install codecov
             gem install bashcov
+            gem install codecov
       - shellcheck/install
       - run:
           name: Run Tests
