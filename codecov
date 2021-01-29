@@ -1257,6 +1257,7 @@ $PWD/coverage.xml"
                         -or -name .virtualenvs \
                         -or -name .env \
                         -or -name .envs \
+                        -or -name codecov-result.json \
                         -or -name env \
                         -or -name .yarn-cache \
                         -or -name envs \
