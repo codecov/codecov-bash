@@ -291,6 +291,20 @@ function test_codebuild_with_nonpublic_github_host () {
     assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=codebuild-master&commit=$TEST_DATA_GIT_COMMIT&build=33116958&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=codebuild&flags=&pr=false&job=33116958&cmd_args=d,C"
 }
 
+# Test a LayerCI upload from a PR
+function test_layerci () {
+    reset
+    export LAYERCI="true"
+    export GIT_COMMIT="$TEST_DATA_GIT_COMMIT"
+    export LAYERCI_JOB_ID="33116958"
+    export LAYERCI_BRANCH="codebuild-master"
+    export LAYERCI_PULL_REQUEST="https://github.com/codecov/codecov-bash/pull/257"
+    export LAYERCI_REPO_OWNER="codecov"
+    export LAYERCI_REPO_NAME="codecov-bash"
+
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&token=&branch=codebuild-master&commit=$TEST_DATA_GIT_COMMIT&build=33116958&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=layerci&flags=&pr=257&job=&cmd_args=d,C"
+}
+
 function test_travis () {
     reset
     export CI="true"

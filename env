@@ -57,6 +57,16 @@ then
   add "TRAVIS_TAG"
   add "TRAVIS_OS_NAME"
 
+elif [ "$LAYERCI" = "true" ];
+then
+  add "LAYERCI"
+  add "GIT_COMMIT"
+  add "LAYERCI_JOB_ID"
+  add "LAYERCI_BRANCH"
+  add "LAYERCI_PULL_REQUEST"
+  add "LAYERCI_REPO_OWNER"
+  add "LAYERCI_REPO_NAME"
+
 elif [ "$CODEBUILD_CI" = "true" ];
 then
   add "CODEBUILD_WEBHOOK_HEAD_REF"

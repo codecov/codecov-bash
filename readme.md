@@ -83,6 +83,7 @@ bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverag
 | [CircleCI](https://circleci.com/)                   | Yes | Private only     |
 | [Codeship](https://codeship.com/)                   | Yes | Public & Private |
 | [Jenkins](https://jenkins-ci.org/)                  | Yes | Public & Private |
+| [LayerCI](https://layerci.com)                      | Yes | Public & Private |
 | [Semaphore](https://semaphoreci.com/)               | Yes | Public & Private |
 | [TeamCity](https://www.jetbrains.com/teamcity/).    | Yes | Public & Private |
 | [drone.io](https://drone.io/)                       | Yes | Public & Private |

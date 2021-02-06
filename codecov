@@ -576,6 +576,21 @@ then
     env="$env,${!language}"
   fi
 
+elif [ "$LAYERCI" = "true" ];
+then
+  say "$e==>$x LayerCI detected."
+  # https://layerci.com/docs/layerfile-reference/env
+  service="layerci"
+  commit="$GIT_COMMIT"
+  build="$LAYERCI_JOB_ID"
+  branch="$LAYERCI_BRANCH"
+  if [ "$LAYERCI_PULL_REQUEST" != "" ]; then
+    pr="$(echo "$LAYERCI_PULL_REQUEST" | awk -F/ '{print $NF}')"
+  else
+    pr="false"
+  fi
+  slug="$LAYERCI_REPO_OWNER/$LAYERCI_REPO_NAME"
+
 elif [ "$CODEBUILD_CI" = "true" ];
 then
   say "$e==>$x AWS Codebuild detected."
