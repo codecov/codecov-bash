@@ -43,6 +43,7 @@ ft_xcodellvm="1"
 ft_xcodeplist="0"
 ft_gcovout="1"
 ft_html="0"
+ft_yaml="0"
 
 _git_root=$(git rev-parse --show-toplevel 2>/dev/null || hg root 2>/dev/null || echo "$PWD")
 git_root="$_git_root"
@@ -133,6 +134,7 @@ cat << EOF
                  -X gcovout       Disable gcov output
                  -X html          Enable coverage for HTML files
                  -X recursesubs   Enable recurse submodules in git projects when searching for source files
+                 -X yaml          Enable coverage for YAML files
 
     -N           The commit SHA of the parent for which you are uploading coverage. If not present,
                  the parent will be determined using the API of your repository provider.
@@ -449,6 +451,9 @@ $OPTARG"
         elif [ "$OPTARG" = "recursesubs" ];
         then
           git_ls_files_recurse_submodules_o="--recurse-submodules"
+        elif [ "$OPTARG" = "yaml" ];
+        then
+          ft_yaml="1"
         fi
         ;;
       "Z")
@@ -1492,12 +1497,18 @@ then
   i="woff|eot|otf"  # fonts
   i="$i|gif|png|jpg|jpeg|psd"  # images
   i="$i|ptt|pptx|numbers|pages|md|txt|xlsx|docx|doc|pdf|csv"  # docs
-  i="$i|yml|yaml|.gitignore"  # supporting docs
+  i="$i|.gitignore"  # supporting docs
 
   if [ "$ft_html" != "1" ];
   then
     i="$i|html"
   fi
+
+  if [ "$ft_yaml" != "1" ];
+  then
+    i="$i|yml|yaml"
+  fi
+
   echo "$network" | grep -vwE "($i)$" >> "$upload_file"
 fi
 echo "<<<<<< network" >> "$upload_file"
