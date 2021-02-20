@@ -220,7 +220,7 @@ function test_upload () {
     export CIRCLE_BUILD_NUM="${CIRCLE_BUILD_URL##*/}"
     printenv
     res=$(./codecov -F test)
-    assertContains "$res" "View reports at"
+    assertContains "$res" "Reports have been successfully queued for processing at"
     assertContains "$res" "https://codecov.io/github/codecov/codecov-bash/commit/"
 }
 
@@ -231,7 +231,7 @@ function test_direct_upload () {
     export VERSION=$VERSION
     export CIRCLE_BUILD_NUM="${CIRCLE_BUILD_URL##*/}"
     res=$(./codecov -z "tests/reports/direct_report.json" -F test)
-    assertContains "$res" "View reports at"
+    assertContains "$res" "Reports have been successfully queued for processing at"
     assertContains "$res" "https://codecov.io/github/codecov/codecov-bash/commit/"
 }
 
