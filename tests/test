@@ -203,7 +203,7 @@ function test_token_opt () {
     reset
     token="38cd42da-4df4-4760-a998-4ebeca536904"
     res=$(./codecov -d -t "$token" | grep "https://codecov.io/")
-    diff <(echo "https://codecov.io/upload/v4?package=bash-$VERSION&token=$token&branch=$_BRANCH&commit=$_SHA&build=$BUILD&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=&flags=&pr=&job=$_JOB&cmd_args=d,t") <(echo "$res")
+    diff <(echo "https://codecov.io/upload/v4?package=bash-$VERSION&token=$token&branch=$_BRANCH&commit=$_SHA&build=$_BUILD&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=&flags=&pr=&job=$_JOB&cmd_args=d,t") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
