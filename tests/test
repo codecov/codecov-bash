@@ -224,6 +224,7 @@ function test_upload () {
     if [ "$_CIRCLECI" != "" ];
     then
       export CIRCLECI=$_CIRCLECI
+      export CIRCLE_BUILD_NUM="${CIRCLE_BUILD_URL##*/}"
     elif [ "$_GITHUB_ACTIONS" != "" ];
     then
       export GITHUB_ACTIONS=$_GITHUB_ACTIONS
@@ -243,6 +244,7 @@ function test_direct_upload () {
     if [ "$_CIRCLECI" != "" ];
     then
       export CIRCLECI=$_CIRCLECI
+      export CIRCLE_BUILD_NUM="${CIRCLE_BUILD_URL##*/}"
     elif [ "$_GITHUB_ACTIONS" != "" ];
     then
       export GITHUB_ACTIONS=$_GITHUB_ACTIONS
