@@ -224,9 +224,9 @@ function test_upload () {
     if [ "$_CIRCLECI" != "" ];
     then
       export CIRCLECI=$_CIRCLECI
-    elif [ "$_GITHUBACTIONS" != ""];
+    elif [ "$_GITHUB_ACTIONS" != "" ];
     then
-      export GITHUB_ACTIONS=$_GITHUBACTIONS
+      export GITHUB_ACTIONS=$_GITHUB_ACTIONS
     fi
 
     export VERSION=$VERSION
@@ -244,9 +244,9 @@ function test_direct_upload () {
     if [ "$_CIRCLECI" != "" ];
     then
       export CIRCLECI=$_CIRCLECI
-    elif [ "$_GITHUBACTIONS" != ""];
+    elif [ "$_GITHUB_ACTIONS" != "" ];
     then
-      export GITHUB_ACTIONS=$_GITHUBACTIONS
+      export GITHUB_ACTIONS=$_GITHUB_ACTIONS
     fi
 
     export VERSION=$VERSION
