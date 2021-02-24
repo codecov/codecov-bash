@@ -16,6 +16,9 @@ then
   _BRANCH=""
 fi
 
+_CIRCLECI=$CIRCLECI
+_GITHUB_ACTIONS=$GITHUB_ACTIONS
+
 export PATH=$PWD:$PATH
 
 function reset () {
@@ -217,7 +220,15 @@ function test_token_env () {
 function test_upload () {
     reset
     export CI="true"
-    export CIRCLECI="true"
+
+    if [ "$_CIRCLECI" != "" ];
+    then
+      export CIRCLECI=$_CIRCLECI
+    elif [ "$_GITHUBACTIONS" != ""];
+    then
+      export GITHUB_ACTIONS=$_GITHUBACTIONS
+    fi
+
     export VERSION=$VERSION
     export CIRCLE_BUILD_NUM="${CIRCLE_BUILD_URL##*/}"
     printenv
@@ -230,7 +241,14 @@ function test_upload () {
 function test_direct_upload () {
     reset
     export CI="true"
-    export CIRCLECI="true"
+    if [ "$_CIRCLECI" != "" ];
+    then
+      export CIRCLECI=$_CIRCLECI
+    elif [ "$_GITHUBACTIONS" != ""];
+    then
+      export GITHUB_ACTIONS=$_GITHUBACTIONS
+    fi
+
     export VERSION=$VERSION
     export CIRCLE_BUILD_NUM="${CIRCLE_BUILD_URL##*/}"
     res=$(./codecov -z "tests/reports/direct_report.json" -F test)
