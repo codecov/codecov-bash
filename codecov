@@ -841,6 +841,14 @@ then
 elif [ "$GITHUB_ACTIONS" != "" ];
 then
   say "$e==>$x GitHub Actions detected."
+  say "    Env vars used:"
+  say "      -> GITHUB_ACTIONS:    ${GITHUB_ACTIONS}"
+  say "      -> GITHUB_HEAD_REF:   ${GITHUB_HEAD_REF}"
+  say "      -> GITHUB_REF:        ${GITHUB_REF}"
+  say "      -> GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}"
+  say "      -> GITHUB_RUN_ID:     ${GITHUB_RUN_ID}"
+  say "      -> GITHUB_SHA:        ${GITHUB_SHA}"
+  say "      -> GITHUB_WORKFLOW:   ${GITHUB_WORKFLOW}"
 
   # https://github.com/features/actions
   service="github-actions"
@@ -1819,7 +1827,7 @@ else
 
       if [ "$s3" != "" ];
       then
-        say "    ${g}->${x} View reports at ${b}$(echo "$res" | sed -n 1p)${x}"
+        say "    ${g}->${x} Reports have been successfully queued for processing at ${b}$(echo "$res" | sed -n 1p)${x}"
         exit 0
       else
         say "    ${r}X>${x} Failed to upload"
@@ -1851,7 +1859,7 @@ else
   status=$(echo "$res" | head -1 | cut -d' ' -f2)
   if [ "$status" = "" ] || [ "$status" = "200" ];
   then
-    say "    View reports at ${b}$(echo "$res" | head -2 | tail -1)${x}"
+    say "    Reports have been successfully queued for processing at ${b}$(echo "$res" | head -2 | tail -1)${x}"
     exit 0
   else
     say "    ${g}${res}${x}"

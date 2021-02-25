@@ -1,0 +1,27 @@
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.7
+    - name: Extract shunit
+      run: tar --strip-components=1 -zxvf tests/shunit2-2.1.8.tar.gz
+    - name: Install Ruby dependencies
+      run: |
+        gem install bashcov
+        gem install codecov
+    - name: Run tests
+      run: |
+        env -i PATH="$PATH"
+        bashcov tests/test
+        shasum --algorithm 1 --check ./SHA1SUM
+        shasum --algorithm 256 --check ./SHA256SUM
+        shasum --algorithm 512 --check ./SHA512SUM
+    - name: Upload Codecov
+      run:
+        bash ./codecov -Z
