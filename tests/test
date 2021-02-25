@@ -186,6 +186,13 @@ function test_network_filter () {
     assertNotContains "$res" 'SHA512SUM'
     assertNotContains "$res" 'install.sh'
     assertContains "$res" 'tests/test'
+
+    reset
+    res=$(./codecov -d)
+    assertContains "$res" 'ignores/file.cpp'
+    assertContains "$res" 'SHA512SUM'
+    assertContains "$res" 'install.sh'
+    assertContains "$res" 'tests/test'
 }
 
 function test_slug_opt () {
