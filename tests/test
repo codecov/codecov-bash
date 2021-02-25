@@ -18,6 +18,7 @@ fi
 
 _CIRCLECI=$CIRCLECI
 _GITHUB_ACTIONS=$GITHUB_ACTIONS
+_GITHUB_HEAD_REF=$GITHUB_HEAD_REF
 
 export PATH=$PWD:$PATH
 
@@ -228,6 +229,7 @@ function test_upload () {
     elif [ "$_GITHUB_ACTIONS" != "" ];
     then
       export GITHUB_ACTIONS=$_GITHUB_ACTIONS
+      export GITHUB_HEAD_REF=$_GITHUB_HEAD_REF
     fi
 
     export VERSION=$VERSION
@@ -248,6 +250,7 @@ function test_direct_upload () {
     elif [ "$_GITHUB_ACTIONS" != "" ];
     then
       export GITHUB_ACTIONS=$_GITHUB_ACTIONS
+      export GITHUB_HEAD_REF=$_GITHUB_HEAD_REF
     fi
 
     export VERSION=$VERSION
