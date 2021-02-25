@@ -179,6 +179,15 @@ function test_env_env () {
     assertContains "$res" 'COMMIT=abc'
 }
 
+function test_network_filter () {
+    reset
+    res=$(./codecov -d -i tests)
+    assertNotContains "$res" 'ignores/file.cpp'
+    assertNotContains "$res" 'SHA512SUM'
+    assertNotContains "$res" 'install.sh'
+    assertContains "$res" 'tests/test'
+}
+
 function test_slug_opt () {
     reset
     res=$(./codecov -dr myowner/myrepo | grep "https://codecov.io/")
