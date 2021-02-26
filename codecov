@@ -53,15 +53,16 @@ then
   git_root="."
 fi
 
-url_o=""
-pr_o=""
+branch_o=""
 build_o=""
 commit_o=""
-search_in_o=""
-tag_o=""
-branch_o=""
-slug_o=""
+pr_o=""
 prefix_o=""
+network_filter_o=""
+search_in_o=""
+slug_o=""
+tag_o=""
+url_o=""
 git_ls_files_recurse_submodules_o=""
 package="bash"
 
@@ -123,6 +124,10 @@ cat << EOF
 
                  -e VAR,VAR2
 
+    -k prefix    Prefix filepaths to help resolve path fixing: https://github.com/codecov/support/issues/472
+
+    -i prefix    Only include files in the network with a certain prefix. Useful for upload-specific path fixing
+
     -X feature   Toggle functionalities
 
                  -X gcov          Disable gcov
@@ -168,7 +173,6 @@ cat << EOF
     -G GLOB      Paths to include during gcov gathering
     -p dir       Project root directory
                  Also used when preparing gcov
-    -k prefix    Prefix filepaths to help resolve path fixing: https://github.com/codecov/support/issues/472
     -x gcovexe   gcov executable to run. Defaults to 'gcov'
     -a gcovargs  extra arguments to pass to gcov
 
@@ -256,7 +260,7 @@ parse_yaml() {
 
 if [ $# != 0 ];
 then
-  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hJ:k:Kn:p:P:Q:q:r:R:s:S:t:T:u:U:vx:X:Zz:N:-" o
+  while getopts "a:A:b:B:cC:dD:e:f:F:g:G:hi:J:k:Kn:p:P:Q:q:r:R:s:S:t:T:u:U:vx:X:Zz:N:-" o
   do
     codecov_flags+=( "$o" )
     case "$o" in
@@ -333,6 +337,9 @@ $OPTARG"
       "h")
         show_help
         exit 0;
+        ;;
+      "i")
+        network_filter_o="$OPTARG"
         ;;
       "J")
         ft_xcodellvm="1"
@@ -1461,6 +1468,10 @@ then
                     -type f -print 2>/dev/null || echo '')
   fi
 
+  if [ "$network_filter_o" != "" ];
+  then
+      network=$(echo "$network" | grep -e "$network_filter_o/*")
+  fi
   if [ "$prefix_o" != "" ];
   then
       network=$(echo "$network" | awk "{print \"$prefix_o/\"\$0}")
