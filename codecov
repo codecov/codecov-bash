@@ -877,7 +877,7 @@ then
 
   # actions/checkout runs in detached HEAD
   mc=
-  if [ -n "$pr" ] && [ "$pr" != false ];
+  if [ -n "$pr" ] && [ "$pr" != false ] && [ "$commit_o" == "" ];
   then
     mc=$(git show --no-patch --format="%P" 2>/dev/null || echo "")
 
