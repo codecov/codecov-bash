@@ -881,7 +881,7 @@ then
   then
     mc=$(git show --no-patch --format="%P" 2>/dev/null || echo "")
 
-    if [[ "$mc" =~ ^[a-z0-9]{40}[[:space:]][a-z0-9]{40}$ ]];
+    if [[ "$mc" =~ ^[a-z0-9]{40}[[:space:]][a-z0-9]{40}$ ]] && [[ "$commit_o" == "" ]];
     then
       mc=$(echo "$mc" | cut -d' ' -f2)
       say "    Fixing merge commit SHA $commit -> $mc"

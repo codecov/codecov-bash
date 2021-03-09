@@ -24,4 +24,4 @@ jobs:
         shasum --algorithm 512 --check ./SHA512SUM
     - name: Upload Codecov
       run:
-        bash ./codecov -Z
+        bash ./codecov -Z -C fakecommitsha
