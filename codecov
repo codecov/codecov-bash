@@ -17,6 +17,7 @@ search_in=""
 flags="$CODECOV_FLAGS"
 exit_with=0
 curlargs=""
+
 curlawsargs=""
 dump="0"
 clean="0"
