@@ -59,7 +59,8 @@ workflows:
   version: 2.1
   build-deploy:
     jobs:
-      - build
+      - build:
+          context: "circleci google deploy context"
       - deploy:
           filters:
             branches:
