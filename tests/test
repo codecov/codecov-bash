@@ -656,7 +656,7 @@ function test_cirrus () {
     export CIRRUS_BUILD_ID="777"
     export CIRRUS_TASK_ID="239"
     export CIRRUS_TASK_NAME="test"
-    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=master&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=777&build_url=https://cirrus-ci.com/task/239&name=&tag=&slug=codecov%2Fci-repo&service=cirrus-ci&flags=&pr=1&job=test&cmd_args=d,C"
+    assertURL "https://codecov.io/upload/v4?package=bash-tbd&token=&branch=master&commit=180c0d097354fc1a451da8a3be5aba255f2ffd9f&build=777&build_url=https%3A%2F%2Fcirrus-ci.com%2Ftask%2F239&name=&tag=&slug=codecov%2Fci-repo&service=cirrus-ci&flags=&pr=1&job=test&cmd_args=d,C"
 }
 
 function test_heroku () {
