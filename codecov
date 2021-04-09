@@ -124,7 +124,7 @@ cat << EOF
 
                  -e VAR,VAR2
 
-    -k prefix    Prefix filepaths to help resolve path fixing
+    -k prefix    Prefix filepaths to help resolve path fixing 
 
     -i prefix    Only include files in the network with a certain prefix. Useful for upload-specific path fixing
 
