@@ -965,7 +965,8 @@ then
   branch="$CIRRUS_BRANCH"
   pr="$CIRRUS_PR"
   commit="$CIRRUS_CHANGE_IN_REPO"
-  build="$CIRRUS_TASK_ID"
+  build="$CIRRUS_BUILD_ID"
+  build_url=$(urlencode "https://cirrus-ci.com/task/$CIRRUS_TASK_ID")
   job="$CIRRUS_TASK_NAME"
 
 elif [ "$DOCKER_REPO" != "" ];
