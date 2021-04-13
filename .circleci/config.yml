@@ -67,4 +67,4 @@ workflows:
                 - production
           requires:
             - build
-          context: "circleci google deploy context"
+          context: "Bash Deploy"
