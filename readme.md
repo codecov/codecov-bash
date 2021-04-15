@@ -6,23 +6,14 @@ Codecov Global Uploader
 
 [Deployed Version](https://codecov.io/bash)
 
-
-SHA1Sum:  [hash file](https://raw.githubusercontent.com/codecov/codecov-bash/master/SHA1SUM)
-
 ------
 
 ```bash
-# All CI
-bash <(curl -s https://codecov.io/bash)
-
-# Pipe to bash (Jenkins)
-curl -s https://codecov.io/bash | bash -s - -t token
-#                                           ^ add your extra config here
-
-# No bash method
-curl -s https://codecov.io/bash > .codecov
-chmod +x .codecov
-./.codecov
+# Download script and verify integrity
+curl -Ls https://codecov.io/bash > codecov.sh && \
+  echo "89c658e261d5f25533598a222fd96cf17a5fa0eb3772f2defac754d9970b2ec8 codecov.sh" | sha256sum --check --quiet && \
+  chmod +x ./codecov.sh && \
+  ./codecov.sh
 ```
 
 ------
@@ -37,19 +28,28 @@ chmod +x .codecov
 ```yaml
 # public repo on Travis CI
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - curl -Ls https://codecov.io/bash > codecov.sh
+  - echo "89c658e261d5f25533598a222fd96cf17a5fa0eb3772f2defac754d9970b2ec8 codecov.sh" | sha256sum --check --quiet
+  - chmod +x ./codecov.sh
+  - ./codecov.sh
 ```
 
 ```yaml
 # private repo
 after_success:
-  - bash <(curl -s https://codecov.io/bash) -t your-repository-upload-token
+  - curl -Ls https://codecov.io/bash > codecov.sh
+  - echo "89c658e261d5f25533598a222fd96cf17a5fa0eb3772f2defac754d9970b2ec8 codecov.sh" | sha256sum --check --quiet
+  - chmod +x ./codecov.sh
+  - ./codecov.sh -t your-repository-upload-token
 ```
 
 ```yaml
 # Flag build types
 after_success:
-  - bash <(curl -s https://codecov.io/bash) -F unittests
+  - curl -Ls https://codecov.io/bash > codecov.sh
+  - echo "89c658e261d5f25533598a222fd96cf17a5fa0eb3772f2defac754d9970b2ec8 codecov.sh" | sha256sum --check --quiet
+  - chmod +x ./codecov.sh
+  - ./codecov.sh -F unittests
 ```
 
 ```yaml
@@ -63,7 +63,10 @@ after_success:
 ```yaml
 after_success:
   - apk -U add git curl bash findutils
-  - bash -c '/bin/bash <(curl -s https://codecov.io/bash)'
+  - curl -Ls https://codecov.io/bash > codecov.sh
+  - echo "89c658e261d5f25533598a222fd96cf17a5fa0eb3772f2defac754d9970b2ec8 codecov.sh" | sha256sum --check --quiet
+  - chmod +x ./codecov.sh
+  - ./codecov.sh -F unittests
 ```
 
 ### Prevent build failures
