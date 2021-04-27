@@ -8,7 +8,7 @@ clear_branch () {
 }
 
 update_branch () {
-  # Checkout maater
+  # Checkout master
   git checkout master
   # Update master
   git pull
