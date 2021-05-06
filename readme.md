@@ -1,16 +1,13 @@
 Codecov Global Uploader
 =======================
+### Upload reports to Codecov for almost every supported language.
 [![codecov](https://codecov.io/gh/codecov/codecov-bash/branch/master/graph/badge.svg?token=iEvSTnW9Qm)](https://codecov.io/gh/codecov/codecov-bash)
-
-> Upload reports to Codecov for almost every supported language.
 
 [Deployed Version](https://codecov.io/bash)
 
+## Running the bash uploader
 
-SHA1Sum:  [hash file](https://raw.githubusercontent.com/codecov/codecov-bash/master/SHA1SUM)
-
-------
-
+-----
 ```bash
 # All CI
 bash <(curl -s https://codecov.io/bash)
@@ -24,14 +21,38 @@ curl -s https://codecov.io/bash > .codecov
 chmod +x .codecov
 ./.codecov
 ```
+-----
 
-------
+#### ⚠️ Verifying the bash uploader
+As an additional layer of security, users may wish to check the script against the provided SHASUMs.
+
+```bash
+curl -fLso codecov https://codecov.io/bash;
+VERSION=$(grep -o 'VERSION=\"[0-9\.]*\"' codecov | cut -d'"' -f2);
+for i in 1 256 512
+do
+  shasum -a $i -c --ignore-missing <(curl -s "https://raw.githubusercontent.com/codecov/codecov-bash/${VERSION}/SHA${i}SUM")
+done
+./codecov
+```
+
+or for older versions of `shasum`
+
+```bash
+curl -fLso codecov https://codecov.io/bash;
+VERSION=$(grep -o 'VERSION=\"[0-9\.]*\"' codecov | cut -d'"' -f2);
+for i in 1 256 512
+do
+  shasum -a $i -c <(curl -s "https://raw.githubusercontent.com/codecov/codecov-bash/${VERSION}/SHA${i}SUM" | grep -w "codecov")
+done
+./codecov
+```
 
 ### Languages
 > Codecov supports many languages, you can find a full list here: https://docs.codecov.io/docs/supported-languages
 
 
-### Usage
+### Other Usage
 > Below are most commonly used settings. [View full list of commands](https://github.com/codecov/codecov-bash/blob/master/codecov#L56) to see the full list of commands.
 
 ```yaml
