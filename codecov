@@ -1867,7 +1867,7 @@ else
         $curlargs \
         "$url/upload/v2?$query&attempt=$i" || echo 'HTTP 500')
   # {"message": "Coverage reports upload successfully", "uploaded": true, "queued": true, "id": "...", "url": "https://codecov.io/..."\}
-  uploaded=$(grep -o '\"uploaded\": [a-z]*' <<< $res | head -1 | cut -d' ' -f2)
+  uploaded=$(grep -o '\"uploaded\": [a-z]*' <<< "$res" | head -1 | cut -d' ' -f2)
   if [ "$uploaded" = "true" ]
   then
     say "    Reports have been successfully queued for processing at ${b}$(echo "$res" | head -2 | tail -1)${x}"
