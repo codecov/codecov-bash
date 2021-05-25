@@ -1618,7 +1618,7 @@ then
   # [ or ]
   syntax_list='^[[:space:]]*[][][[:space:]]*(//.*)?$'
   # func ... {
-  syntax_go_func='^[[:space:]]*[func].*[\{][[:space:]]*$'
+  syntax_go_func='^[[:space:]]*func[[:space:]]*[\{][[:space:]]*$'
 
   # shellcheck disable=SC2089
   skip_dirs="-not -path '*/$bower_components/*' \
