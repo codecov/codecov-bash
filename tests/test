@@ -37,7 +37,7 @@ function reset () {
 
 function assertDiff () {
     diff <(erb "$2") <(echo "$1")
-         'Expected output differs.' $?
+    assertTrue 'Expected output differs.' $?
 }
 
 function assertContains () {
