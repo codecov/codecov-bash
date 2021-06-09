@@ -37,7 +37,7 @@ function reset () {
 
 function assertDiff () {
     diff <(erb "$2") <(echo "$1")
-    assertTrue 'Expected output differs.' $?
+         'Expected output differs.' $?
 }
 
 function assertContains () {
@@ -70,21 +70,21 @@ function test_fixes () {
 function test_url_opt () {
     reset
     res=$(./codecov -d -u http://example.com | grep "http://example.com/")
-    diff <(echo "http://example.com/upload/v4?package=bash-$VERSION=$_BRANCH&commit=$_SHA&build=$_BUILD&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=&flags=&pr=&job=$_JOB&cmd_args=d,u") <(echo "$res")
+    diff <(echo "http://example.com/upload/v4?package=bash-$VERSION&branch=$_BRANCH&commit=$_SHA&build=$_BUILD&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=&flags=&pr=&job=$_JOB&cmd_args=d,u") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
 function test_url_env () {
     reset
     res=$(CODECOV_URL="http://other.com" ./codecov -d | grep "http://other.com/")
-    diff <(echo "http://other.com/upload/v4?package=bash-$VERSION=$_BRANCH&commit=$_SHA&build=$_BUILD&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=&flags=&pr=&job=$_JOB&cmd_args=d") <(echo "$res")
+    diff <(echo "http://other.com/upload/v4?package=bash-$VERSION&branch=$_BRANCH&commit=$_SHA&build=$_BUILD&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=&flags=&pr=&job=$_JOB&cmd_args=d") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
 function test_flags_opt () {
     reset
     res=$(./codecov -d -F f1 -F f2 | grep "https://codecov.io/")
-    diff <(echo "https://codecov.io/upload/v4?package=bash-$VERSION=$_BRANCH&commit=$_SHA&build=$_BUILD&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=&flags=f1,f2&pr=&job=$_JOB&cmd_args=d,F,F") <(echo "$res")
+    diff <(echo "https://codecov.io/upload/v4?package=bash-$VERSION&branch=$_BRANCH&commit=$_SHA&build=$_BUILD&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=&flags=f1,f2&pr=&job=$_JOB&cmd_args=d,F,F") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
@@ -113,7 +113,7 @@ function test_flags_opt () {
 function test_build_arg () {
     reset
     res=$(./codecov -d -b 1.6 | grep "https://codecov.io/")
-    diff <(echo "https://codecov.io/upload/v4?package=bash-$VERSION=$_BRANCH&commit=$_SHA&build=1.6&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=&flags=&pr=&job=$_JOB&cmd_args=d,b") <(echo "$res")
+    diff <(echo "https://codecov.io/upload/v4?package=bash-$VERSION&branch=$_BRANCH&commit=$_SHA&build=1.6&build_url=&name=&tag=&slug=codecov%2Fcodecov-bash&service=&flags=&pr=&job=$_JOB&cmd_args=d,b") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
@@ -121,7 +121,7 @@ function test_build_arg () {
 #     reset
 #     git commit --amend -m 'Merge 5d4123bcb99dd1bc9b5ae8b4271b39dbe4c3928b into 2f85ca252d69d6c52484f0c4b2e8500498228398'
 #     res=$(./codecov -d -b 1.6 | grep "https://codecov.io/")
-#     diff <(echo "https://codecov.io/upload/v4?package=bash-$VERSION=$_BRANCH&commit=5d4123bcb99dd1bc9b5ae8b4271b39dbe4c3928b&build=$_BUILD&build_url=&tag=&slug=codecov%2Fcodecov-bash&service=&flags=&pr=&job=$_JOB") <(echo "$res")
+#     diff <(echo "https://codecov.io/upload/v4?package=bash-$VERSION&branch=$_BRANCH&commit=5d4123bcb99dd1bc9b5ae8b4271b39dbe4c3928b&build=$_BUILD&build_url=&tag=&slug=codecov%2Fcodecov-bash&service=&flags=&pr=&job=$_JOB") <(echo "$res")
 #     assertTrue 'Expected output differs.' $?
 # }
 
@@ -198,14 +198,14 @@ function test_network_filter () {
 function test_slug_opt () {
     reset
     res=$(./codecov -dr myowner/myrepo | grep "https://codecov.io/")
-    diff <(echo "https://codecov.io/upload/v4?package=bash-$VERSION=$_BRANCH&commit=$_SHA&build=$_BUILD&build_url=&name=&tag=&slug=myowner%2Fmyrepo&service=&flags=&pr=&job=$_JOB&cmd_args=d,r") <(echo "$res")
+    diff <(echo "https://codecov.io/upload/v4?package=bash-$VERSION&branch=$_BRANCH&commit=$_SHA&build=$_BUILD&build_url=&name=&tag=&slug=myowner%2Fmyrepo&service=&flags=&pr=&job=$_JOB&cmd_args=d,r") <(echo "$res")
     assertTrue 'Expected output differs.' $?
 }
 
 function test_slug_env () {
     reset
     export CODECOV_SLUG="myowner/myrepo"
-    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION=$_BRANCH&commit=$TEST_DATA_GIT_COMMIT&build=$_BUILD&build_url=&name=&tag=&slug=myowner%2Fmyrepo&service=&flags=&pr=&job=$_JOB&cmd_args=d,C"
+    assertURL "https://codecov.io/upload/v4?package=bash-$VERSION&branch=$_BRANCH&commit=$TEST_DATA_GIT_COMMIT&build=$_BUILD&build_url=&name=&tag=&slug=myowner%2Fmyrepo&service=&flags=&pr=&job=$_JOB&cmd_args=d,C"
 }
 
 function test_gcov () {
