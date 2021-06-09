@@ -1862,7 +1862,7 @@ else
         -H 'Content-Type: text/plain' \
         -H 'Content-Encoding: gzip' \
         -H 'X-Content-Encoding: gzip' \
-        -H "X-Upload-Token: ${token}"
+        -H "X-Upload-Token: ${token}" \
         -H 'Accept: text/plain' \
         $curlargs \
         "$url/upload/v2?$query&attempt=$i" || echo 'HTTP 500')
