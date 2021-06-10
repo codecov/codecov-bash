@@ -872,7 +872,9 @@ then
   commit="${GITHUB_SHA}"
   slug="${GITHUB_REPOSITORY}"
   build="${GITHUB_RUN_ID}"
-  build_url=$(urlencode "http://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}")
+  # GITHUB_SERVER_URL is provided by GitHub Actions
+  # please cf. https://docs.github.com/en/actions/reference/environment-variables#default-environment-variables
+  build_url=$(urlencode "${GITHUB_SERVER_URL:-http://github.com}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}")
   job="$(urlencode "${GITHUB_WORKFLOW}")"
 
   # actions/checkout runs in detached HEAD
