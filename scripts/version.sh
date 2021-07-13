@@ -15,6 +15,11 @@ update_branch () {
 }
 
 tag_and_push () {
+  # Test is tag exists
+  if git rev-parse "refs/tags/${RELEASE_TAG}" >/dev/null 2>&1; then
+    echo "Version ${RELEASE_TAG} already exists. Update the release before deploying"
+    exit 1
+  fi
   # Tag the version change
   git tag "$RELEASE_TAG"
   # Push tag
