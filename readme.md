@@ -1,4 +1,12 @@
-Codecov Global Uploader
+## ⚠️ Deprecation Warning ⚠️
+
+**On February 1, 2022, this uploader will be fully sunset and no longer function**
+
+We recommend all users migrate to the [uploader](https://github.com/codecov/uploader) to prevent any breakages in usage. You can learn more about our deprecation plan and the new uploader on our [blog](https://about.codecov.io/blog/introducing-codecovs-new-uploader/).
+
+-----
+
+Codecov Bash Uploader
 =======================
 ### Upload reports to Codecov for almost every supported language.
 [![codecov](https://codecov.io/gh/codecov/codecov-bash/branch/master/graph/badge.svg?token=iEvSTnW9Qm)](https://codecov.io/gh/codecov/codecov-bash)
