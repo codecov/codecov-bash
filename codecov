@@ -1803,7 +1803,7 @@ else
   say "    ${e}query:${x} $query"
 
   # Full query (to display on terminal output)
-  query=$(echo "package=$package-$VERSION&$query" | tr -d ' ')
+  query=$(echo "package=$package-$VERSION&token=$token&$query" | tr -d ' ')
 
   if [ "$ft_s3" = "1" ];
   then
