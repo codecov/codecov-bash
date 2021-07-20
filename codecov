@@ -865,8 +865,11 @@ then
   if [  "$GITHUB_HEAD_REF" != "" ];
   then
     # PR refs are in the format: refs/pull/7/merge
-    pr="${GITHUB_REF#refs/pull/}"
-    pr="${pr%/merge}"
+    if [[ "$GITHUB_REF" =~ ^refs\/pull\/[0-9]+\/merge$ ]];
+    then
+      pr="${GITHUB_REF#refs/pull/}"
+      pr="${pr%/merge}"
+    fi
     branch="${GITHUB_HEAD_REF}"
   fi
   commit="${GITHUB_SHA}"
