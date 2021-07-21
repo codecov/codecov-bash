@@ -5,7 +5,7 @@
 
 set -e +o pipefail
 
-VERSION="1.0.3"
+VERSION="1.0.6"
 
 add()
 {
@@ -257,6 +257,7 @@ then
   add "GITHUB_REF"
   add "GITHUB_REPOSITORY"
   add "GITHUB_RUN_ID"
+  add "GITHUB_SERVER_URL"
   add "GITHUB_SHA"
   add "GITHUB_WORKFLOW"
 
