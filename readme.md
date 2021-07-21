@@ -19,7 +19,7 @@ Codecov Bash Uploader
 ```bash
 # All CI
 bash <(curl -s https://codecov.io/bash)
-
+ 
 # Pipe to bash (Jenkins)
 curl -s https://codecov.io/bash | bash -s - -t token
 #                                           ^ add your extra config here
