@@ -13,7 +13,7 @@ jobs:
         ruby-version: 2.7
     - name: Extract shunit
       run: tar --strip-components=1 -zxvf tests/shunit2-2.1.8.tar.gz
-    - name: Install Ruby dependencies
+    - name: Install Ruby dependencies 
       run: |
         gem install bashcov
         gem install codecov
